@@ -27,25 +27,20 @@ public class GestorDAO {
         }
     }
 
-//    public Utilizador get(Object key) {
-//        Connection conn = DBConnect.connect();
-//        try {
-//            Utilizador al = null;
-//            Statement stm = conn.createStatement();
-//            String sql = "SELECT * FROM Utilizadores WHERE email='" + key + "'";
-//            ResultSet rs = stm.executeQuery(sql);
-//            if (rs.next())
-//                if (rs.getBoolean(4))
-//                    al = new Administrador(rs.getString(1), rs.getString(2),
-//                            rs.getString(3));
-//                else
-//                    al = new Utilizador(rs.getString(1), rs.getString(2),
-//                            rs.getString(3));
-//            return al;
-//        } catch (Exception e) {
-//            throw new NullPointerException(e.getMessage());
-//        } finally {
-//            DBConnect.close(conn);
-//        }
-//    }
+    public Gestor get(String key) {
+        Connection conn = DBConnect.connect();
+        try {
+            Gestor gestor = null;
+            Statement stm = conn.createStatement();
+            String sql = "SELECT * FROM Gestores WHERE user='" + key + "'";
+            ResultSet rs = stm.executeQuery(sql);
+            if (rs.next())
+                    gestor = new Gestor(rs.getString(1), rs.getString(2));
+            return gestor;
+        } catch (Exception e) {
+            throw new NullPointerException(e.getMessage());
+        } finally {
+            DBConnect.close(conn);
+        }
+    }
 }

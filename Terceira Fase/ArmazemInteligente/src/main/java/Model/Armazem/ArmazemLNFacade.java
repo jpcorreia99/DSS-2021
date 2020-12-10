@@ -22,4 +22,8 @@ public class ArmazemLNFacade implements IArmazemLN {
     public Map<Integer, Palete> getPaletes() {
          return new HashMap<>(); 
     }
+    
+    public boolean login (String user, String password) {
+        return this.gestorFacade.login(user,password);
+    }
 }

@@ -39,16 +39,21 @@ public class UI {
         }
         
         if (op<0 || op>this.opcoes.size()) {
-            System.out.println("Opção Inválida!!!");
+            System.out.println("A opção selecionada não é válida.");
             op = -1;
         }
         return op;
     }
     
+    public void showBoasVindas() {
+        System.out.println ("\nBemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
+    }
+    
     public void inicia() {  
         do {
             //showLogo();
-            //verificaLogin();
+            verificaLogin();
+            showBoasVindas();
             showMenu();
             switch ((opcao = getOpcao())) {
                 case 1:
@@ -57,11 +62,25 @@ public class UI {
             }
         } while (opcao != 0);
         
-        GestorDAO utilizadorDAO = new GestorDAO();
-       
-        System.out.println(utilizadorDAO.userExiste("teste"));
+        
         
         System.out.println("Logging off, thank you for using ArmazémInteligente™ technologies.");
+    }
+    
+    public void verificaLogin () {
+        String user = null;
+        String password = null;
+        
+        try {
+            System.out.println("Insira o seu nome:");
+            user = scan.nextLine();
+            System.out.println("Insira a sua password:");
+            password = scan.nextLine();
+        } catch (InputMismatchException e) {
+            System.out.println(e.toString());
+        }
+        
+        this.model.login(user, password);
     }
 }
 

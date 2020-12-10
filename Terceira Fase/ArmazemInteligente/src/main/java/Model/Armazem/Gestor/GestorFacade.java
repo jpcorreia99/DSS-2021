@@ -5,15 +5,22 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class GestorFacade {
-    public static String generate(final String password) {
-        try {
-            byte[] hash = MessageDigest.getInstance("SHA-256").digest((password).getBytes());
-            return Base64.getEncoder().encodeToString(hash);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
+    GestorDAO gestorDAO;
+    
+    public GestorFacade () {
+        gestorDAO = new GestorDAO();
     }
     
     
+    
+    public boolean login (String user, String password) {
+        boolean res;
+        
+        if ((res = gestorDAO.userExiste(user))) {
+            Gestor g = gestorDAO.get(user);
+            res = g.passwordCorreta(password);
+        }
+        
+        return res;
+    }
 }
