@@ -5,6 +5,7 @@ import java.util.Scanner;
 import Model.Armazem.ArmazemLNFacade;
 import Model.Armazem.Gestor.Gestor;
 import Model.Armazem.Gestor.GestorDAO;
+import Model.DBConnect;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -55,7 +56,7 @@ public class UI {
     }
     
     public void populamentoInicialBD() throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=pedro&password=1234");
+        Connection conn = DBConnect.connect();
         Statement s = conn.createStatement();
         String[] gestores = {"tobias", "anacleto", "zeca"};
         String[] passwords = {"420noscope", "1234", "1234"};
@@ -71,17 +72,19 @@ public class UI {
     }
     
     public void inicia() {  
-        do {
-            //showLogo();
-            try {
+        try {
                 populamentoInicialBD();
             } catch (SQLException e) {
                 System.out.println (e.getMessage());
             }
-            
             verificaLogin();
             showBoasVindas();
+            
+        do {
+            //showLogo();
             showMenu();
+            
+            
             switch ((opcao = getOpcao())) {
                 case 1:
                     this.model.getPaletes();
@@ -111,6 +114,12 @@ public class UI {
             System.out.println("O par " + user + " " + password + " é válido");
         } else 
             System.out.println("O par " + user + " " + password + " é inválido");
+    }
+    
+    public void clearScreen () {
+        try {
+            Runtime.getRuntime().exec("clear");
+            } catch (Exception e) {}
     }
 }
 
