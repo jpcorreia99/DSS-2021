@@ -1,4 +1,7 @@
-package Model.Armazem.Utilizador;
+package Model.Armazem.Gestor;
 
-public class Utilizador {
+public class Gestor {
+    public boolean login (String username, String password) {
+        return true;
+    }
 }

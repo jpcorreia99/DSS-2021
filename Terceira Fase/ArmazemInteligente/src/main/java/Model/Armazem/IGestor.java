@@ -1,4 +1,4 @@
 package Model.Armazem;
 
-public interface IUtilizador {
+public interface IGestor {
 }

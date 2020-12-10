@@ -1,4 +1,4 @@
-package Model.Armazem.Utilizador;
+package Model.Armazem.Gestor;
 
 
 import java.sql.Connection;
@@ -11,9 +11,7 @@ import java.util.Set;
 
 import Model.DBConnect;
 
-public class UtilizadorDAO {
-
-
+public class GestorDAO {
     public boolean userExiste(String username) throws NullPointerException {
         Connection conn = DBConnect.connect();
         try {
