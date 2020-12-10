@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 public class DBConnect  {
     private static final String URL = "localhost";
     private static final String DATABASE = "ArmazemInteligente";
-    private static final String USERNAME = "pedro";
+    private static final String USERNAME = "dss";
     private static final String PASSWORD = "1234";
 
     public static Connection connect() {

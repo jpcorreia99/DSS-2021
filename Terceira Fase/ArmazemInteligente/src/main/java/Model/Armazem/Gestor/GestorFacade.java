@@ -1,9 +1,5 @@
 package Model.Armazem.Gestor;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-
 public class GestorFacade {
     GestorDAO gestorDAO;
     
@@ -14,9 +10,9 @@ public class GestorFacade {
     
     
     public boolean login (String user, String password) {
-        boolean res;
+        boolean res = false;
         //System.out.println("O " + user + " dá " + gestorDAO.userExiste(user));
-        if ((res = gestorDAO.userExiste(user))) {
+        if (gestorDAO.userExiste(user)) {
             Gestor g = gestorDAO.get(user);
             res = g.passwordCorreta(password);
         }
