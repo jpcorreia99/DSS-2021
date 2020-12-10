@@ -15,12 +15,12 @@ public class GestorFacade {
     
     public boolean login (String user, String password) {
         boolean res;
-        
+        //System.out.println("O " + user + " dá " + gestorDAO.userExiste(user));
         if ((res = gestorDAO.userExiste(user))) {
             Gestor g = gestorDAO.get(user);
             res = g.passwordCorreta(password);
         }
-        
+      
         return res;
     }
 }

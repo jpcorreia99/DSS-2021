@@ -16,7 +16,7 @@ public class GestorDAO {
         Connection conn = DBConnect.connect();
         try {
             Statement stm = conn.createStatement();
-            String sql = "SELECT * FROM Utilizador WHERE username='" + username +
+            String sql = "SELECT * FROM Gestores WHERE username='" + username +
                     "'";
             ResultSet rs = stm.executeQuery(sql);
             return rs.next();
@@ -32,7 +32,7 @@ public class GestorDAO {
         try {
             Gestor gestor = null;
             Statement stm = conn.createStatement();
-            String sql = "SELECT * FROM Gestores WHERE user='" + key + "'";
+            String sql = "SELECT * FROM Gestores WHERE username='" + key + "'";
             ResultSet rs = stm.executeQuery(sql);
             if (rs.next())
                     gestor = new Gestor(rs.getString(1), rs.getString(2));

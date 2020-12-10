@@ -3,7 +3,12 @@ package View;
 
 import java.util.Scanner;
 import Model.Armazem.ArmazemLNFacade;
+import Model.Armazem.Gestor.Gestor;
 import Model.Armazem.Gestor.GestorDAO;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -49,9 +54,31 @@ public class UI {
         System.out.println ("\nBemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
     }
     
+    public void populamentoInicialBD() throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=pedro&password=1234");
+        Statement s = conn.createStatement();
+        String[] gestores = {"tobias", "anacleto", "zeca"};
+        String[] passwords = {"420noscope", "1234", "1234"};
+        
+        s.executeUpdate("CREATE DATABASE IF NOT EXISTS ArmazemInteligente;");
+        s.execute("USE ArmazemInteligente;");
+        s.execute("CREATE TABLE IF NOT EXISTS Gestores (username VARCHAR(45), password VARCHAR(45), PRIMARY KEY (username));");
+        
+        for (int i = 0; i < gestores.length; i++) {
+            s.execute ("INSERT IGNORE INTO Gestores (username, password) VALUES ('" + gestores[i] + "', '" +
+                    Gestor.generate(passwords[i]) + "');");
+        }
+    }
+    
     public void inicia() {  
         do {
             //showLogo();
+            try {
+                populamentoInicialBD();
+            } catch (SQLException e) {
+                System.out.println (e.getMessage());
+            }
+            
             verificaLogin();
             showBoasVindas();
             showMenu();
@@ -80,7 +107,10 @@ public class UI {
             System.out.println(e.toString());
         }
         
-        this.model.login(user, password);
+        if (this.model.login(user, password)) {
+            System.out.println("O par " + user + " " + password + " é válido");
+        } else 
+            System.out.println("O par " + user + " " + password + " é inválido");
     }
 }
 

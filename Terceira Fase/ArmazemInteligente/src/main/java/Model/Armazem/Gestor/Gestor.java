@@ -10,7 +10,11 @@ public class Gestor {
     
     public Gestor (String username, String password) {
         this.username = username;
-        this.password = Gestor.generate(password);
+        this.password = password;
+    }
+    
+    public void setPassword (String password) {
+        this.password = password;
     }
     
     public static String generate(final String password) {
