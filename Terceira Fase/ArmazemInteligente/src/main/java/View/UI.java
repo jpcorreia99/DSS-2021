@@ -3,13 +3,7 @@ package View;
 
 import java.util.Scanner;
 import Model.Armazem.ArmazemLNFacade;
-import Model.Armazem.Gestor.Gestor;
-import Model.Armazem.Gestor.GestorDAO;
-import Model.DBConnect;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -54,29 +48,9 @@ public class UI {
     public void showBoasVindas() {
         System.out.println ("\nBemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
     }
+
     
-    public void populamentoInicialBD() throws SQLException {
-        Connection conn = DBConnect.connect();
-        Statement s = conn.createStatement();
-        String[] gestores = {"tobias", "anacleto", "zeca"};
-        String[] passwords = {"420noscope", "1234", "1234"};
-        
-        s.executeUpdate("CREATE DATABASE IF NOT EXISTS ArmazemInteligente;");
-        s.execute("USE ArmazemInteligente;");
-        s.execute("CREATE TABLE IF NOT EXISTS Gestores (username VARCHAR(45), password VARCHAR(45), PRIMARY KEY (username));");
-        
-        for (int i = 0; i < gestores.length; i++) {
-            s.execute ("INSERT IGNORE INTO Gestores (username, password) VALUES ('" + gestores[i] + "', '" +
-                    Gestor.generate(passwords[i]) + "');");
-        }
-    }
-    
-    public void inicia() {  
-        try {
-                populamentoInicialBD();
-        } catch (SQLException e) {
-                System.out.println (e.getMessage());
-        }
+    public void inicia() {
             verificaLogin();
             showBoasVindas();
             
