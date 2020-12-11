@@ -5,14 +5,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import Model.DBConnect;
+import Database.DBConnect;
 
 public class GestorDAO {
     public boolean userExiste(String username) throws NullPointerException {
         Connection conn = DBConnect.connect();
         try {
             Statement stm = conn.createStatement();
-            String sql = "SELECT * FROM Gestores WHERE username='" + username +
+            String sql = "SELECT * FROM Gestor WHERE username='" + username +
                     "'";
             ResultSet rs = stm.executeQuery(sql);
             return rs.next();
@@ -28,7 +28,7 @@ public class GestorDAO {
         try {
             Gestor gestor = null;
             Statement stm = conn.createStatement();
-            String sql = "SELECT * FROM Gestores WHERE username='" + key + "'";
+            String sql = "SELECT * FROM Gestor WHERE username='" + key + "'";
             ResultSet rs = stm.executeQuery(sql);
             if (rs.next())
                     gestor = new Gestor(rs.getString(1), rs.getString(2));

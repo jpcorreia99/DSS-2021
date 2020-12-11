@@ -1,14 +1,17 @@
-import Model.Armazem.Gestor.GestorDAO;
+import Database.DBConnect;
 import View.UI;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 
 public class APP {
     public static void main(String[] args) {
-        UI ui = new UI();
-        ui.inicia();
-     }
+        try {
+            DBConnect.setupBD();
+            UI ui = new UI();
+            ui.inicia();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Problema com a ligação à base de dados");
+        }
+
+    }
 }
