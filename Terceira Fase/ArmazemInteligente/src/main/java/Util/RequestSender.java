@@ -51,7 +51,7 @@ public class RequestSender {
 
         MatrixToImageWriter.writeToFile(
                 matrix,
-                path.substring(path.lastIndexOf('.') + 1), // indica o formato
+                path.substring(path.lastIndexOf('.') + 1), // indica o formato (.png)
                 new File(path));
     }
 }
