@@ -74,9 +74,9 @@ public class UI {
     public void inicia() {  
         try {
                 populamentoInicialBD();
-            } catch (SQLException e) {
+        } catch (SQLException e) {
                 System.out.println (e.getMessage());
-            }
+        }
             verificaLogin();
             showBoasVindas();
             
@@ -91,9 +91,7 @@ public class UI {
                     break;
             }
         } while (opcao != 0);
-        
-        
-        
+          
         System.out.println("Logging off, thank you for using ArmazémInteligente™ technologies.");
     }
     
