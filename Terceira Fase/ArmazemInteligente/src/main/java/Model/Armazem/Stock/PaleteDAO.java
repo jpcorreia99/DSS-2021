@@ -1,6 +1,5 @@
 package Model.Armazem.Stock;
-
-import Model.DBConnect;
+import Database.DBConnect;
 
 import java.sql.Connection;
 import java.sql.SQLException;
