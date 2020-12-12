@@ -58,12 +58,12 @@ public class RoboDAO implements Map<Integer, Robo> {
 
     @Override
     public Robo put(Integer idRobo, Robo robo) {
-        Robo res = null;
+        Robo res;
 
         try (Connection conn = DBConnect.connect();
              Statement stm = conn.createStatement()) {
             // Actualizar o Robo
-
+            res = get(idRobo);
             stm.executeUpdate(
                     "INSERT INTO Robo VALUES (" + idRobo.toString() + ", " + robo.getCoordenadas().getX() + "," +
                             robo.getCoordenadas().getY()+","+

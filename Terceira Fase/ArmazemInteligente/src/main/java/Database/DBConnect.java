@@ -49,6 +49,7 @@ public class DBConnect  {
 
         inicializaGestores(stm);
         inicializaRobos(stm);
+        inicializaPrateleiras(stm);
 
     }
 
@@ -79,5 +80,21 @@ public class DBConnect  {
         stm.execute("INSERT INTO Robo VALUES (1,0,0,0,0)");
         stm.execute("INSERT INTO Robo VALUES (2,1,0,0,0)");
         stm.execute("INSERT INTO Robo VALUES (3,0,1,0,0)");
+    }
+
+    private static void inicializaPrateleiras(Statement stm) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS Prateleira (" +
+                "  id INT NOT NULL PRIMARY KEY," +
+                "  paleteId INT NOT NULL);";
+
+        stm.execute(sql);
+
+        stm.execute("INSERT INTO Prateleira VALUES (1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (2,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (3,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (4,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (5,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (6,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (7,0)");
     }
 }

@@ -1,6 +1,6 @@
 package Model.Armazem.Robo;
 
-import Util.Coordenadas;
+import Database.PaleteDAO;
 import Util.Coordenadas;
 
 public class Robo {
@@ -12,11 +12,14 @@ public class Robo {
     // palete que carrega
     private int idPalete;
 
+    PaleteDAO paleteDAO;
+
     public Robo(int id, int x, int y, int idPrateleira,int idPalete) {
         this.id = id;
         this.coordenadas = new Coordenadas(x,y);
         this.idPrateleira = idPrateleira;
         this.idPalete = idPalete;
+        this.paleteDAO = PaleteDAO.getInstance();
     }
 
     public int getId() {

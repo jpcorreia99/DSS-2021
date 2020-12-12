@@ -6,12 +6,12 @@ import Model.Armazem.Robo.RoboFacade;
 import Model.Armazem.Stock.Palete;
 import Model.Armazem.Stock.StockFacade;
 import Model.IArmazemLN;
+
 import Util.Coordenadas;
-import Util.Etapa;
 import Util.LeitorCodigosQR;
-import Util.Tuple;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,5 +83,10 @@ public class ArmazemLNFacade implements IArmazemLN {
 //            // atualizar estado para em transporte
 //            // atualizar estado para guardada
 //        }
+//    }
+
+    
+//    public Map <Integer, List<Integer>> getMapa () {
+//        return mapa.getMapa();
 //    }
 }

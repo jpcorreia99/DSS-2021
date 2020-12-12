@@ -4,7 +4,6 @@ import Util.Estado;
 
 public class Palete {
     private static int numeroPaletes = 0;
-
     private int id;
     private String material;
     private Estado estado;
