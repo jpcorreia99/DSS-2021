@@ -1,6 +1,6 @@
-package Model.Armazem.Stock;
+package Database;
 
-import Database.DBConnect;
+import Model.Armazem.Stock.Prateleira;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,22 +9,8 @@ import java.sql.Statement;
 import java.util.*;
 
 
-public class PrateleiraDAO implements Map<Integer,Prateleira> {
+public class PrateleiraDAO implements Map<Integer, Prateleira> {
     private static PrateleiraDAO singleton = null;
-    /**
-     * Contrutor por defeito que cria uma tabela nova na Base de Dados se esta não existir
-     */
-    public PrateleiraDAO() {
-        try (Connection conn = DBConnect.connect()) {
-            Statement sta = conn.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS Prateleira (\n" +
-                    "  id INT NOT NULL PRIMARY KEY,\n" +
-                    "  estaOcupada TINYINT NOT NULL);";
-            sta.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Devolve uma instância do objeto
@@ -106,33 +92,13 @@ public class PrateleiraDAO implements Map<Integer,Prateleira> {
             Statement sta = conn.createStatement();
             String sql = "SELECT * FROM Prateleira" +
                     " WHERE id = " + key.toString();
-            int idPalete = getIdPalete(key.toString(),sta);
             ResultSet rs = sta.executeQuery(sql);
             if(rs.next())
-                p = new Prateleira(rs.getInt(1),rs.getBoolean(2), idPalete);
+                p = new Prateleira(rs.getInt(1), rs.getInt(2));
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return p;
-    }
-
-    /**
-     * Retorna o id da Palete contida na dada Prateleira
-     * @param key Id da Prateleira
-     * @param sta Canal que comunica com a BD
-     * @return id da Palete
-     */
-    private int getIdPalete(String key, Statement sta) {
-        int res = 0;
-        try {
-            ResultSet rs = sta.executeQuery("SELECT * FROM Palete" +
-                    " WHERE Prateleira =" + key);
-            if(rs.next())
-                res = rs.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return res;
     }
 
     /**
@@ -145,20 +111,14 @@ public class PrateleiraDAO implements Map<Integer,Prateleira> {
     public Prateleira put(Integer key, Prateleira value) {
         Prateleira p = null;
         try (Connection conn = DBConnect.connect()) {
-            Statement sta = conn.createStatement();
+            Statement stm = conn.createStatement();
             if(containsKey(key))
                 p = get(key);
             String sql = "INSERT INTO Prateleira VALUES (" +
                     value.getId() + "," +
-                    value.isEstaOcupada() + ")" +
-                    "ON DUPLICATE KEY UPDATE estaOcupada = VALUES(estaOcupada);";
-            sta.executeUpdate(sql);
-            if(value.isEstaOcupada()) {
-                sql = "INSERT INTO Palete VALUES (" +
-                        value.getIdPalete() + "," +
-                        value.getId() + "," +
-                    "ON DUPLICATE KEY UPDATE prateleira = VALUES(prateleira);";
-            }
+                    value.getPaleteId() + ")" +
+                    "ON DUPLICATE KEY UPDATE paleteId = VALUES(paleteID);";
+            stm.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -172,16 +132,7 @@ public class PrateleiraDAO implements Map<Integer,Prateleira> {
      */
     @Override
     public Prateleira remove(Object key) {
-        Prateleira p = get(key);
-        try (Connection conn = DBConnect.connect()) {
-            Statement sta = conn.createStatement();
-            if(p.isEstaOcupada())
-                sta.executeUpdate("UDPATE Palete SET prateleira = null WHERE id =" + p.getIdPalete()+ ";");
-            sta.executeUpdate("DELETE FROM Prateleira WHERE id = "+ p.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return p;
+        throw new NullPointerException("method not implemented!");
     }
 
     /**
@@ -201,7 +152,6 @@ public class PrateleiraDAO implements Map<Integer,Prateleira> {
     public void clear() {
         try (Connection conn = DBConnect.connect()) {
             Statement sta = conn.createStatement();
-            sta.executeUpdate("UPDATE Palete SET prateleira = null;");
             sta.executeUpdate("DELETE FROM Prateleira");
         } catch (SQLException e) {
             e.printStackTrace();

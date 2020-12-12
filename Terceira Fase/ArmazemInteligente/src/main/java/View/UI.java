@@ -63,7 +63,7 @@ public class UI {
            
             switch ((opcao = getOpcao())) {
                 case 1:
-                    showMapa(this.model.getMapa());
+//                    showMapa(this.model.getMapa());
                     break;
                 case 2:
                     this.model.getPaletes();

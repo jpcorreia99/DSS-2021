@@ -1,31 +1,21 @@
 package Model.Armazem.Stock;
 
+import Database.PaleteDAO;
+
 public class Prateleira {
     private int id;
-    private boolean estaOcupada;
-    private int idPalete;
-    private static int idCounter = 0;
-
-    /**
-     * Contrutor por defeito
-     */
-    public Prateleira() {
-        idCounter++;
-        id = idCounter;
-        estaOcupada = false;
-        idPalete = 0;
-    }
+    private PaleteDAO paleteDAO;
+    private int paleteId;
 
     /**
      * Contrutor parametrizado
      * @param id id da prateleira
-     * @param estaOcupada bool se está ocupada
-     * @param idPalete 0 se contém palete ou o id desta se existir
+     * @param paleteId 0 se contém palete ou o id desta se existir
      */
-    public Prateleira(int id, boolean estaOcupada, int idPalete) {
+    public Prateleira(int id,int paleteId) {
         this.id = id;
-        this.idPalete = idPalete;
-        this.estaOcupada = estaOcupada;
+        this.paleteDAO = PaleteDAO.getInstance();
+        this.paleteId = paleteId;
     }
 
     /**
@@ -34,8 +24,7 @@ public class Prateleira {
      */
     public Prateleira(Prateleira prat) {
         setId(prat.getId());
-        setEstaOcupada(prat.isEstaOcupada());
-        setIdPalete(prat.getIdPalete());
+        setPaleteId(prat.getPaleteId());
     }
 
     /**
@@ -54,35 +43,20 @@ public class Prateleira {
         this.id = id;
     }
 
-    /**
-     * Obtém o valor se está ocupada ou não
-     * @return true se está ocupada, false caso contrario
-     */
-    public boolean isEstaOcupada() {
-        return estaOcupada;
-    }
-
-    /**
-     * Atualiza o valor se está ocupada ou não
-     * @param estaOcupada novo booleano
-     */
-    public void setEstaOcupada(boolean estaOcupada) {
-        this.estaOcupada = estaOcupada;
-    }
 
     /**
      * Obtém o id da palete contida
      * @return 0 se não houver palete ou o id desta se existir
      */
-    public int getIdPalete() {
-        return idPalete;
+    public int getPaleteId() {
+        return paleteId;
     }
 
     /**
      * Atualzia o id da palete contida
-     * @param idPalete novo id.
+     * @param paleteId novo id.
      */
-    public void setIdPalete(int idPalete) {
-        this.idPalete = idPalete;
+    public void setPaleteId(int paleteId) {
+        this.paleteId = paleteId;
     }
 }

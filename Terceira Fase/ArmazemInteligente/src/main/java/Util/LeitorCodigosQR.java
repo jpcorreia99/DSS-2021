@@ -24,7 +24,7 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
 
-public class LeitorCodigosQR {
+public class LeitorCodigosQR implements Runnable {
 
 //    Here are the basic steps required to implement a watch service:
 //
@@ -42,22 +42,10 @@ public class LeitorCodigosQR {
     private final Map<WatchKey, Path> keys;
     private Path sourceDirPath;
 
-    public static void main(String[] args) {
-        List<Palete> paletesAGuardar = new ArrayList<>();
-        Lock lock = new ReentrantLock();
-        Condition paleteNova = lock.newCondition();
-
-        try {
-            LeitorCodigosQR leitorCodigosQR = new LeitorCodigosQR(paletesAGuardar, lock, paleteNova);
-            leitorCodigosQR.aguardaQR();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    LeitorCodigosQR(List<Palete> paletesAGuardar, Lock lockPaletes, Condition paleteNova) throws IOException {
+    public LeitorCodigosQR(List<Palete> paletesAGuardar, Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
         this.paletesAGuardar = paletesAGuardar;
         this.lockPaletes = lockPaletes;
-        this.condicaoPaleteNova = paleteNova;
+        this.condicaoPaleteNova = conditionNovaPalete;
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<>();
         File sourceDir = new File("src/main/resources");
@@ -70,9 +58,9 @@ public class LeitorCodigosQR {
     /**
      * Processa o evento assinalado na key, ou seja, se algum códigoQR foi criado na diretoria assinalada
      *
-     * @throws IOException
      */
-    private void aguardaQR() throws IOException {
+    public void run() {
+        System.out.println("QRCode Reader funcional!");
         // loop infinito - está sempre a verificar se apareceu algum ficheiro novo
         for (;;) {
 
@@ -111,6 +99,7 @@ public class LeitorCodigosQR {
                         lockPaletes.lock();
                         paletesAGuardar.add(palete);
                         condicaoPaleteNova.signal();
+                        System.out.println("Palete registada!");
                     } finally {
                         lockPaletes.unlock();
                     }
@@ -130,7 +119,11 @@ public class LeitorCodigosQR {
                 }
             }
         }
-        watcher.close();
+        try {
+            watcher.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -1,24 +1,37 @@
 package Model.Armazem.Robo;
 
+import Database.PaleteDAO;
+import Util.Coordenadas;
+
 public class Robo {
     private int id;
-    private int nodoAtual;
+    //coordenadas atiais do robo;
+    private Coordenadas coordenadas;
+    // prateleira a que se encontra destinado
     private int idPrateleira;
+    // palete que carrega
     private int idPalete;
 
-    public Robo(int id, int nodoAtual, int idPrateleira, int idPalete) {
+    PaleteDAO paleteDAO;
+
+    public Robo(int id, int x, int y, int idPrateleira,int idPalete) {
         this.id = id;
-        this.nodoAtual = nodoAtual;
+        this.coordenadas = new Coordenadas(x,y);
         this.idPrateleira = idPrateleira;
         this.idPalete = idPalete;
+        this.paleteDAO = PaleteDAO.getInstance();
     }
 
     public int getId() {
         return id;
     }
 
-    public int getNodoAtual() {
-        return nodoAtual;
+    public Coordenadas getCoordenadas() {
+        return this.coordenadas.clone();
+    }
+
+    public void setCoordenadas(Coordenadas coordenadas) {
+        this.coordenadas= coordenadas;
     }
 
     public int getIdPrateleira() {
@@ -33,9 +46,6 @@ public class Robo {
         this.id = id;
     }
 
-    public void setNodoAtual(int nodoAtual) {
-        this.nodoAtual = nodoAtual;
-    }
 
     public void setIdPrateleira(int idPrateleira) {
         this.idPrateleira = idPrateleira;
@@ -49,7 +59,7 @@ public class Robo {
     public String toString() {
         return "Robo{" +
                 "id=" + id +
-                ", nodoAtual=" + nodoAtual +
+                ", coordenadas=(" + coordenadas.getX() + ","+coordenadas.getY()+")"+
                 ", idPrateleira=" + idPrateleira +
                 ", idPalete=" + idPalete +
                 '}';

@@ -8,22 +8,6 @@ import java.util.*;
 public class RoboDAO implements Map<Integer, Robo> {
     private static RoboDAO singleton = null;
 
-    public RoboDAO() {
-        try (Connection conn = DBConnect.connect();
-             Statement sta = conn.createStatement()) {
-            String sql = "CREATE TABLE IF NOT EXISTS Robo (" +
-                    "  `id` INT NOT NULL,\n" +
-                    "  `nodoAtual` INT NULL,\n" +
-                    "  `idPrateleira` INT NULL,\n" +
-                    "  `idPalete` INT NULL,\n" +
-                    "  PRIMARY KEY (`id`))";
-            sta.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
-        }
-    }
-
     /**
      * Implementação do padrão Singleton
      *
@@ -61,8 +45,8 @@ public class RoboDAO implements Map<Integer, Robo> {
              Statement stm = conn.createStatement()) {
             ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='"+key+"'");
             if (rs.next()) {  // A chave existe na tabela
-                r = new Robo(rs.getInt("id"), rs.getInt("nodoAtual"),
-                        rs.getInt("idPrateleira"), rs.getInt("idPalete"));
+                r = new Robo(rs.getInt("id"),
+                        rs.getInt("x"), rs.getInt("y"),rs.getInt("idPrateleira"), rs.getInt("idPalete"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,22 +58,22 @@ public class RoboDAO implements Map<Integer, Robo> {
 
     @Override
     public Robo put(Integer idRobo, Robo robo) {
-        Robo res = null;
+        Robo res;
 
         try (Connection conn = DBConnect.connect();
              Statement stm = conn.createStatement()) {
             // Actualizar o Robo
-
+            res = get(idRobo);
             stm.executeUpdate(
-                    "INSERT INTO Robo VALUES (" + idRobo.toString() + ", " + robo.getNodoAtual() + "," +
+                    "INSERT INTO Robo VALUES (" + idRobo.toString() + ", " + robo.getCoordenadas().getX() + "," +
+                            robo.getCoordenadas().getY()+","+
                             robo.getIdPrateleira() + "," + robo.getIdPalete() + ") "+
-                             "ON DUPLICATE KEY UPDATE nodoAtual=VALUES(nodoAtual)," +
-                            " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete)");
+                             "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
+                            " y=VALUES(y),"+ " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete)");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
         }
-
         return res;
     }
 
