@@ -27,6 +27,10 @@ public class Robo {
         return this.coordenadas.clone();
     }
 
+    public void setCoordenadas(Coordenadas coordenadas) {
+        this.coordenadas= coordenadas;
+    }
+
     public int getIdPrateleira() {
         return idPrateleira;
     }

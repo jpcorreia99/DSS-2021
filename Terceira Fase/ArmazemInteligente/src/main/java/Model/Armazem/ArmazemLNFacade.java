@@ -6,8 +6,10 @@ import Model.Armazem.Robo.RoboFacade;
 import Model.Armazem.Stock.Palete;
 import Model.Armazem.Stock.StockFacade;
 import Model.IArmazemLN;
+import Util.Coordenadas;
 import Util.Etapa;
 import Util.LeitorCodigosQR;
+import Util.Tuple;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +42,9 @@ public class ArmazemLNFacade implements IArmazemLN {
 
         Thread threadEscalonamentoRobos = new Thread(this::escalonaRobos);
         threadEscalonamentoRobos.start();
+
+//        Thread moveRobos = new Thread(this::moveRobos);
+//        moveRobos.start();
     }
     
     public Map<Integer, Palete> getPaletes() {
@@ -54,15 +59,14 @@ public class ArmazemLNFacade implements IArmazemLN {
         while(true){
             try {
                 lockPaletes.lock();
-                while (listPaletes.isEmpty() || roboFacade.existeRoboDisponivel()) {
+                System.out.println("Boy estou a tentar escalonar");
+                while (listPaletes.isEmpty() || !roboFacade.existeRoboDisponivel()) {
                     conditionNovaPalete.await();
                 }
                 System.out.println("ESTOU A ESCALONAR OMG!!!");
                 Palete palete = listPaletes.remove(0);
                 int idRobo = roboFacade.encontraRoboLivre();
-                List<Etapa> percurso = new ArrayList<>();
-                percurso.add(new Etapa());
-                percurso.add(new Etapa());
+                List<Coordenadas> percurso = new ArrayList<>();
                 roboFacade.transmiteInfoRota(palete.getId(),idRobo,percurso);
                 lockPaletes.unlock();
             }catch (InterruptedException e){
@@ -70,4 +74,14 @@ public class ArmazemLNFacade implements IArmazemLN {
             }
         }
     }
+
+//    private void moveRobos(){
+//        while(true) {
+//            Tuple<ArrayList<Integer>, // ids de paletes em transporte
+//                    ArrayList<Integer>> paletesAlterads = null;
+//
+//            // atualizar estado para em transporte
+//            // atualizar estado para guardada
+//        }
+//    }
 }
