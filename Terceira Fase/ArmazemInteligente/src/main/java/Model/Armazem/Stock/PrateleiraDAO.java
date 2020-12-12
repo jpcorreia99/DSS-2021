@@ -10,6 +10,7 @@ import java.util.*;
 
 
 public class PrateleiraDAO implements Map<Integer,Prateleira> {
+    private static PrateleiraDAO singleton = null;
     /**
      * Contrutor por defeito que cria uma tabela nova na Base de Dados se esta não existir
      */
@@ -23,6 +24,16 @@ public class PrateleiraDAO implements Map<Integer,Prateleira> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Devolve uma instância do objeto
+     * @return Instância
+     */
+    public static PrateleiraDAO getInstance() {
+        if(singleton == null)
+            singleton = new PrateleiraDAO();
+        return PrateleiraDAO.singleton;
     }
 
     /**

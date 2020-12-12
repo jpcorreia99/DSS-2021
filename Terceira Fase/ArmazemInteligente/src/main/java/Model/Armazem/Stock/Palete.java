@@ -2,7 +2,6 @@ package Model.Armazem.Stock;
 
 public class Palete {
     private static int numeroPaletes = 0;
-
     private int id;
     private String material;
 

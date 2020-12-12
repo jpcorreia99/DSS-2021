@@ -10,10 +10,10 @@ public class Prateleira {
      * Contrutor por defeito
      */
     public Prateleira() {
+        idCounter++;
         id = idCounter;
         estaOcupada = false;
         idPalete = 0;
-        idCounter++;
     }
 
     /**
