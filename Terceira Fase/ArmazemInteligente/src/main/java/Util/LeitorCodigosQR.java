@@ -4,18 +4,16 @@ import java.io.*;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 import javax.imageio.ImageIO;
 
-import Model.Armazem.Stock.Palete;
+import Business.Armazem.Stock.Palete;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;

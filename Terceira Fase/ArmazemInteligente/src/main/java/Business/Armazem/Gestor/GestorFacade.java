@@ -1,4 +1,4 @@
-package Model.Armazem.Gestor;
+package Business.Armazem.Gestor;
 
 import Database.GestorDAO;
 

@@ -1,6 +1,6 @@
 package Database;
 
-import Model.Armazem.Gestor.Gestor;
+import Business.Armazem.Gestor.Gestor;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

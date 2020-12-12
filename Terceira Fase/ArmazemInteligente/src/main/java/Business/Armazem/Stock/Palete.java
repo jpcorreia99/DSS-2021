@@ -1,4 +1,4 @@
-package Model.Armazem.Stock;
+package Business.Armazem.Stock;
 
 import Util.Estado;
 

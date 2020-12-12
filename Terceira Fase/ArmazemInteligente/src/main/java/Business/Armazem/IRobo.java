@@ -1,4 +1,4 @@
-package Model.Armazem;
+package Business.Armazem;
 
 public interface IRobo {
 }

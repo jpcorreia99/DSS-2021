@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import Model.Armazem.Gestor.Gestor;
+import Business.Armazem.Gestor.Gestor;
 
 public class GestorDAO {
     private static GestorDAO singleton = null;
