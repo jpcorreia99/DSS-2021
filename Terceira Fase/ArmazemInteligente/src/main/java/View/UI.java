@@ -57,8 +57,7 @@ public class UI {
         do {
             //showLogo();
             showMenu();
-            
-            
+           
             switch ((opcao = getOpcao())) {
                 case 1:
                     this.model.getPaletes();
@@ -72,20 +71,32 @@ public class UI {
     public void verificaLogin () {
         String user = null;
         String password = null;
+        boolean sucesso = false;
+        int tentativas = 0;
         
-        try {
-            System.out.println("Insira o seu nome:");
-            user = scan.nextLine();
-            System.out.println("Insira a sua password:");
-            password = scan.nextLine();
-        } catch (InputMismatchException e) {
-            System.out.println(e.toString());
+        while (!sucesso) {
+            try {
+                System.out.println("\nInsira o seu nome:");
+                user = scan.nextLine();
+                System.out.println("Insira a sua password:");
+                password = scan.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println(e.toString());
+            }
+
+            sucesso = this.model.login(user, password);
+
+            if (!sucesso) {
+                if (++tentativas < 3) {
+                    System.out.println("Os dados que inseriu não são válidos, tente novamente.\n Número de tentativas: " 
+                            + tentativas);
+                } else {
+                    System.out.println("Excedeu o número de tentativas permitidas, contacte o admnistrador para reaver "
+                            + "acesso à aplicação. Até breve.\n");
+                    System.exit(0);
+                }
+            }
         }
-        
-        if (this.model.login(user, password)) {
-            System.out.println("O par " + user + " " + password + " é válido");
-        } else 
-            System.out.println("O par " + user + " " + password + " é inválido");
     }
     
     public void clearScreen () {
