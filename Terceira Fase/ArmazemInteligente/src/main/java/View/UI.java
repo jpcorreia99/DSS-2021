@@ -7,6 +7,7 @@ import Model.Armazem.ArmazemLNFacade;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 
 public class UI {
     private ArmazemLNFacade model;
@@ -17,8 +18,9 @@ public class UI {
     public UI() {
         this.model = new ArmazemLNFacade();
         this.scan = new Scanner(System.in);
-        this.opcoes = Arrays.asList("1. Consultar localização de todas as paletes em armazém",
-                       "0. Sair");
+        this.opcoes = Arrays.asList("1. Ver Mapa do Armazém em tempo real",
+                "2. Consultar localização de todas as paletes em armazém",
+                "0. Sair");
         this.opcao = 0;
     }
     
@@ -51,15 +53,19 @@ public class UI {
 
     
     public void inicia() {
+            showLogo();
             verificaLogin();
             showBoasVindas();
             
         do {
-            //showLogo();
+            
             showMenu();
            
             switch ((opcao = getOpcao())) {
                 case 1:
+                    showMapa(this.model.getMapa());
+                    break;
+                case 2:
                     this.model.getPaletes();
                     break;
             }
@@ -68,6 +74,61 @@ public class UI {
         System.out.println("Logging off, thank you for using ArmazémInteligente™ technologies.");
     }
     
+    public void showLogo () {
+        System.out.println("                                                    _____       _       _ _                  _       \n" +
+"     /\\                                            |_   _|     | |     | (_)                | |      \n" +
+"    /  \\   _ __ _ __ ___   __ _ _______ _ __ ___     | |  _ __ | |_ ___| |_  __ _  ___ _ __ | |_ ___ \n" +
+"   / /\\ \\ | '__| '_ ` _ \\ / _` |_  / _ \\ '_ ` _ \\    | | | '_ \\| __/ _ \\ | |/ _` |/ _ \\ '_ \\| __/ _ \\\n" +
+"  / ____ \\| |  | | | | | | (_| |/ /  __/ | | | | |  _| |_| | | | ||  __/ | | (_| |  __/ | | | ||  __/\n" +
+" /_/    \\_\\_|  |_| |_| |_|\\__,_/___\\___|_| |_| |_| |_____|_| |_|\\__\\___|_|_|\\__, |\\___|_| |_|\\__\\___|\n" +
+"                                                                             __/ |                   \n" +
+"                                                                            |___/                    \n" +
+"");
+    }
+    
+    
+    public void showMapa (Map <Integer, List<Integer>> mapa) {
+        for (int i = 0; i < 12; i++) {
+            List<Integer> l = mapa.get(i);
+    
+            for (int j = 0; j < 16; j++) {
+                int bloco = l.get(j);
+                
+                switch (bloco) {
+                    case 0:
+                        System.out.print(" ");
+                        break;
+                    case 1:
+                        if ((i == 0 && j == 2) || (i == 2 && j == 0))
+                            System.out.print("╔");
+                        else if ((i == 2 && j == 2) || (i == 11 && j == 15))
+                            System.out.print("╝");
+                        else if ((i == 0 && j == 15) || (i == 9 && j == 2))
+                            System.out.print("╗");
+                        else if ((i == 9 && j == 0) || (i == 11 && j == 2))
+                            System.out.print("╚");
+                        else if (i == 0 || i == 11 || (i == 2 && j == 1) || (i == 9 && j == 1))
+                            System.out.print("═");
+                        else
+                            System.out.print("║");
+                        break;
+                    case 2: 
+                        System.out.print("☺");
+                        break;
+                    case 3: 
+                        System.out.print("☻");
+                        break;
+                    case 4: 
+                        System.out.print("○");
+                        break;
+                    case 5: 
+                        System.out.print("◙");
+                        break;
+                }
+            }
+            System.out.println();
+        }
+    }
     public void verificaLogin () {
         String user = null;
         String password = null;
@@ -88,8 +149,8 @@ public class UI {
 
             if (!sucesso) {
                 if (++tentativas < 3) {
-                    System.out.println("Os dados que inseriu não são válidos, tente novamente.\n Número de tentativas: " 
-                            + tentativas);
+                    System.out.println("Os dados que inseriu não são válidos, tente novamente.\n" 
+                            + "Tentativas remanescentes: " + (3 - tentativas));
                 } else {
                     System.out.println("Excedeu o número de tentativas permitidas, contacte o admnistrador para reaver "
                             + "acesso à aplicação. Até breve.\n");
@@ -97,6 +158,11 @@ public class UI {
                 }
             }
         }
+        ProcessBuilder pb = new ProcessBuilder("clear");
+        
+        try {
+            pb.start();
+        } catch (Exception e) {}
     }
     
     public void clearScreen () {
