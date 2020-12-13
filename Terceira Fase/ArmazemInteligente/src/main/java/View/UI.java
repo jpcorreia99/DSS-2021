@@ -2,7 +2,7 @@
 package View;
 
 import java.util.Scanner;
-import Model.Armazem.ArmazemLNFacade;
+import Business.Armazem.ArmazemLNFacade;
 
 import java.util.Arrays;
 import java.util.InputMismatchException;

@@ -1,4 +1,4 @@
-package Model.Armazem.Robo;
+package Business.Armazem.Robo;
 
 import Database.PaleteDAO;
 import Util.Coordenadas;

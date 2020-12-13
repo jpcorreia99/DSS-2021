@@ -1,7 +1,7 @@
-package Model.Armazem.Robo;
+package Business.Armazem.Robo;
 
 import Database.RoboDAO;
-import Model.Armazem.IRobo;
+import Business.Armazem.IRobo;
 import Util.Coordenadas;
 import Util.Tuple;
 

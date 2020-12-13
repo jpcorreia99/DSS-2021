@@ -1,6 +1,6 @@
 package Database;
 
-import Model.Armazem.Robo.Robo;
+import Business.Armazem.Robo.Robo;
 
 import java.sql.*;
 import java.util.*;

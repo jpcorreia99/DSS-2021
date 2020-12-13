@@ -1,11 +1,10 @@
-package Model.Armazem;
+package Business.Armazem;
 
-import Model.Armazem.Gestor.GestorFacade;
-import Model.Armazem.Robo.Robo;
-import Model.Armazem.Robo.RoboFacade;
-import Model.Armazem.Stock.Palete;
-import Model.Armazem.Stock.StockFacade;
-import Model.IArmazemLN;
+import Business.Armazem.Gestor.GestorFacade;
+import Business.Armazem.Robo.RoboFacade;
+import Business.Armazem.Stock.Palete;
+import Business.Armazem.Stock.StockFacade;
+import Business.IArmazemLN;
 
 import Util.Coordenadas;
 import Util.LeitorCodigosQR;

@@ -1,6 +1,6 @@
 package Database;
 
-import Model.Armazem.Stock.Prateleira;
+import Business.Armazem.Stock.Prateleira;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

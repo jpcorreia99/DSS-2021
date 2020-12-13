@@ -1,12 +1,6 @@
 import Database.DBConnect;
-import Database.RoboDAO;
-import Model.Armazem.Robo.Robo;
+import Util.Estado;
 import View.UI;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
 
 
 public class APP {
