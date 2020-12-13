@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Model.Armazem;
 
 import java.util.ArrayList;
@@ -49,8 +44,10 @@ public class Mapa {
                     default:
                         if (j == 0 || j == 15)
                             linha.add(1);
-                        else if (j > 4 && j < 13)
+                        else if (j > 4 && j < 13 && (j+i) % 2 != 0)
                             linha.add(2);
+                        else if (j > 4 && j < 13 && (j+i) % 2 == 0)
+                            linha.add(3);
                         else linha.add(0);
                         break;     
                 }
