@@ -155,11 +155,7 @@ public class UI {
            
             switch ((opcao = getOpcao())) {
                 case 1:
-<<<<<<< HEAD
-                    showMapa();
-=======
-//                    showMapa(this.model.getMapa());
->>>>>>> 8b80aa5fdeba1c8e8b4a4571dc656f65a52843c9
+                    showMapa(this.model);
                     break;
                 case 2:
                     Object paletes = this.model.getPaletes();
@@ -233,7 +229,7 @@ ANSI_GREEN + "                                                                  
 "" + ANSI_RESET);
     }
     
-    public void showMapa () {
+    public void showMapa (ArmazemLNFacade model) {
         MapaThread m;
         Thread t = new Thread ((m = new MapaThread(model)));
         t.start();

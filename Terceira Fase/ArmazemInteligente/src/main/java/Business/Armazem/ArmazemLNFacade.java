@@ -26,12 +26,14 @@ public class ArmazemLNFacade implements IArmazemLN {
     List<Palete> listPaletes = new ArrayList<>();
     Lock lockPaletes = new ReentrantLock();
     Condition conditionNovaPalete = lockPaletes.newCondition();
+    Mapa mapa;
     
     public ArmazemLNFacade () {
         roboFacade = new RoboFacade();
         stockFacade = new StockFacade();
         gestorFacade = new GestorFacade();
-
+        mapa = new Mapa();
+        
         try {
             Thread threadLeitorCodigosQR = new Thread(new LeitorCodigosQR(listPaletes, lockPaletes, conditionNovaPalete));
             threadLeitorCodigosQR.start();
@@ -85,7 +87,7 @@ public class ArmazemLNFacade implements IArmazemLN {
 //    }
 
     
-//    public Map <Integer, List<Integer>> getMapa () {
-//        return mapa.getMapa();
-//    }
+    public Map <Integer, List<Integer>> getMapa () {
+        return mapa.getMapa();
+    }
 }
