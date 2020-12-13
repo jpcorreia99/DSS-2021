@@ -1,4 +1,13 @@
+<<<<<<< HEAD:Terceira Fase/ArmazemInteligente/src/main/java/Model/Armazem/Mapa.java
 package Model.Armazem;
+=======
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Business.Armazem;
+>>>>>>> 8b80aa5fdeba1c8e8b4a4571dc656f65a52843c9:Terceira Fase/ArmazemInteligente/src/main/java/Business/Armazem/Mapa.java
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package Model;
+package Business;
 
 public interface IArmazemLN {
 }

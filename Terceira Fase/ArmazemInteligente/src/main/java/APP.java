@@ -1,4 +1,5 @@
 import Database.DBConnect;
+import Util.Estado;
 import View.UI;
 
 
@@ -12,6 +13,5 @@ public class APP {
             e.printStackTrace();
             System.out.println("Problema com a ligação à base de dados");
         }
-
     }
 }
