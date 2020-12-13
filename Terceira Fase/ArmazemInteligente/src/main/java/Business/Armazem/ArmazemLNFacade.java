@@ -27,21 +27,13 @@ public class ArmazemLNFacade implements IArmazemLN {
     Lock lockPaletes = new ReentrantLock();
     Condition conditionNovaPalete = lockPaletes.newCondition();
     Mapa mapa;
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 328e2403ac5d8415a747c7751ce0dfc92640ee10
     public ArmazemLNFacade () {
         roboFacade = new RoboFacade();
         stockFacade = new StockFacade();
         gestorFacade = new GestorFacade();
         mapa = new Mapa();
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> 328e2403ac5d8415a747c7751ce0dfc92640ee10
         try {
             Thread threadLeitorCodigosQR = new Thread(new LeitorCodigosQR(listPaletes, lockPaletes, conditionNovaPalete));
             threadLeitorCodigosQR.start();
