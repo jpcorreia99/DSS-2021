@@ -16,4 +16,6 @@ log/
 target/
 
 #QR Codes
-src/main/resources/
+src/main/resources/*
+
+!src/main/resources/.gitkeep
