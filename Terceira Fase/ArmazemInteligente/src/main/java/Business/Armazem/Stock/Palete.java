@@ -21,14 +21,21 @@ public class Palete {
     }
 
     // construtor quando consultado da BD
-    public Palete(int id, String material) {
+    public Palete(int id, String material, Estado estado) {
         this.id = id;
         this.material = material;
-        this.estado = Estado.ARMAZENADA;
+        this.estado = estado;
     }
 
     public int getId() {
         return id;
     }
 
+    public String getMaterial() {
+        return material;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
 }

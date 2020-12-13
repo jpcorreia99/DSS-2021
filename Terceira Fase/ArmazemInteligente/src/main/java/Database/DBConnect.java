@@ -1,6 +1,7 @@
 package Database;
 
 import Business.Armazem.Gestor.Gestor;
+import Util.Estado;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -50,6 +51,7 @@ public class DBConnect  {
         inicializaGestores(stm);
         inicializaRobos(stm);
         inicializaPrateleiras(stm);
+        inicializaPaletes(stm);
 
     }
 
@@ -83,7 +85,7 @@ public class DBConnect  {
     }
 
     private static void inicializaPrateleiras(Statement stm) throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS Prateleira (" +
+        String sql = "CREATE TABLE Prateleira (" +
                 "  id INT NOT NULL PRIMARY KEY," +
                 "  paleteId INT NOT NULL);";
 
@@ -96,5 +98,14 @@ public class DBConnect  {
         stm.execute("INSERT INTO Prateleira VALUES (5,0)");
         stm.execute("INSERT INTO Prateleira VALUES (6,0)");
         stm.execute("INSERT INTO Prateleira VALUES (7,0)");
+    }
+
+    private static void inicializaPaletes(Statement stm) throws SQLException {
+        String sql = "CREATE TABLE Palete(" +
+                "  id INT NOT NULL," +
+                "  material VARCHAR(45) NOT NULL, "+
+                "  estado INT NOT NULL);";
+
+        stm.execute(sql);
     }
 }

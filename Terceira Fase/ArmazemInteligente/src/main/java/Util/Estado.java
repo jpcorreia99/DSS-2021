@@ -15,4 +15,11 @@ public enum Estado {
     public int getValor(){
         return this.valor;
     }
+
+    public static Estado getEnumByValor(int valor){
+        for(Estado e : Estado.values()){
+            if(e.valor==valor) return e;
+        }
+        return null;
+    }
 }
