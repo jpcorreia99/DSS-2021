@@ -72,9 +72,18 @@ public class ArmazemLNFacade implements IArmazemLN {
                 if(idPalete == 0){
                     System.out.println("BIG POOPOO\n\nBIG POOPOO");
                 }
-                int idRobo = roboFacade.encontraRoboLivre();
-                List<Coordenadas> percurso = new ArrayList<>();
-                roboFacade.transmiteInfoRota(palete.getId(),idRobo,percurso);
+
+                int idRobo = roboFacade.encontraRoboLivre(); // falta implementar, deve marcar o robo como tendo uma palte
+                List<Coordenadas> percurso3 = new ArrayList<>();
+                Coordenadas c1 = new Coordenadas(1,1);
+                Coordenadas c2 = new Coordenadas(2,2);
+                Coordenadas c3 = new Coordenadas(3,3);
+                Coordenadas c4 = new Coordenadas(6,6);
+                percurso3.add(c1);
+                percurso3.add(c2);
+                percurso3.add(c3);
+                percurso3.add(c4);
+                roboFacade.transmiteInfoRota(palete.getId(),idRobo,percurso3);
                 lockPaletes.unlock();
             }catch (InterruptedException e){
                 e.printStackTrace();
@@ -85,9 +94,11 @@ public class ArmazemLNFacade implements IArmazemLN {
     private void moveRobos(){
         while(true) {
             ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.moveRobos();
+            // FODA-SE TEM AINDA DE ASSINALAR QUE O ROBO AGORA NÃO TEM PALETE !!! (dentro do metodo moveRobos prob)
             List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasPrateleiras = resultadosMovimentoRobos.getTuplosPaletesArmazenadasPrateleiras();
             stockFacade.assinalaPaletesArmazenadas(tuplosPaletesArmazenadasPrateleiras);
             Map<Integer, Tuple<Integer, Coordenadas>> mapPaleteRobo = resultadosMovimentoRobos.getPaletesRecolhidas();
+
         }
     }
 

@@ -40,6 +40,7 @@ public class LeitorCodigosQR implements Runnable {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
     private Path sourceDirPath;
+    private Boolean working; // DEVERÁ SER TORNADO FALSO PELA THREAD PRINCIPAL PARA ACABAR COM O TRABALHO DESTA THREAD
 
     public LeitorCodigosQR( Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
         this.paletesAGuardar = PaleteDAO.getInstance();
@@ -49,6 +50,7 @@ public class LeitorCodigosQR implements Runnable {
         this.keys = new HashMap<>();
         File sourceDir = new File("src/main/resources");
         this.sourceDirPath = Paths.get(sourceDir.toURI());
+        this.working=true;
 
         WatchKey key = sourceDirPath.register(watcher, ENTRY_CREATE); // verifica a criação de novos ficheiros na diretoria
         keys.put(key, sourceDirPath);
@@ -61,8 +63,7 @@ public class LeitorCodigosQR implements Runnable {
     public void run() {
         System.out.println("QRCode Reader funcional!");
         // loop infinito - está sempre a verificar se apareceu algum ficheiro novo
-        for (;;) {
-
+        while(working) {
             // espera que a chave do watcher da diretoria seja assinalada
             WatchKey key;
             try {
