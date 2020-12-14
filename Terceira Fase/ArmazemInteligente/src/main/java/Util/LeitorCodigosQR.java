@@ -153,4 +153,8 @@ public class LeitorCodigosQR implements Runnable {
 
         return result.getText();
     }
+
+    public void desliga(){
+        this.working=false;
+    }
 }

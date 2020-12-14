@@ -28,9 +28,12 @@ public class PaleteDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-            stm.executeUpdate(
-                    "INSERT INTO Palete VALUES (" + palete.getId() + ", " + palete.getMaterial() + "," +
-                            EstadoPalete.RECEM_CHEGADA.getValor() + ");");
+            String s = "INSERT INTO Palete VALUES (" + palete.getId() + ",'" + palete.getMaterial() + "'," +
+                    EstadoPalete.RECEM_CHEGADA.getValor() + ");";
+            System.out.println(s);
+            stm.execute(
+                    s
+                    );
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());

@@ -161,7 +161,7 @@ public class UI {
                     break;
             }
         } while (opcao != 0);
-        
+        this.model.desligaSistema();
         exitScreen();
         
     }

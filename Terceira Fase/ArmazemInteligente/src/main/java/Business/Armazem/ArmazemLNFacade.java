@@ -28,6 +28,8 @@ public class ArmazemLNFacade implements IArmazemLN {
     List<Palete> listPaletes = new ArrayList<>();
     Lock lockPaletes = new ReentrantLock();
     Condition conditionNovaPalete = lockPaletes.newCondition();
+    LeitorCodigosQR leitorCodigosQR;
+    Boolean funciona = true;
     Mapa mapa;
 
     public ArmazemLNFacade () {
@@ -37,7 +39,8 @@ public class ArmazemLNFacade implements IArmazemLN {
         mapa = new Mapa();
 
         try {
-            Thread threadLeitorCodigosQR = new Thread(new LeitorCodigosQR(lockPaletes, conditionNovaPalete));
+            this.leitorCodigosQR = new LeitorCodigosQR(lockPaletes, conditionNovaPalete);
+            Thread threadLeitorCodigosQR = new Thread(this.leitorCodigosQR);
             threadLeitorCodigosQR.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,7 +62,7 @@ public class ArmazemLNFacade implements IArmazemLN {
     }
 
     private void escalonaRobos(){
-        while(true){
+        while(funciona){
             try {
                 lockPaletes.lock();
                 System.out.println("Boy estou a tentar escalonar");
@@ -92,7 +95,7 @@ public class ArmazemLNFacade implements IArmazemLN {
     }
 
     private void moveRobos(){
-        while(true) {
+        while(funciona) {
             ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.moveRobos();
             // FODA-SE TEM AINDA DE ASSINALAR QUE O ROBO AGORA NÃO TEM PALETE !!! (dentro do metodo moveRobos prob)
             List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasPrateleiras = resultadosMovimentoRobos.getTuplosPaletesArmazenadasPrateleiras();
@@ -105,5 +108,10 @@ public class ArmazemLNFacade implements IArmazemLN {
     
     public int[][] getMapa () {
         return mapa.getMapa();
+    }
+
+    public void desligaSistema(){
+        this.leitorCodigosQR.desliga();
+        this.funciona=false;
     }
 }

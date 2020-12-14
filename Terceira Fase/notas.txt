@@ -1,0 +1,4 @@
+no método de recuparação de prateleiras, atualizar
+o campo disponivel para true em todas as paletes que estejam indisponíveis mas tenham idPalete a 0;
+
+A fazer: DAO das paletes no leitor de códigos QR que ativa o sinal e depois tem o método para se extrair uma palete que esteja recem chegada + mudanças de estado necessárias
