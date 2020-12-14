@@ -82,7 +82,7 @@ class MapaThread implements Runnable {
                 
                 vezes++;
                 System.out.println("\n                                                           Imprimi esta merda " + vezes + " vezes :)");
-                System.out.println("\nPrima qualquer tecla para voltar ao menu principal.\n");
+                System.out.println("\nPressione 'Enter' para voltar ao menu principal.\n");
                 Thread.sleep(1500);
                 
             } catch (Exception e) {
