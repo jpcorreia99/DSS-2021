@@ -87,7 +87,7 @@ public class ArmazemLNFacade implements IArmazemLN {
 //    }
 
     
-    public Map <Integer, List<Integer>> getMapa () {
+    public int[][] getMapa () {
         return mapa.getMapa();
     }
 }
