@@ -1,7 +1,6 @@
 package Database;
 
 import Business.Armazem.Gestor.Gestor;
-import Util.Estado;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -73,31 +72,34 @@ public class DBConnect  {
                 "  `id` INT NOT NULL,\n" +
                 "  `x` INT NOT NULL,\n" +
                 "  `y` INT NOT NULL,\n" +
+                "   `idEstacionamento` INT NOT NULL,\n" +
                 "  `idPrateleira` INT NOT NULL,\n" +
                 "  `idPalete` INT NOT NULL,\n" +
                 "  PRIMARY KEY (`id`))";
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Robo VALUES (1,0,0,0,0)");
-        stm.execute("INSERT INTO Robo VALUES (2,1,0,0,0)");
-        stm.execute("INSERT INTO Robo VALUES (3,0,1,0,0)");
+        stm.execute("INSERT INTO Robo VALUES (1,1,1,1,0,0)");
+        stm.execute("INSERT INTO Robo VALUES (2,2,1,2,0,0)");
+        stm.execute("INSERT INTO Robo VALUES (3,3,1,3,0,0)");
+        stm.execute("INSERT INTO Robo VALUES (4,4,1,4,0,0)");
     }
 
     private static void inicializaPrateleiras(Statement stm) throws SQLException {
         String sql = "CREATE TABLE Prateleira (" +
                 "  id INT NOT NULL PRIMARY KEY," +
-                "  paleteId INT NOT NULL);";
+                " estado INT NOT NULL, "+
+                "  idPalete INT NOT NULL);";
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Prateleira VALUES (1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (2,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (3,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (4,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (5,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (6,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (7,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (1,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (2,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (3,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (4,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (5,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (6,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (7,1,0)");
     }
 
     private static void inicializaPaletes(Statement stm) throws SQLException {

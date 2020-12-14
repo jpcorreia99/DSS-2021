@@ -14,6 +14,7 @@ import java.util.concurrent.locks.Lock;
 import javax.imageio.ImageIO;
 
 import Business.Armazem.Stock.Palete;
+import Database.PaleteDAO;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
@@ -33,15 +34,15 @@ public class LeitorCodigosQR implements Runnable {
 //    - Reset the key, and resume waiting for events.
 //    - Close the service: The watch service exits when either the thread exits or when it is closed (by invoking its closed method).
 
-    private final List<Palete> paletesAGuardar;
+    private final PaleteDAO paletesAGuardar;
     private final Lock lockPaletes;
     private final Condition condicaoPaleteNova;
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
     private Path sourceDirPath;
 
-    public LeitorCodigosQR(List<Palete> paletesAGuardar, Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
-        this.paletesAGuardar = paletesAGuardar;
+    public LeitorCodigosQR( Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
+        this.paletesAGuardar = PaleteDAO.getInstance();
         this.lockPaletes = lockPaletes;
         this.condicaoPaleteNova = conditionNovaPalete;
         this.watcher = FileSystems.getDefault().newWatchService();
@@ -92,10 +93,10 @@ public class LeitorCodigosQR implements Runnable {
 
                 // tendo o path do novo ficheiro, tentar criar a palete
                 try {
-                    Palete palete = readQR(childPath);
+                    String material = readQR(childPath);
                     try {
                         lockPaletes.lock();
-                        paletesAGuardar.add(palete);
+                        paletesAGuardar.addNovaPalete(material);
                         condicaoPaleteNova.signal();
                         System.out.println("Palete registada!");
                     } finally {
@@ -131,7 +132,7 @@ public class LeitorCodigosQR implements Runnable {
      * @throws IOException
      * @throws NotFoundException
      */
-    public static Palete readQR(String path)
+    public static String readQR(String path)
             throws IOException,
             NotFoundException, InterruptedException {
 
@@ -149,6 +150,6 @@ public class LeitorCodigosQR implements Runnable {
 
         fis.close();
 
-        return new Palete(result.getText());
+        return result.getText();
     }
 }

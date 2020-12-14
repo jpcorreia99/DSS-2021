@@ -1,12 +1,13 @@
 package Database;
 
 import Business.Armazem.Stock.Palete;
-import Util.Estado;
+import Util.EstadoPalete;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class PaleteDAO {
     private static PaleteDAO singleton = null;
@@ -22,27 +23,62 @@ public class PaleteDAO {
         return PaleteDAO.singleton;
     }
 
-    public Palete get(String paleteId) {
-        Palete palete = null;
+    public void addNovaPalete(String material){
+        Palete palete = new Palete(material);
+        Connection conn = ConnectionPool.getConnection();
 
-        try(Connection conn = DBConnect.connect();
-        Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='"+paleteId+"'");
-            if (rs.next()) {  // A chave existe na tabela
-                Estado estado = Estado.getEnumByValor(rs.getInt("estado"));
-                palete = new Palete(rs.getInt("id"),
-                        rs.getString("material"),estado);
-            }
-        } catch (Exception e) {
+        try (Statement stm = conn.createStatement()) {
+            stm.executeUpdate(
+                    "INSERT INTO Palete VALUES (" + palete.getId() + ", " + palete.getMaterial() + "," +
+                            EstadoPalete.RECEM_CHEGADA.getValor() + ");");
+        } catch (SQLException e) {
+            e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+    }
+
+
+    public int numeroPaletes() {
+        int i = 0;
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement sta = conn.createStatement()) {
+            String sql = "SELECT count(*) AS Total from Palete";
+            ResultSet rs = sta.executeQuery(sql);
+            if(rs.next())
+                i = rs.getInt("Total");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
         }
 
-        return palete;
+        return i;
+    }
+
+    public void assinalaPaletesArmazenadas(List<Integer> idsPaletesArmazenadas){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+            for(Integer idPalete: idsPaletesArmazenadas) {
+                stm.executeUpdate("UPDATE Palete"+
+                        "SET estado="+ EstadoPalete.ARMAZENADA.getValor()+
+                        ", WHERE id ="+idPalete+";)");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
     }
 
     public void atualiza(Integer paleteId, Palete palete) {
-        try (Connection conn = DBConnect.connect();
-             Statement stm = conn.createStatement()) {
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
             stm.executeUpdate(
                     "INSERT INTO Palete VALUES (" + paleteId.toString() + ", " + palete.getMaterial() + "," +
                             palete.getEstado().getValor() + ") " +
@@ -51,22 +87,26 @@ public class PaleteDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
         }
     }
 
     public Palete getPaleteAEspera() {
+        Connection conn = ConnectionPool.getConnection();
         Palete palete = null;
 
-        try (Connection conn = DBConnect.connect();
-             Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Palete WHERE estado='"+Estado.ESPERA.getValor()+"'");
+        try (Statement stm = conn.createStatement()) {
+            ResultSet rs = stm.executeQuery("SELECT * FROM Palete WHERE estado='"+ EstadoPalete.RECEM_CHEGADA.getValor()+"'");
             if (rs.next()) {  // A chave existe na tabela
                 palete = new Palete(rs.getInt("id"),
-                        rs.getString("material"),Estado.ESPERA);
+                        rs.getString("material"), EstadoPalete.RECEM_CHEGADA);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
         }
 
         return palete;

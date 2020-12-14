@@ -7,6 +7,8 @@ public class Robo {
     private int id;
     //coordenadas atiais do robo;
     private Coordenadas coordenadas;
+    //id da zona onde o robo estaciona
+    private final int zonaEstacionamento;
     // prateleira a que se encontra destinado
     private int idPrateleira;
     // palete que carrega
@@ -14,9 +16,10 @@ public class Robo {
 
     PaleteDAO paleteDAO;
 
-    public Robo(int id, int x, int y, int idPrateleira,int idPalete) {
+    public Robo(int id, int x, int y, int zonaEstacionamento ,int idPrateleira,int idPalete) {
         this.id = id;
         this.coordenadas = new Coordenadas(x,y);
+        this.zonaEstacionamento = zonaEstacionamento;
         this.idPrateleira = idPrateleira;
         this.idPalete = idPalete;
         this.paleteDAO = PaleteDAO.getInstance();
@@ -41,6 +44,8 @@ public class Robo {
     public int getIdPalete() {
         return idPalete;
     }
+
+    public int getZonaEstacionamento() { return zonaEstacionamento; }
 
     public void setId(int id) {
         this.id = id;

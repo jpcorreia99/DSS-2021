@@ -1,12 +1,12 @@
 package Business.Armazem.Stock;
 
-import Util.Estado;
+import Util.EstadoPalete;
 
 public class Palete {
     private static int numeroPaletes = 0;
     private int id;
     private String material;
-    private Estado estado;
+    private EstadoPalete estadoPalete;
 
     public static void atualizaNumeroPaletes(int n) {
         numeroPaletes = n;
@@ -16,15 +16,15 @@ public class Palete {
         numeroPaletes++;
         this.id = numeroPaletes;
         this.material = material;
-        this.estado = Estado.ESPERA;
+        this.estadoPalete = EstadoPalete.RECEM_CHEGADA;
 
     }
 
     // construtor quando consultado da BD
-    public Palete(int id, String material, Estado estado) {
+    public Palete(int id, String material, EstadoPalete estadoPalete) {
         this.id = id;
         this.material = material;
-        this.estado = estado;
+        this.estadoPalete = estadoPalete;
     }
 
     public int getId() {
@@ -35,7 +35,9 @@ public class Palete {
         return material;
     }
 
-    public Estado getEstado() {
-        return estado;
+    public EstadoPalete getEstado() {
+        return estadoPalete;
     }
+
+    public void setEstado(EstadoPalete estadoPalete) { this.estadoPalete = estadoPalete;}
 }

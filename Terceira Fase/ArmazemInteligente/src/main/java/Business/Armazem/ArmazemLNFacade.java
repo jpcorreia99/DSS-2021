@@ -8,6 +8,8 @@ import Business.IArmazemLN;
 
 import Util.Coordenadas;
 import Util.LeitorCodigosQR;
+import Util.ResultadosMovimentoRobos;
+import Util.Tuple;
 
 import java.io.IOException;
 
@@ -35,7 +37,7 @@ public class ArmazemLNFacade implements IArmazemLN {
         mapa = new Mapa();
 
         try {
-            Thread threadLeitorCodigosQR = new Thread(new LeitorCodigosQR(listPaletes, lockPaletes, conditionNovaPalete));
+            Thread threadLeitorCodigosQR = new Thread(new LeitorCodigosQR(lockPaletes, conditionNovaPalete));
             threadLeitorCodigosQR.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,6 +68,10 @@ public class ArmazemLNFacade implements IArmazemLN {
                 }
                 System.out.println("ESTOU A ESCALONAR OMG!!!");
                 Palete palete = listPaletes.remove(0);
+                int idPalete = stockFacade.encontraPrateleiraLivre();
+                if(idPalete == 0){
+                    System.out.println("BIG POOPOO\n\nBIG POOPOO");
+                }
                 int idRobo = roboFacade.encontraRoboLivre();
                 List<Coordenadas> percurso = new ArrayList<>();
                 roboFacade.transmiteInfoRota(palete.getId(),idRobo,percurso);
@@ -76,15 +82,14 @@ public class ArmazemLNFacade implements IArmazemLN {
         }
     }
 
-//    private void moveRobos(){
-//        while(true) {
-//            Tuple<ArrayList<Integer>, // ids de paletes em transporte
-//                    ArrayList<Integer>> paletesAlterads = null;
-//
-//            // atualizar estado para em transporte
-//            // atualizar estado para guardada
-//        }
-//    }
+    private void moveRobos(){
+        while(true) {
+            ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.moveRobos();
+            List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasPrateleiras = resultadosMovimentoRobos.getTuplosPaletesArmazenadasPrateleiras();
+            stockFacade.assinalaPaletesArmazenadas(tuplosPaletesArmazenadasPrateleiras);
+            Map<Integer, Tuple<Integer, Coordenadas>> mapPaleteRobo = resultadosMovimentoRobos.getPaletesRecolhidas();
+        }
+    }
 
     
     public Map <Integer, List<Integer>> getMapa () {
