@@ -36,19 +36,16 @@ class MapaThread implements Runnable {
         int vezes = 0;
         while (running.get()) {
             try {
-                Map <Integer, List<Integer>> mapa = model.getMapa();
+                int[][] mapa = model.getMapa();
                 
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
                 
                 UI.showLogo();
                 for (int i = 0; i < 12; i++) {
-                    List<Integer> l = mapa.get(i);
                     System.out.print("                                                               ");
                     for (int j = 0; j < 16; j++) {
-                        int bloco = l.get(j);
-
-                        switch (bloco) {
+                        switch (mapa[i][j]) {
                             case 0:
                                 System.out.print(" ");
                                 break;
@@ -85,6 +82,7 @@ class MapaThread implements Runnable {
                 
                 vezes++;
                 System.out.println("\n                                                           Imprimi esta merda " + vezes + " vezes :)");
+                System.out.println("\nPressione 'Enter' para voltar ao menu principal.\n");
                 Thread.sleep(1500);
                 
             } catch (Exception e) {
@@ -140,7 +138,8 @@ public class UI {
     }
     
     public void showBoasVindas() {
-        System.out.println ("\n                                   Bemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
+        showLogo();
+        System.out.println ("\n                           Bemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
     }
 
     
@@ -150,7 +149,6 @@ public class UI {
             showBoasVindas();
             
         do {
-            
             showMenu();
            
             switch ((opcao = getOpcao())) {
@@ -163,9 +161,11 @@ public class UI {
                     break;
             }
         } while (opcao != 0);
-          
-        System.out.println("                                      Logging off, thank you for using ArmazémInteligente™ technologies.");
+        
+        exitScreen();
+        
     }
+    
     
     public void showPaletes (Object paletes) {
         System.out.print("\033[H\033[2J");
@@ -206,18 +206,31 @@ public class UI {
         }
             System.out.println(ANSI_CYAN + "                   --------------------------------------------------------------------------------------------\n" + ANSI_RESET);
         
-        System.out.println ("\nPressione 'Enter' para voltar ao menu principal.");
-        
-        try {
-            System.in.read();
-        } catch (Exception e) {}
+        premirTecla ();
         
         System.out.print("\033[H\033[2J");
         System.out.flush();
         showLogo();
     }
     
+    public static void premirTecla () {
+        System.out.println ("\nPressione 'Enter' para voltar ao menu principal.");
+        
+        try {
+            System.in.read();
+        } catch (Exception e) {}
+    }
+    
+    public void exitScreen () {
+        showLogo();
+        System.out.println("                                 \n\n     Logging off, thank you for using ArmazémInteligente™ technologies.\n\n");
+        System.exit(0);
+    }
+    
     public static void showLogo () {
+        
+        System.out.print("\033[H\033[2J");
+        System.out.flush();        
         System.out.println(ANSI_GREEN + "                                                                   _____ " + ANSI_GREEN + "      _       _ _                  _       \n" +
 ANSI_RED + "                    /\\                                 " + ANSI_GREEN + "           |_   _|     | |     | (_)                | |      \n" +
 ANSI_RED + "                   /  \\   _ __ _ __ ___   __ _ _______ _ __ ___  " + ANSI_GREEN + "   | |  _ __ | |_ ___| |_  __ _  ___ _ __ | |_ ___ \n" +
@@ -234,12 +247,11 @@ ANSI_GREEN + "                                                                  
         Thread t = new Thread ((m = new MapaThread(model)));
         t.start();
         
-        try {
-            System.in.read();
-        } catch (Exception e) {}
-        
+        UI.premirTecla();
+                
         m.interrupt();
         
+        showLogo();
     }
     
     public void verificaLogin () {
@@ -262,11 +274,13 @@ ANSI_GREEN + "                                                                  
 
             if (!sucesso) {
                 if (++tentativas < 3) {
+                    showLogo();
                     System.out.println("Os dados que inseriu não são válidos, tente novamente.\n" 
                             + "Tentativas remanescentes: " + (3 - tentativas));
                 } else {
+                    showLogo();
                     System.out.println("Excedeu o número de tentativas permitidas, contacte o admnistrador para reaver "
-                            + "acesso à aplicação. Até breve.\n");
+                            + "acesso à aplicação. \n\n Até breve.\n");
                     System.exit(0);
                 }
             }
