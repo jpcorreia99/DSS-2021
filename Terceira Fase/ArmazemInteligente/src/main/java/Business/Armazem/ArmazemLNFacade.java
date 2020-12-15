@@ -40,11 +40,16 @@ public class ArmazemLNFacade implements IArmazemLN {
 
         try {
             this.leitorCodigosQR = new LeitorCodigosQR(lockPaletes, conditionNovaPalete);
-            Thread threadLeitorCodigosQR = new Thread(this.leitorCodigosQR);
-            threadLeitorCodigosQR.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+    }
+
+    public void start() {
+        Thread threadLeitorCodigosQR = new Thread(this.leitorCodigosQR);
+        threadLeitorCodigosQR.start();
 
         Thread threadEscalonamentoRobos = new Thread(this::escalonaRobos);
         threadEscalonamentoRobos.start();

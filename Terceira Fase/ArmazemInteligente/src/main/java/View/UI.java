@@ -144,6 +144,7 @@ public class UI {
 
     
     public void inicia() {
+            this.model.start();
             showLogo();
             verificaLogin();
             showBoasVindas();

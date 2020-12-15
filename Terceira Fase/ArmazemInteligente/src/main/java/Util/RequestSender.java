@@ -18,13 +18,12 @@ import com.google.zxing.common.BitMatrix;
 public class RequestSender {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String material;
 
-        do{
-            System.out.print("Material a codificar em código QR (escreva sair para terminar o leitor): ");
-            // Material dado como input
-            material = scanner.nextLine();
 
+        System.out.print("Material a codificar em código QR (escreva sair para terminar o leitor): ");
+        // Material dado como input
+        String material = scanner.nextLine();
+        while (!material.equals("sair")){
             // Path onde o código QR será guardado, terá uma timestamp
             ZonedDateTime date = ZonedDateTime.now();
             String timestamp = DateTimeFormatter.ofPattern("dd_MM_yyyy__hh_mm_ss").format(date);
@@ -41,7 +40,10 @@ public class RequestSender {
             } catch (IOException | WriterException e) {
                 e.printStackTrace();
             }
-        } while (!material.equals("sair"));
+
+            System.out.print("Material a codificar em código QR (escreva sair para terminar o leitor): ");
+            material = scanner.nextLine();
+        }
     }
 
     public static void criarQR(String data, String path,
