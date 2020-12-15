@@ -89,6 +89,10 @@ public class Mapa {
         */
     }
     
+    public Util.Coordenadas getCoords(int p) {
+        return zonas.get(p).clone();
+    }
+    
     public int[][] getMapa() {
             return this.mapa.clone();
     }

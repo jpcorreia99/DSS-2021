@@ -3,6 +3,7 @@ package View;
 
 import java.util.Scanner;
 import Business.Armazem.ArmazemLNFacade;
+import Util.Tuple;
 
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -19,6 +20,7 @@ class MapaThread implements Runnable {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_RED = "\u001B[31m";
     
     ArmazemLNFacade model;
     private AtomicBoolean running;
@@ -42,6 +44,13 @@ class MapaThread implements Runnable {
                 System.out.flush();
                 
                 UI.showLogo();
+                
+                for (int i = 0; i < 12; i++) {
+                    for (int j = 0; j < 16; j++)
+                        System.out.print(mapa[i][j]);
+                    System.out.print("\n");
+                }
+                
                 for (int i = 0; i < 12; i++) {
                     System.out.print("                                                               ");
                     for (int j = 0; j < 16; j++) {
@@ -70,10 +79,10 @@ class MapaThread implements Runnable {
                                 System.out.print(ANSI_GREEN + "☻" + ANSI_RESET);
                                 break;
                             case 4: 
-                                System.out.print("○");
+                                System.out.print(ANSI_BLUE + "○" + ANSI_RESET);
                                 break;
                             case 5: 
-                                System.out.print("◙");
+                                System.out.print(ANSI_RED + "◙" + ANSI_RESET);
                                 break;
                         }
                     }
@@ -104,6 +113,7 @@ public class UI {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
     
     public UI() {
         this.model = new ArmazemLNFacade();
@@ -156,8 +166,7 @@ public class UI {
                     showMapa(this.model);
                     break;
                 case 2:
-                    Object paletes = this.model.getPaletes();
-                    showPaletes(paletes);
+                    showPaletes(this.model.getPaletes());
                     break;
             }
         } while (opcao != 0);
@@ -167,16 +176,11 @@ public class UI {
     }
     
     
-    public void showPaletes (Object paletes) {
+    public void showPaletes (Map <Integer, Tuple <String, Integer>> paletes) {
         System.out.print("\033[H\033[2J");
         System.out.flush();
         
         showLogo();
-        
-        String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
-        Integer[] xs = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
-        Integer[] ys = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
-        Integer[] estado = {1, 2, 2, 1, 1, 0, 1, 1, 0, 1, 1};
       
         System.out.print(ANSI_CYAN + "                   --------------------------------------------------------------------------------------------");
         System.out.print("\n                   |                                      " + ANSI_RESET + String.format("%s", "Listagem de paletes") + ANSI_CYAN + "                                 |");
@@ -184,24 +188,27 @@ public class UI {
         System.out.print("\n                   |"  + ANSI_RESET + "      Palete" + ANSI_CYAN + "      ||" + ANSI_RESET + "         Material     " + ANSI_CYAN + "    || " + ANSI_RESET + "   Coordenadas " + ANSI_CYAN + "   ||  " + ANSI_RESET + "     Estado     " + ANSI_CYAN + "   |");
         System.out.println("\n                   --------------------------------------------------------------------------------------------");
         
-        for (int j = 0; j < 11; j++) {
+        for (Map.Entry<Integer, Tuple<String, Integer>> e : paletes.entrySet()) {
             String s = null;
-            
-            switch (estado[j]) {
-                case 0: 
+            Tuple <String, Integer> t = e.getValue();
+            switch (t.getT()) {
+                case 1: 
                     s = ANSI_RED + "EM ESPERA" + ANSI_CYAN;
                     break;
-                case 1:
+                case 2:
                     s = ANSI_YELLOW + "EM TRANSPORTE" + ANSI_CYAN;
                     break;
-                case 2:
+                case 3:
                     s = ANSI_GREEN + "ARMAZENADA" + ANSI_CYAN;
                     break;
-               
+                case 4: 
+                    s = ANSI_BLUE + "RECEM CHEGADA" + ANSI_BLUE;
+                    break;
             }
-            System.out.println("                   |" + ANSI_RESET + String.format("%9d%-9s", j, " ") + ANSI_CYAN + "|" +
-            String.format("%-10s%-21s", "|", ANSI_RESET + materiais[j], " ") + ANSI_CYAN + "|" +  
-            String.format("%-8s%-16s", "|", ANSI_RESET + "(" + xs[j].toString() + "," + ys[j].toString() + ")")  + ANSI_CYAN + "|" + 
+            
+            System.out.println("                   |" + ANSI_RESET + String.format("%9d%-9s", e.getKey(), " ") + ANSI_CYAN + "|" +
+            String.format("%-10s%-21s", "|", ANSI_RESET + t.getO(), " ") + ANSI_CYAN + "|" +  
+            String.format("%-8s%-16s", "|", ANSI_RESET + "(" + 0 + "," + 0 + ")")  + ANSI_CYAN + "|" + 
             String.format("%-6s%-26s", "|", s, " ") + ANSI_CYAN + "|");
         }
             System.out.println(ANSI_CYAN + "                   --------------------------------------------------------------------------------------------\n" + ANSI_RESET);

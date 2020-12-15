@@ -4,6 +4,7 @@ import Database.GestorDAO;
 
 public class GestorFacade {
     GestorDAO gestorDAO;
+    Gestor userAtual;
     
     public GestorFacade () {
         gestorDAO = GestorDAO.getInstance();
@@ -16,7 +17,11 @@ public class GestorFacade {
             Gestor g = gestorDAO.get(user);
             res = g.passwordCorreta(password);
         }
-      
+        
+        if (res) {
+            this.userAtual = new Gestor (user, password);
+        }
+        
         return res;
     }
 }
