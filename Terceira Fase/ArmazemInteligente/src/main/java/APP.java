@@ -1,6 +1,7 @@
 import Business.Armazem.Robo.RoboFacade;
 import Database.ConnectionPool;
 import Database.DBConnect;
+import Database.RoboDAO;
 import Util.Coordenadas;
 import View.UI;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 
 public class APP {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         try {
             DBConnect.setupBD();
             ConnectionPool.initialize();
@@ -21,6 +22,10 @@ public class APP {
             e.printStackTrace();
             System.out.println("Problema com a ligação à base de dados");
         }
+
+//        ConnectionPool.initialize();
+//        RoboDAO roboDAO = RoboDAO.getInstance();
+//        System.out.println(roboDAO.existeRoboDisponivel());
 
 //        RoboDAO roboDAO = RoboDAO.getInstance();
 //

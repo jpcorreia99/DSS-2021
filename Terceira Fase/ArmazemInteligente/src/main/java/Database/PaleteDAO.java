@@ -30,16 +30,35 @@ public class PaleteDAO {
         try (Statement stm = conn.createStatement()) {
             String s = "INSERT INTO Palete VALUES (" + palete.getId() + ",'" + palete.getMaterial() + "'," +
                     EstadoPalete.RECEM_CHEGADA.getValor() + ");";
-            System.out.println(s);
-            stm.execute(
-                    s
-                    );
+            stm.execute(s);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
         }
+    }
+
+    public Integer getPaleteRecemChegada(){
+        Integer idPalete = null;
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+            String sql = "SELECT * from Palete where estado=1";
+            ResultSet rs = stm.executeQuery(sql);
+            if(rs.next())
+                idPalete = rs.getInt("id");
+                sql = "UPDATE Palete" +
+                        " SET estado="+ EstadoPalete.ESPERA.getValor()+
+                        " WHERE id ="+idPalete+";";
+                stm.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return idPalete;
     }
 
 
@@ -67,7 +86,7 @@ public class PaleteDAO {
         try (Statement stm = conn.createStatement()) {
             for(Integer idPalete: idsPaletesArmazenadas) {
                 stm.executeUpdate("UPDATE Palete"+
-                        "SET estado="+ EstadoPalete.ARMAZENADA.getValor()+
+                        " SET estado="+ EstadoPalete.ARMAZENADA.getValor()+
                         ", WHERE id ="+idPalete+";)");
             }
         } catch (SQLException e) {

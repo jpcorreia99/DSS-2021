@@ -6,6 +6,7 @@ import Business.Armazem.Stock.Palete;
 import Business.Armazem.Stock.StockFacade;
 import Business.IArmazemLN;
 
+import Exceptions.ArmazemCheioException;
 import Util.Coordenadas;
 import Util.LeitorCodigosQR;
 import Util.ResultadosMovimentoRobos;
@@ -25,7 +26,6 @@ public class ArmazemLNFacade implements IArmazemLN {
     RoboFacade roboFacade;
     StockFacade stockFacade;
     GestorFacade gestorFacade;
-    List<Palete> listPaletes = new ArrayList<>();
     Lock lockPaletes = new ReentrantLock();
     Condition conditionNovaPalete = lockPaletes.newCondition();
     LeitorCodigosQR leitorCodigosQR;
@@ -49,8 +49,8 @@ public class ArmazemLNFacade implements IArmazemLN {
         Thread threadEscalonamentoRobos = new Thread(this::escalonaRobos);
         threadEscalonamentoRobos.start();
 
-//        Thread moveRobos = new Thread(this::moveRobos);
-//        moveRobos.start();
+        Thread moveRobos = new Thread(this::moveRobos);
+        moveRobos.start();
     }
     
     public Map<Integer, Palete> getPaletes() {
@@ -66,27 +66,26 @@ public class ArmazemLNFacade implements IArmazemLN {
             try {
                 lockPaletes.lock();
                 System.out.println("Boy estou a tentar escalonar");
-                while (listPaletes.isEmpty() || !roboFacade.existeRoboDisponivel()) {
+                Integer idPalete;
+                while ((idPalete =stockFacade.getPaleteRecemChegada())==null || !roboFacade.existeRoboDisponivel()) {
+                    System.out.println("estou no wait da condição mais de fora");
                     conditionNovaPalete.await();
                 }
-                System.out.println("ESTOU A ESCALONAR OMG!!!");
-                Palete palete = listPaletes.remove(0);
-                int idPalete = stockFacade.encontraPrateleiraLivre();
-                if(idPalete == 0){
-                    System.out.println("BIG POOPOO\n\nBIG POOPOO");
+
+                int idPrateleira = stockFacade.encontraPrateleiraLivre();
+                System.out.println("ESTOU A ESCALONAR OMG!!!, idPalete="+idPalete+",idPrateleira"+idPrateleira);
+                if(idPrateleira==0) {
+                   System.out.println("big poopoo");
+                   break;
                 }
 
-                int idRobo = roboFacade.encontraRoboLivre(); // falta implementar, deve marcar o robo como tendo uma palte
-                List<Coordenadas> percurso3 = new ArrayList<>();
-                Coordenadas c1 = new Coordenadas(1,1);
-                Coordenadas c2 = new Coordenadas(2,2);
-                Coordenadas c3 = new Coordenadas(3,3);
-                Coordenadas c4 = new Coordenadas(6,6);
-                percurso3.add(c1);
-                percurso3.add(c2);
-                percurso3.add(c3);
-                percurso3.add(c4);
-                roboFacade.transmiteInfoRota(palete.getId(),idRobo,percurso3);
+                Tuple<Integer,Coordenadas> tuploIdCoordenadas=
+                        roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
+                List<Coordenadas> percursoInicial = new ArrayList<>();
+                percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX()-1,tuploIdCoordenadas.getT().getX()));
+
+                roboFacade.transmiteInfoRota(idPalete, tuploIdCoordenadas.getO(), percursoInicial);
+
                 lockPaletes.unlock();
             }catch (InterruptedException e){
                 e.printStackTrace();
@@ -97,14 +96,18 @@ public class ArmazemLNFacade implements IArmazemLN {
     private void moveRobos(){
         while(funciona) {
             ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.moveRobos();
+//            System.out.println("Robos moveram-se");
             // FODA-SE TEM AINDA DE ASSINALAR QUE O ROBO AGORA NÃO TEM PALETE !!! (dentro do metodo moveRobos prob)
             List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasPrateleiras = resultadosMovimentoRobos.getTuplosPaletesArmazenadasPrateleiras();
             stockFacade.assinalaPaletesArmazenadas(tuplosPaletesArmazenadasPrateleiras);
             Map<Integer, Tuple<Integer, Coordenadas>> mapPaleteRobo = resultadosMovimentoRobos.getPaletesRecolhidas();
 
+            // quando um robo termina o trajeto deve dar signal no lock
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored){}
         }
     }
-
     
     public int[][] getMapa () {
         return mapa.getMapa();

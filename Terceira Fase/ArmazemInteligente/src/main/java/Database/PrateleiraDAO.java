@@ -18,7 +18,7 @@ import static javax.swing.UIManager.getInt;
 public class PrateleiraDAO {
     private static PrateleiraDAO singleton = null;
 
-    /**
+    /**inse
      * Devolve uma instância do objeto
      * @return Instância
      */
@@ -56,9 +56,10 @@ public class PrateleiraDAO {
             if (rs.next()) {  // Existe alguma prateleira livre
                 idPrateleira = rs.getInt("id");
                 //assinalar que agora a prateleira já não estará livre (mas ainda não tem palete, ou seja, está comprometida a receber uma"
-                stm.executeUpdate("UPDATE Prateleira"+
-                        "SET estado="+ EstadoPrateleira.COMPROMETIDA.getValor()+
-                        ", WHERE id ="+idPrateleira+";)");
+                String query ="UPDATE Prateleira"+
+                        " SET estado="+ EstadoPrateleira.COMPROMETIDA.getValor()+
+                        " WHERE id ="+idPrateleira+";";
+                stm.executeUpdate(query);
             }
         } catch (SQLException e) {
             e.printStackTrace();

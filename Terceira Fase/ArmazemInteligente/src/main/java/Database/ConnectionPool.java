@@ -12,7 +12,7 @@ public class ConnectionPool {
     private static final String USERNAME = "dss";
     private static final String PASSWORD = "1234";
 
-    private static int INITIAL_POOL_SIZE = 3;
+    private static int INITIAL_POOL_SIZE = 4;
     private static List<Connection> connectionPool = new ArrayList<>(INITIAL_POOL_SIZE);;
     private static List<Connection> usedConnections = new ArrayList<>();
 

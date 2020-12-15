@@ -39,7 +39,6 @@ public class LeitorCodigosQR implements Runnable {
     private final Condition condicaoPaleteNova;
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
-    private Path sourceDirPath;
     private Boolean working; // DEVERÁ SER TORNADO FALSO PELA THREAD PRINCIPAL PARA ACABAR COM O TRABALHO DESTA THREAD
 
     public LeitorCodigosQR( Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
@@ -49,7 +48,7 @@ public class LeitorCodigosQR implements Runnable {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<>();
         File sourceDir = new File("src/main/resources");
-        this.sourceDirPath = Paths.get(sourceDir.toURI());
+        Path sourceDirPath = Paths.get(sourceDir.toURI());
         this.working=true;
 
         WatchKey key = sourceDirPath.register(watcher, ENTRY_CREATE); // verifica a criação de novos ficheiros na diretoria

@@ -18,11 +18,11 @@ public class RoboFacade implements IRobo{
     }
 
     public boolean existeRoboDisponivel(){
-        return true;
+        return this.roboDAO.existeRoboDisponivel();
     }
 
-    public int encontraRoboLivre(){
-        return 1;
+    public Tuple<Integer,Coordenadas> encontraRoboLivre(int idPalete){
+        return this.roboDAO.encontraRoboLivre(idPalete);
     }
 
     public void transmiteInfoRota(int idPalete, int idRobo, List<Coordenadas> percurso){

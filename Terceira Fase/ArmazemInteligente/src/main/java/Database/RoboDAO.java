@@ -1,6 +1,8 @@
 package Database;
 
 import Business.Armazem.Robo.Robo;
+import Util.Coordenadas;
+import Util.Tuple;
 
 import java.sql.*;
 import java.util.*;
@@ -18,6 +20,24 @@ public class RoboDAO {
             RoboDAO.singleton = new RoboDAO();
         }
         return RoboDAO.singleton;
+    }
+
+    public boolean existeRoboDisponivel(){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement sta = conn.createStatement()) {
+            String sql = "SELECT count(*) AS Total from Robo where idPalete=0"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
+            ResultSet rs = sta.executeQuery(sql);
+            if(rs.next()) {
+                return rs.getInt("Total")!=0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return false;
     }
 
     public int size() {
@@ -79,6 +99,34 @@ public class RoboDAO {
         }
     }
 
+    /**
+     * devolve o Id de um robô que esteja disponível para transporte, atriuindo-lhe a palete que irá transportar
+     * @param idPalete
+     * @return
+     */
+    public Tuple<Integer, Coordenadas> encontraRoboLivre(int idPalete){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE idPalete='" + 0 + "'");
+            rs.next();
+            int idRobo = rs.getInt("id");
+            Coordenadas coodernadasRobo =  new Coordenadas(rs.getInt("x"), rs.getInt("y"));
+
+            //atribui a palete ao robo
+            stm.executeUpdate("UPDATE Robo"+
+                             " SET idPalete="+idPalete+
+                             " WHERE id ="+idRobo+";");
+
+            return new Tuple<>(idRobo,coodernadasRobo);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+    }
+
     public Map<Integer,Robo> getRobos(Set<Integer> listaRoboId){
         Map<Integer,Robo> res = new HashMap<>();
         Connection conn = ConnectionPool.getConnection();
@@ -86,6 +134,7 @@ public class RoboDAO {
         try (Statement stm = conn.createStatement()) {
             for(Integer roboId: listaRoboId) {
                 ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + roboId + "'");
+
                 if (rs.next()) {  // A chave existe na tabela
                     res.put(roboId, new Robo(rs.getInt("id"),
                             rs.getInt("x"), rs.getInt("y"),
@@ -112,6 +161,7 @@ public class RoboDAO {
             for(Map.Entry<Integer,Robo> entrada : robosEmTransito.entrySet()) {
                 Robo robo = entrada.getValue();
                 Integer roboId = entrada.getKey();
+
                 stm.executeUpdate(
                         "INSERT INTO Robo VALUES (" + roboId.toString() + ", " + robo.getCoordenadas().getX() + "," +
                                 robo.getCoordenadas().getY() + "," + robo.getZonaEstacionamento() + "," +

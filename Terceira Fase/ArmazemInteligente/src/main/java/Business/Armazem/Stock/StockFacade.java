@@ -18,6 +18,10 @@ public class StockFacade implements IStock {
         this.prateleiraDAO=PrateleiraDAO.getInstance();
     }
 
+    public Integer getPaleteRecemChegada(){
+        return this.paleteDAO.getPaleteRecemChegada();
+    }
+
     public void assinalaPaletesArmazenadas(List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasPrateleiras){
 
         this.prateleiraDAO.adicionaPaletes(tuplosPaletesArmazenadasPrateleiras);
