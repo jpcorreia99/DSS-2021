@@ -1,7 +1,10 @@
 package Business.Armazem;
 
 import Util.Coordenadas;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -91,5 +94,18 @@ public class Mapa {
     
     public int[][] getMapa() {
             return this.mapa.clone();
+    }
+
+    public List<Coordenadas> calculaTrajeto(int idZona, Coordenadas coordenadasAtuais) {
+        List<Coordenadas> percurso3 = new ArrayList<>();
+        Coordenadas c1 = new Coordenadas(1,1);
+        Coordenadas c2 = new Coordenadas(2,2);
+        Coordenadas c3 = new Coordenadas(3,3);
+        Coordenadas c4 = new Coordenadas(6,6);
+        percurso3.add(c1);
+        percurso3.add(c2);
+        percurso3.add(c3);
+        percurso3.add(c4);
+        return percurso3;
     }
 }

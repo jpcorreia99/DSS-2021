@@ -22,9 +22,17 @@ public class StockFacade implements IStock {
         return this.paleteDAO.getPaleteRecemChegada();
     }
 
+    public void marcaPaleteEmLevantamento(int idPalete){
+        this.paleteDAO.marcaPaleteEmLevantamento(idPalete);
+    }
+
+    public void assinalaPaleteEmTransporte(int idPalete){
+        this.paleteDAO.assinalaPaleteEmTransporte(idPalete);
+    }
+
     public void assinalaPaletesArmazenadas(List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasPrateleiras){
 
-        this.prateleiraDAO.adicionaPaletes(tuplosPaletesArmazenadasPrateleiras);
+        this.prateleiraDAO.inserePaletes(tuplosPaletesArmazenadasPrateleiras);
 
         // asinala nas próprias paletes que estão armazenadas
         List<Integer> idsPaletes = tuplosPaletesArmazenadasPrateleiras.stream().map(Tuple::getO).collect(Collectors.toList());
@@ -34,7 +42,5 @@ public class StockFacade implements IStock {
     public int encontraPrateleiraLivre(){
         return this.prateleiraDAO.encontraPrateleiraLivre();
     }
-//    public int encontraPrateleiraLivre() {
-////        prateleiraDAO.encontraPrateleiraLivre();
-//    }
+
 }

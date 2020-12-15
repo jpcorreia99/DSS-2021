@@ -2,6 +2,7 @@ package Business.Armazem.Robo;
 
 import Database.PaleteDAO;
 import Util.Coordenadas;
+import Util.EstadoRobo;
 
 public class Robo {
     private int id;
@@ -13,15 +14,18 @@ public class Robo {
     private int idPrateleira;
     // palete que carrega
     private int idPalete;
+    // estado do robo
+    private EstadoRobo estado;
 
     PaleteDAO paleteDAO;
 
-    public Robo(int id, int x, int y, int zonaEstacionamento ,int idPrateleira,int idPalete) {
+    public Robo(int id, int x, int y, int zonaEstacionamento ,int idPrateleira,int idPalete, EstadoRobo estado) {
         this.id = id;
         this.coordenadas = new Coordenadas(x,y);
         this.zonaEstacionamento = zonaEstacionamento;
         this.idPrateleira = idPrateleira;
         this.idPalete = idPalete;
+        this.estado = estado;
         this.paleteDAO = PaleteDAO.getInstance();
     }
 
@@ -47,9 +51,7 @@ public class Robo {
 
     public int getZonaEstacionamento() { return zonaEstacionamento; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public EstadoRobo getEstado() { return estado; }
 
 
     public void setIdPrateleira(int idPrateleira) {
@@ -60,13 +62,17 @@ public class Robo {
         this.idPalete = idPalete;
     }
 
+    public void setEstado(EstadoRobo estado) { this.estado = estado; }
+
     @Override
     public String toString() {
         return "Robo{" +
                 "id=" + id +
-                ", coordenadas=(" + coordenadas.getX() + ","+coordenadas.getY()+")"+
+                ", coordenadas=" + coordenadas +
+                ", zonaEstacionamento=" + zonaEstacionamento +
                 ", idPrateleira=" + idPrateleira +
                 ", idPalete=" + idPalete +
+                ", estado=" + estado +
                 '}';
     }
 }

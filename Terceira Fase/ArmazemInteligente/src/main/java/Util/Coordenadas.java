@@ -20,4 +20,12 @@ public class Coordenadas {
     public Coordenadas clone(){
         return new Coordenadas(x,y);
     }
+
+    @Override
+    public String toString() {
+        return "Coordenadas{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

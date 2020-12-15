@@ -75,31 +75,32 @@ public class DBConnect  {
                 "   `idEstacionamento` INT NOT NULL,\n" +
                 "  `idPrateleira` INT NOT NULL,\n" +
                 "  `idPalete` INT NOT NULL,\n" +
+                "  `estado` INT NOT NULL," +
                 "  PRIMARY KEY (`id`))";
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Robo VALUES (1,1,1,1,0,0)");
-        stm.execute("INSERT INTO Robo VALUES (2,1,2,2,0,0)");
-        stm.execute("INSERT INTO Robo VALUES (3,1,3,3,0,0)");
-        stm.execute("INSERT INTO Robo VALUES (4,1,4,4,0,0)");
+        stm.execute("INSERT INTO Robo VALUES (1,1,1,1,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (2,1,2,2,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (3,1,3,3,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (4,1,4,4,0,0,1)");
     }
 
     private static void inicializaPrateleiras(Statement stm) throws SQLException {
         String sql = "CREATE TABLE Prateleira (" +
                 "  id INT NOT NULL PRIMARY KEY," +
-                " estado INT NOT NULL, "+
+                "  estado INT NOT NULL, "+
                 "  idPalete INT NOT NULL);";
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Prateleira VALUES (1,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (2,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (3,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (4,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (5,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (6,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (7,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (11,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (12,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (13,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (14,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (15,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (16,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (17,1,0)");
     }
 
     private static void inicializaPaletes(Statement stm) throws SQLException {

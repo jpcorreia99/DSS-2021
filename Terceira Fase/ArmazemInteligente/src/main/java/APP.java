@@ -1,6 +1,8 @@
 import Business.Armazem.Robo.RoboFacade;
+import Business.Armazem.Stock.Palete;
 import Database.ConnectionPool;
 import Database.DBConnect;
+import Database.PaleteDAO;
 import Database.RoboDAO;
 import Util.Coordenadas;
 import View.UI;
@@ -22,6 +24,8 @@ public class APP {
             e.printStackTrace();
             System.out.println("Problema com a ligação à base de dados");
         }
+
+
 
 //        ConnectionPool.initialize();
 //        RoboDAO roboDAO = RoboDAO.getInstance();

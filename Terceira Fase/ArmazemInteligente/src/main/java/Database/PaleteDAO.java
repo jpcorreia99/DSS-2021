@@ -44,14 +44,13 @@ public class PaleteDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-            String sql = "SELECT * from Palete where estado=1";
+            String sql = "SELECT * from Palete where estado="+EstadoPalete.RECEM_CHEGADA.getValor()+";";
             ResultSet rs = stm.executeQuery(sql);
-            if(rs.next())
+            if(rs.next()) {
                 idPalete = rs.getInt("id");
-                sql = "UPDATE Palete" +
-                        " SET estado="+ EstadoPalete.ESPERA.getValor()+
-                        " WHERE id ="+idPalete+";";
-                stm.executeUpdate(sql);
+                String material = rs.getString("material");
+                System.out.println("Foi selecionada a palete " + idPalete + ", com o material: " + material);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -59,6 +58,21 @@ public class PaleteDAO {
         }
 
         return idPalete;
+    }
+
+    public void marcaPaleteEmLevantamento(int idPalete){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+            String sql = "UPDATE Palete" +
+                    " SET estado="+ EstadoPalete.EM_LEVANTAMENTO.getValor()+
+                    " WHERE id ="+idPalete+";";
+            stm.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
     }
 
 
@@ -80,6 +94,21 @@ public class PaleteDAO {
         return i;
     }
 
+     public void assinalaPaleteEmTransporte(int idPalete){
+         Connection conn = ConnectionPool.getConnection();
+
+         try (Statement stm = conn.createStatement()) {
+             stm.executeUpdate("UPDATE Palete"+
+                     " SET estado="+ EstadoPalete.TRANSPORTE.getValor()+
+                     " WHERE id ="+idPalete+";");
+         } catch (SQLException e) {
+             e.printStackTrace();
+             throw new NullPointerException(e.getMessage());
+         }finally {
+             ConnectionPool.releaseConnection(conn);
+         }
+    }
+
     public void assinalaPaletesArmazenadas(List<Integer> idsPaletesArmazenadas){
         Connection conn = ConnectionPool.getConnection();
 
@@ -87,7 +116,7 @@ public class PaleteDAO {
             for(Integer idPalete: idsPaletesArmazenadas) {
                 stm.executeUpdate("UPDATE Palete"+
                         " SET estado="+ EstadoPalete.ARMAZENADA.getValor()+
-                        ", WHERE id ="+idPalete+";)");
+                        " WHERE id ="+idPalete+";");
             }
         } catch (SQLException e) {
             e.printStackTrace();

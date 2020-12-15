@@ -29,15 +29,15 @@ public class PrateleiraDAO {
     }
 
 
-    public void adicionaPaletes(List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasZonas){
+    public void inserePaletes(List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasZonas){
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
             for(Tuple<Integer,Integer> tuploPaletePrateleira: tuplosPaletesArmazenadasZonas) {
                 stm.executeUpdate("UPDATE Prateleira"+
-                        "SET estado="+ EstadoPrateleira.OCUPADA.getValor()+
+                        " SET estado="+ EstadoPrateleira.OCUPADA.getValor()+
                         ",idPalete ="+tuploPaletePrateleira.getO()+
-                        ", WHERE id ="+tuploPaletePrateleira.getT()+";)");
+                        " WHERE id ="+tuploPaletePrateleira.getT()+";");
             }
         } catch (SQLException e) {
             e.printStackTrace();

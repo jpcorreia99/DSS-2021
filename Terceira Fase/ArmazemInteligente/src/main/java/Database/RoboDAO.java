@@ -2,6 +2,7 @@ package Database;
 
 import Business.Armazem.Robo.Robo;
 import Util.Coordenadas;
+import Util.EstadoRobo;
 import Util.Tuple;
 
 import java.sql.*;
@@ -26,7 +27,7 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement sta = conn.createStatement()) {
-            String sql = "SELECT count(*) AS Total from Robo where idPalete=0"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
+            String sql = "SELECT count(*) AS Total from Robo where estado="+EstadoRobo.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
             ResultSet rs = sta.executeQuery(sql);
             if(rs.next()) {
                 return rs.getInt("Total")!=0;
@@ -67,7 +68,7 @@ public class RoboDAO {
             if (rs.next()) {  // A chave existe na tabela
                 r = new Robo(rs.getInt("id"),
                         rs.getInt("x"), rs.getInt("y"),rs.getInt("idEstacionamento"),
-                        rs.getInt("idPrateleira"), rs.getInt("idPalete"));
+                        rs.getInt("idPrateleira"), rs.getInt("idPalete"), EstadoRobo.getEnumByValor(rs.getInt("estado")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,10 +88,11 @@ public class RoboDAO {
             stm.executeUpdate(
                     "INSERT INTO Robo VALUES (" + roboId.toString() + ", " + robo.getCoordenadas().getX() + "," +
                             robo.getCoordenadas().getY()+","+ robo.getZonaEstacionamento() +","+
-                            robo.getIdPrateleira() + "," + robo.getIdPalete() + ") "+
+                            robo.getIdPrateleira() + "," + robo.getIdPalete() + "," +
+                            robo.getEstado().getValor() +") "+
                              "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
                             " y=VALUES(y),"+"idEstacionamento=Values(idEstacionamento)," +
-                            " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete)");
+                            " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete), estado=VALUES(estado)");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
@@ -108,7 +110,7 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE idPalete='" + 0 + "'");
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE estado='" + EstadoRobo.LIVRE.getValor() + "';");
             rs.next();
             int idRobo = rs.getInt("id");
             Coordenadas coodernadasRobo =  new Coordenadas(rs.getInt("x"), rs.getInt("y"));
@@ -140,7 +142,8 @@ public class RoboDAO {
                             rs.getInt("x"), rs.getInt("y"),
                             rs.getInt("idEstacionamento"),
                             rs.getInt("idPrateleira"),
-                            rs.getInt("idPalete")));
+                            rs.getInt("idPalete"),
+                            EstadoRobo.getEnumByValor(rs.getInt("estado"))));
                 }
             }
         } catch (SQLException e) {
@@ -162,13 +165,14 @@ public class RoboDAO {
                 Robo robo = entrada.getValue();
                 Integer roboId = entrada.getKey();
 
-                stm.executeUpdate(
-                        "INSERT INTO Robo VALUES (" + roboId.toString() + ", " + robo.getCoordenadas().getX() + "," +
-                                robo.getCoordenadas().getY() + "," + robo.getZonaEstacionamento() + "," +
-                                robo.getIdPrateleira() + "," + robo.getIdPalete() + ") " +
-                                "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
-                                " y=VALUES(y)," + "idEstacionamento=Values(idEstacionamento)," +
-                                " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete)");
+                stm.executeUpdate("INSERT INTO Robo VALUES (" + roboId.toString() + ", " +
+                        robo.getCoordenadas().getX() + "," +
+                        robo.getCoordenadas().getY()+","+ robo.getZonaEstacionamento() +","+
+                        robo.getIdPrateleira() + "," + robo.getIdPalete() + "," +
+                        robo.getEstado().getValor() +") "+
+                        "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
+                        " y=VALUES(y),"+"idEstacionamento=Values(idEstacionamento)," +
+                        " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete), estado=VALUES(estado)");
             }
         } catch (SQLException e) {
             e.printStackTrace();

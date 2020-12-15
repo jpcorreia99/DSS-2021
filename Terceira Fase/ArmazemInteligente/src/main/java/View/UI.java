@@ -145,26 +145,26 @@ public class UI {
     
     public void inicia() {
             this.model.start();
-            showLogo();
-            verificaLogin();
-            showBoasVindas();
-            
-        do {
-            showMenu();
-           
-            switch ((opcao = getOpcao())) {
-                case 1:
-                    showMapa(this.model);
-                    break;
-                case 2:
-                    Object paletes = this.model.getPaletes();
-                    showPaletes(paletes);
-                    break;
-            }
-        } while (opcao != 0);
-        this.model.desligaSistema();
-        exitScreen();
-        
+//            showLogo();
+//            verificaLogin();
+//            showBoasVindas();
+//
+//        do {
+//            showMenu();
+//
+//            switch ((opcao = getOpcao())) {
+//                case 1:
+//                    showMapa(this.model);
+//                    break;
+//                case 2:
+//                    Object paletes = this.model.getPaletes();
+//                    showPaletes(paletes);
+//                    break;
+//            }
+//        } while (opcao != 0);
+//        this.model.desligaSistema();
+//        exitScreen();
+//
     }
     
     

@@ -36,7 +36,7 @@ public class RequestSender {
             // guarda-lo no path indicado em cima
             try {
                 criarQR(material, path, charset, 50, 50);
-                System.out.println("Código QR gerado com sucesso");
+                System.out.println("Código QR gerado com sucesso: "+material);
             } catch (IOException | WriterException e) {
                 e.printStackTrace();
             }

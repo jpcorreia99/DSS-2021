@@ -1,14 +1,14 @@
 package Util;
 
-public enum EstadoPalete {
-    RECEM_CHEGADA(1),
-    EM_LEVANTAMENTO(2),
+public enum EstadoRobo {
+    LIVRE(1),
+    RECOLHA(2),
     TRANSPORTE(3),
-    ARMAZENADA(4);
+    RETORNO(4);
 
     private final int valor;
 
-    private EstadoPalete(int valor)
+    private EstadoRobo(int valor)
     {
         this.valor = valor;
     }
@@ -17,8 +17,8 @@ public enum EstadoPalete {
         return this.valor;
     }
 
-    public static EstadoPalete getEnumByValor(int valor){
-        for(EstadoPalete e : EstadoPalete.values()){
+    public static EstadoRobo getEnumByValor(int valor){
+        for(EstadoRobo e : EstadoRobo.values()){
             if(e.valor==valor) return e;
         }
         return null;

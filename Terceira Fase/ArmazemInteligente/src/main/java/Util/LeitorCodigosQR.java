@@ -98,7 +98,7 @@ public class LeitorCodigosQR implements Runnable {
                         lockPaletes.lock();
                         paletesAGuardar.addNovaPalete(material);
                         condicaoPaleteNova.signal();
-                        System.out.println("Palete registada!");
+                        System.out.println("Palete registada: "+material);
                     } finally {
                         lockPaletes.unlock();
                     }
