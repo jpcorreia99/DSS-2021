@@ -54,8 +54,8 @@ public class ArmazemLNFacade implements IArmazemLN {
         Map<Integer, Tuple<String, Integer>> paletes = new HashMap<>();
          
         String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
-        Integer[] xs = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
-        Integer[] ys = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
+        Integer[] ys = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
+        Integer[] xs = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
         Integer[] estado = {1, 2, 2, 3, 1, 4, 1, 3, 2, 4, 1};
         
         for (int i = 0; i < 10; i++)

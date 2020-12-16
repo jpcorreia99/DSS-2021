@@ -19,22 +19,22 @@ public class Mapa {
             zonas.put(i, new Coordenadas(2, i+3));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+10, new Coordenadas(i+5, 1));
+            zonas.put(i+10, new Coordenadas(i+5, 0));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+18, new Coordenadas(i+5, 2));
+            zonas.put(i+18, new Coordenadas(i+5, 3));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+26, new Coordenadas(i+5, 5));
+            zonas.put(i+26, new Coordenadas(i+5, 4));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+34, new Coordenadas(i+5, 6));
+            zonas.put(i+34, new Coordenadas(i+5, 7));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+42, new Coordenadas(i+5, 9));
+            zonas.put(i+42, new Coordenadas(i+5, 8));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+50, new Coordenadas(i+5, 10));
+            zonas.put(i+50, new Coordenadas(i+5, 11));
         
         mapa = new int[][] {
             {0,0,1,1,1,2,2,2,2,2,2,2,2,1,1,1},
@@ -66,7 +66,7 @@ public class Mapa {
          */
     }
     
-    public Util.Coordenadas getCoords(int p) {
+    public Util.Coordenadas getCoords   (int p) {
         return zonas.get(p).clone();
     }
 
