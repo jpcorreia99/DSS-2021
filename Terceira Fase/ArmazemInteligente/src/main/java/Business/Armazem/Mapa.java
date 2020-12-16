@@ -16,22 +16,22 @@ public class Mapa {
             zonas.put(i, new Coordenadas(2, i+3));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+10, new Coordenadas(i+5, 0));
+            zonas.put(i+10, new Coordenadas(i+5, 1));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+18, new Coordenadas(i+5, 3));
+            zonas.put(i+18, new Coordenadas(i+5, 2));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+26, new Coordenadas(i+5, 4));
+            zonas.put(i+26, new Coordenadas(i+5, 5));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+34, new Coordenadas(i+5, 7));
+            zonas.put(i+34, new Coordenadas(i+5, 6));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+42, new Coordenadas(i+5, 8));
+            zonas.put(i+42, new Coordenadas(i+5, 9));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+50, new Coordenadas(i+5, 11));
+            zonas.put(i+50, new Coordenadas(i+5, 10));
         
         mapa = new int[][] {
             {0,0,1,1,1,2,2,2,2,2,2,2,2,1,1,1},
