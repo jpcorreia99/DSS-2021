@@ -51,9 +51,9 @@ public class ArmazemLNFacade implements IArmazemLN {
     }
     
     public Map<Integer, Tuple<String, Integer>> getPaletes() {
-         Map<Integer, Tuple<String, Integer>> paletes = new HashMap<>();
+        Map<Integer, Tuple<String, Integer>> paletes = new HashMap<>();
          
-         String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
+        String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
         Integer[] xs = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
         Integer[] ys = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
         Integer[] estado = {1, 2, 2, 3, 1, 4, 1, 3, 2, 4, 1};
@@ -103,12 +103,12 @@ public class ArmazemLNFacade implements IArmazemLN {
         int[][] map = mapa.getMapa();
         //List<Integer> prateleiras = stockFacade.getPrateleirasOcupadas();
         //List<Tuple<Coordenadas, Boolean>> robos = roboFacade.getInfoRobo();
-        
+ 
         List <Integer> prateleiras = Arrays.asList(new Integer[] {16, 24, 25, 32, 40, 41, 42});
         Tuple<Coordenadas, Boolean> robo1 = new Tuple(new Coordenadas(3,4), true);
         Tuple<Coordenadas, Boolean> robo2 = new Tuple(new Coordenadas(6,2), false);
-        Tuple<Coordenadas, Boolean> robo3 = new Tuple(new Coordenadas(8,14), true);
-        Tuple<Coordenadas, Boolean> robo4 = new Tuple(new Coordenadas(9,3), false);
+        Tuple<Coordenadas, Boolean> robo3 = new Tuple(new Coordenadas(8,10), true);
+        Tuple<Coordenadas, Boolean> robo4 = new Tuple(new Coordenadas(9,2), false);
         
         List<Tuple<Coordenadas, Boolean>> robos = new ArrayList<>();
         robos.add(robo1);
@@ -118,12 +118,12 @@ public class ArmazemLNFacade implements IArmazemLN {
         
         for (Integer i : prateleiras) {
             Coordenadas c = mapa.getCoords(i);
-            map[c.getX()][c.getY()] = 3;
+            map[c.getY()][c.getX()] = 3;
         }
         
         for (Tuple<Coordenadas, Boolean> t : robos) {
             Coordenadas c = t.getO();
-            map[c.getX()][c.getY()] = t.getT() ? 5 : 4;
+            map[c.getY()][c.getX()] = t.getT() ? 5 : 4;
         }
         
         return map;

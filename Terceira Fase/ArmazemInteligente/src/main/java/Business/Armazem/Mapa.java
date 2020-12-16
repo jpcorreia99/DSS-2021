@@ -16,67 +16,41 @@ public class Mapa {
         zonas = new HashMap <>();
         
         for (int i = 1; i < 5; i++)
-            zonas.put(i, new Coordenadas(i+3, 2));
+            zonas.put(i, new Coordenadas(2, i+3));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+10, new Coordenadas(0, i+5));
+            zonas.put(i+10, new Coordenadas(i+5, 1));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+18, new Coordenadas(3, i+5));
+            zonas.put(i+18, new Coordenadas(i+5, 2));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+26, new Coordenadas(4, i+5));
+            zonas.put(i+26, new Coordenadas(i+5, 5));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+34, new Coordenadas(7, i+5));
+            zonas.put(i+34, new Coordenadas(i+5, 6));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+42, new Coordenadas(8, i+5));
+            zonas.put(i+42, new Coordenadas(i+5, 9));
         
         for (int i = 0; i < 8; i++)
-            zonas.put(i+50, new Coordenadas(11, i+5));
+            zonas.put(i+50, new Coordenadas(i+5, 10));
         
-        mapa = new int[12][16];
-        
-        for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < 16; j++) {    
-                switch(i) {
-                    case 0:
-                    case 11:
-                        if (j == 0 || j == 1)
-                            mapa[i][j] = 0;
-                        else if (j == 2 || j == 3 || j == 4 || j == 13 || j == 14 || j == 15)
-                            mapa[i][j] = 1;
-                        else mapa[i][j] = 2;
-                        break;
-                    case 1:
-                    case 10:
-                        if (j == 2 || 15 == j)
-                            mapa[i][j] = 1;
-                        else mapa[i][j] = 0;
-                        break;
-                    case 2:
-                    case 9:
-                        if (j != 0 && j != 1 && j != 2 && j != 15)
-                            mapa[i][j] = 0;
-                        else mapa[i][j] = 1;
-                        break;
-                    case 5:
-                    case 6:
-                        if (j == 0 || j == 15)
-                            mapa[i][j] = 1;
-                        else mapa[i][j] = 0;
-                        break;
-                    default:
-                        if (j == 0 || j == 15)
-                            mapa[i][j] = 1;
-                        else if (j > 4 && j < 13)
-                            mapa[i][j] = 2;
-                        else mapa[i][j] = 0;
-                        break;     
-                }
-            }
-        }
+        mapa = new int[][] {
+            {0,0,1,1,1,2,2,2,2,2,2,2,2,1,1,1},
+            {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,2,2,2,2,2,2,2,2,0,0,1},
+            {1,0,0,0,0,2,2,2,2,2,2,2,2,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,2,2,2,2,2,2,2,2,0,0,1},
+            {1,0,0,0,0,2,2,2,2,2,2,2,2,0,0,1},
+            {1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {0,0,1,1,1,2,2,2,2,2,2,2,2,1,1,1},
+        };
+
         /* DEBUG
         for (int i = 0; i < 12 ; i++) {
             for (int j = 0; j < 16; j++) {

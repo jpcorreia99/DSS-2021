@@ -4,6 +4,7 @@ package View;
 import java.util.Scanner;
 import Business.Armazem.ArmazemLNFacade;
 import Util.Tuple;
+import java.util.ArrayList;
 
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -13,15 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 class MapaThread implements Runnable {
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-    public static final String ANSI_RED = "\u001B[31m";
-    
     ArmazemLNFacade model;
     private AtomicBoolean running;
     
@@ -60,29 +52,29 @@ class MapaThread implements Runnable {
                                 break;
                             case 1:
                                 if ((i == 0 && j == 2) || (i == 2 && j == 0))
-                                    System.out.print(ANSI_BLUE + "╔" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "╔" + UI.ANSI_RESET);
                                 else if ((i == 2 && j == 2) || (i == 11 && j == 15))
-                                    System.out.print(ANSI_BLUE +"╝" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE +"╝" + UI.ANSI_RESET);
                                 else if ((i == 0 && j == 15) || (i == 9 && j == 2))
-                                    System.out.print(ANSI_BLUE + "╗" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "╗" + UI.ANSI_RESET);
                                 else if ((i == 9 && j == 0) || (i == 11 && j == 2))
-                                    System.out.print(ANSI_BLUE + "╚" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "╚" + UI.ANSI_RESET);
                                 else if (i == 0 || i == 11 || (i == 2 && j == 1) || (i == 9 && j == 1))
-                                    System.out.print(ANSI_BLUE + "═");
+                                    System.out.print(UI.ANSI_BLUE + "═");
                                 else
-                                    System.out.print(ANSI_BLUE + "║" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "║" + UI.ANSI_RESET);
                                 break;
                             case 2: 
-                                System.out.print(ANSI_YELLOW + "☺" + ANSI_RESET);
+                                System.out.print(UI.ANSI_YELLOW + "☺" + UI.ANSI_RESET);
                                 break;
                             case 3: 
-                                System.out.print(ANSI_GREEN + "☻" + ANSI_RESET);
+                                System.out.print(UI.ANSI_GREEN + "☻" + UI.ANSI_RESET);
                                 break;
                             case 4: 
-                                System.out.print(ANSI_BLUE + "○" + ANSI_RESET);
+                                System.out.print(UI.ANSI_BLUE + "○" + UI.ANSI_RESET);
                                 break;
                             case 5: 
-                                System.out.print(ANSI_RED + "◙" + ANSI_RESET);
+                                System.out.print(UI.ANSI_RED + "◙" + UI.ANSI_RESET);
                                 break;
                         }
                     }
@@ -103,10 +95,12 @@ class MapaThread implements Runnable {
     
 }
 
+
 public class UI {
     private ArmazemLNFacade model;
     private Scanner scan;
     private List<String> opcoes;
+    private List<MenuHandler> handlers;
     private int opcao;
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -114,6 +108,12 @@ public class UI {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+    
+    public interface MenuHandler {
+        void execute();
+    }
     
     public UI() {
         this.model = new ArmazemLNFacade();
@@ -122,6 +122,14 @@ public class UI {
                 "2. Consultar localização de todas as paletes em armazém",
                 "0. Sair");
         this.opcao = 0;
+        this.handlers = new ArrayList<>();
+        
+        addHandler(() -> showMapa());
+        addHandler(() -> showPaletes());
+    }
+    
+    private void addHandler(UI.MenuHandler h) {
+        this.handlers.add(h);
     }
     
     private void showMenu() {
@@ -151,32 +159,28 @@ public class UI {
         showLogo();
         System.out.println ("\n                           Bemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
     }
-
     
     public void inicia() {
-            showLogo();
-            verificaLogin();
-            showBoasVindas();
+        showLogo();
+        verificaLogin();
+        showBoasVindas();
             
         do {
             showMenu();
            
-            switch ((opcao = getOpcao())) {
-                case 1:
-                    showMapa(this.model);
-                    break;
-                case 2:
-                    showPaletes(this.model.getPaletes());
-                    break;
-            }
+            if ((opcao = getOpcao()) > 0 && opcao < 3)
+                this.handlers.get(opcao-1).execute();
+            else
+                System.out.println("Opcao não disponivel.\n Pressione 'Enter' para continuar.\n");
         } while (opcao != 0);
         
         exitScreen();
-        
     }
     
     
-    public void showPaletes (Map <Integer, Tuple <String, Integer>> paletes) {
+    public void showPaletes () {
+        Map <Integer, Tuple <String, Integer>> paletes = this.model.getPaletes();
+        
         System.out.print("\033[H\033[2J");
         System.out.flush();
         
@@ -249,7 +253,7 @@ ANSI_GREEN + "                                                                  
 "" + ANSI_RESET);
     }
     
-    public void showMapa (ArmazemLNFacade model) {
+    public void showMapa () {
         MapaThread m;
         Thread t = new Thread ((m = new MapaThread(model)));
         t.start();
