@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedList;
 
 
 public class Mapa {
@@ -90,7 +89,7 @@ public class Mapa {
             Coordenadas c = e.getValue();
             System.out.println("A zona " + e.getKey() + " tem coordenadas " + "(" + c.getX() + "," + c.getY() + ")");
         }
-        */
+         */
     }
     
     public Util.Coordenadas getCoords(int p) {
@@ -103,7 +102,7 @@ public class Mapa {
 
     /**
      * Calcula uma rota mais curta desde as coordenadas de inicio até às coordenadas do fim
-     * @param idZona zona destino
+     * @param idZona Zona destino
      * @param inicio Coordenada de inicio
      * @return Lista de coordenadas a tomar para chegar ao seu destino
      */
@@ -121,7 +120,7 @@ public class Mapa {
      * @return Lista de Coordenadas originada
      */
     private List<Coordenadas> getRota(Coordenadas inicio, int[][] localMap) {
-        List<Coordenadas> finalQueue = new LinkedList<>();
+        List<Coordenadas> finalList = new ArrayList<>();
         Coordenadas curPos = inicio.clone();
         int vetX, vetY, passoAtual, nextStep;
         while((passoAtual = localMap[curPos.getY()][curPos.getX()]) != 0)
@@ -131,9 +130,9 @@ public class Mapa {
                         if((nextStep = localMap[curPos.getY() + vetY][curPos.getX() + vetX]) >= 0 && nextStep < passoAtual) {
                             curPos.addY(vetY);
                             curPos.addX(vetX);
-                            finalQueue.add(curPos.clone());
+                            finalList.add(curPos.clone());
                         }
-        return finalQueue;
+        return finalList;
     }
 
     /**
