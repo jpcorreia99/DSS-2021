@@ -17,8 +17,8 @@ public class RoboFacade implements IRobo{
         this.rotas = new HashMap<>();
     }
 
-    public boolean existeRoboDisponivel(){
-        return this.roboDAO.existeRoboDisponivel();
+    public boolean existemRobosDisponiveis(){
+        return this.roboDAO.existemRobosDisponiveis();
     }
 
     public Tuple<Integer,Coordenadas> encontraRoboLivre(int idPalete){

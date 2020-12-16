@@ -18,7 +18,11 @@ public class StockFacade implements IStock {
         this.prateleiraDAO=PrateleiraDAO.getInstance();
     }
 
-    public Integer getPaleteRecemChegada(){
+    public boolean existemPaletesRecemChegadas(){
+        return this.paleteDAO.existemPaletesRecemChegadas();
+    }
+
+    public int getPaleteRecemChegada(){
         return this.paleteDAO.getPaleteRecemChegada();
     }
 

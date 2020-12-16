@@ -39,17 +39,14 @@ public class PaleteDAO {
         }
     }
 
-    public Integer getPaleteRecemChegada(){
-        Integer idPalete = null;
+    public boolean existemPaletesRecemChegadas(){
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
             String sql = "SELECT * from Palete where estado="+EstadoPalete.RECEM_CHEGADA.getValor()+";";
             ResultSet rs = stm.executeQuery(sql);
             if(rs.next()) {
-                idPalete = rs.getInt("id");
-                String material = rs.getString("material");
-                System.out.println("Foi selecionada a palete " + idPalete + ", com o material: " + material);
+               return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,6 +54,25 @@ public class PaleteDAO {
             ConnectionPool.releaseConnection(conn);
         }
 
+        return false;
+    }
+
+    public int getPaleteRecemChegada(){
+        Connection conn = ConnectionPool.getConnection();
+        int idPalete = 0;
+
+        try (Statement stm = conn.createStatement()) {
+            String sql = "SELECT * from Palete where estado="+EstadoPalete.RECEM_CHEGADA.getValor()+";";
+            ResultSet rs = stm.executeQuery(sql);
+            rs.next();
+            idPalete = rs.getInt("id");
+            String material = rs.getString("material");
+            System.out.println("Foi selecionada a palete " + idPalete + ", com o material: " + material);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
         return idPalete;
     }
 

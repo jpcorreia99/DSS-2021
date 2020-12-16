@@ -23,14 +23,14 @@ public class RoboDAO {
         return RoboDAO.singleton;
     }
 
-    public boolean existeRoboDisponivel(){
+    public boolean existemRobosDisponiveis(){
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement sta = conn.createStatement()) {
-            String sql = "SELECT count(*) AS Total from Robo where estado="+EstadoRobo.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
+            String sql = "SELECT * from Robo where estado="+EstadoRobo.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
             ResultSet rs = sta.executeQuery(sql);
             if(rs.next()) {
-                return rs.getInt("Total")!=0;
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -3,7 +3,6 @@ package Business.Armazem;
 import Business.Armazem.Gestor.GestorFacade;
 import Business.Armazem.Robo.EstadoRobo;
 import Business.Armazem.Robo.RoboFacade;
-import Business.Armazem.Stock.Palete;
 import Business.Armazem.Stock.StockFacade;
 import Business.IArmazemLN;
 
@@ -65,23 +64,23 @@ public class ArmazemLNFacade implements IArmazemLN {
 
     private void escalonaRobos(){
         System.out.println("Boy estou a tentar escalonar");
-        Integer idPalete;
-        if((idPalete =stockFacade.getPaleteRecemChegada())!=null && roboFacade.existeRoboDisponivel()){
+        if(stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()){
+            int idPalete =stockFacade.getPaleteRecemChegada();
             stockFacade.marcaPaleteEmLevantamento(idPalete);
             int idPrateleira = stockFacade.encontraPrateleiraLivre();
             System.out.println("ESTOU A ESCALONAR OMG!!!, idPalete=" + idPalete + ",idPrateleira" + idPrateleira);
-            if (idPrateleira == 0) {
-                System.out.println("big poopoo");
+            if (idPrateleira != 0) {
+                Tuple<Integer, Coordenadas> tuploIdCoordenadas =
+                        roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
+                List<Coordenadas> percursoInicial = new ArrayList<>();
+                percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
+
+                roboFacade.transmiteInfoRota(idPalete, idPrateleira, tuploIdCoordenadas.getO(), percursoInicial, EstadoRobo.RECOLHA);
+            }else {
+                System.out.println("Big poopoo");
             }
-
-            Tuple<Integer, Coordenadas> tuploIdCoordenadas =
-                    roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
-            List<Coordenadas> percursoInicial = new ArrayList<>();
-            percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
-
-            roboFacade.transmiteInfoRota(idPalete, idPrateleira, tuploIdCoordenadas.getO(), percursoInicial, EstadoRobo.RECOLHA);
         }else{
-            if(idPalete==null) {
+            if(!stockFacade.existemPaletesRecemChegadas()) {
                 System.out.println("Não há paletes");
             }else{
                 System.out.println("Não há robos");
@@ -111,7 +110,7 @@ public class ArmazemLNFacade implements IArmazemLN {
 
             // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException ignored){}
     }
 
