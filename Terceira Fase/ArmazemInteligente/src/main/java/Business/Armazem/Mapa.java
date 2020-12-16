@@ -66,12 +66,22 @@ public class Mapa {
          */
     }
     
-    public Util.Coordenadas getCoords   (int p) {
+    public Util.Coordenadas getCoords (int p) {
         return zonas.get(p).clone();
     }
 
     public int[][] getMapa() {
             return this.mapa.clone();
+    }
+
+    public Util.Coordenadas getCoordChegadaZona(int id) {
+        Coordenadas temp = zonas.get(id).clone();
+        if(id > 9) {
+            if (temp.getY() == 0 || temp.getY() == 4 || temp.getY() == 8)
+                temp.addY(1);
+            else temp.addY(-1);
+        }
+        return temp;
     }
 
     /**
@@ -82,7 +92,7 @@ public class Mapa {
      */
     public List<Coordenadas> calculaRota(int idZona, Coordenadas inicio) {
         int [][] localMap = mapa.clone();
-        Coordenadas fim = this.zonas.get(idZona);
+        Coordenadas fim = this.getCoordChegadaZona(idZona);
         localMap = preencheMapa(inicio, fim, localMap);
         return getRota(inicio, localMap);
     }
