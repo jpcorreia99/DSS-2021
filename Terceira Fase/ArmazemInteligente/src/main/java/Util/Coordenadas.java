@@ -17,6 +17,14 @@ public class Coordenadas {
         return y;
     }
 
+    public void addX(int amount) {
+        this.x += amount;
+    }
+
+    public void addY(int amount) {
+        this.y += amount;
+    }
+
     public Coordenadas clone(){
         return new Coordenadas(x,y);
     }
