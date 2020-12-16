@@ -51,7 +51,7 @@ public class DBConnect  {
         inicializaRobos(stm);
         inicializaPrateleiras(stm);
         inicializaPaletes(stm);
-
+        inicializaRotas(stm);
     }
 
     private static void inicializaGestores(Statement stm) throws SQLException {
@@ -109,6 +109,14 @@ public class DBConnect  {
                 "  material VARCHAR(45) NOT NULL, "+
                 "  estado INT NOT NULL);";
 
+        stm.execute(sql);
+    }
+
+    private static void inicializaRotas(Statement stm) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS `ArmazemInteligente`.`Rota` (\n" +
+                "  `idRobo` INT NOT NULL,\n" +
+                "  `valor` VARCHAR(1000) NOT NULL,\n" +
+                "  PRIMARY KEY (`idRobo`))";
         stm.execute(sql);
     }
 }

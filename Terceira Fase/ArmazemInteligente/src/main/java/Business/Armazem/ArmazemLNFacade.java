@@ -66,10 +66,10 @@ public class ArmazemLNFacade implements IArmazemLN {
         System.out.println("Boy estou a tentar escalonar");
         if(stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()){
             int idPalete =stockFacade.getPaleteRecemChegada();
-            stockFacade.marcaPaleteEmLevantamento(idPalete);
             int idPrateleira = stockFacade.encontraPrateleiraLivre();
             System.out.println("ESTOU A ESCALONAR OMG!!!, idPalete=" + idPalete + ",idPrateleira" + idPrateleira);
             if (idPrateleira != 0) {
+                stockFacade.marcaPaleteEmLevantamento(idPalete);
                 Tuple<Integer, Coordenadas> tuploIdCoordenadas =
                         roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
                 List<Coordenadas> percursoInicial = new ArrayList<>();

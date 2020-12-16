@@ -58,13 +58,13 @@ public class RoboFacade implements IRobo{
             if(rotas.get(robo.getId()).isEmpty()) { // terminou uma parte do transporte
                 EstadoRobo estadoRobo = robo.getEstado();
 
-                int idDestino = robo.getIdPrateleira();
+                int idPrateleira = robo.getIdPrateleira();
                 int idPalete = robo.getIdPalete();
 
                 if (estadoRobo == EstadoRobo.RECOLHA) { // está a reoclher a palete
-                    resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idDestino, robo.getId(), robo.getCoordenadas());
+                    resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idPrateleira, robo.getId(), robo.getCoordenadas());
                 } else if (estadoRobo == EstadoRobo.TRANSPORTE) { // indica que se está a deslocar para a ir entregar a palete
-                    resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idDestino);
+                    resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idPrateleira);
                     resultadosMovimentoRobos.addRoboQueArmazenou(robo.getId(),
                             robo.getZonaEstacionamento(), robo.getCoordenadas());
 

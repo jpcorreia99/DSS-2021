@@ -35,16 +35,12 @@ public class LeitorCodigosQR implements Runnable {
 //    - Close the service: The watch service exits when either the thread exits or when it is closed (by invoking its closed method).
 
     private final PaleteDAO paletesAGuardar;
-    private final Lock lockPaletes;
-    private final Condition condicaoPaleteNova;
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
     private Boolean working; // DEVERÁ SER TORNADO FALSO PELA THREAD PRINCIPAL PARA ACABAR COM O TRABALHO DESTA THREAD
 
     public LeitorCodigosQR( Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
         this.paletesAGuardar = PaleteDAO.getInstance();
-        this.lockPaletes = lockPaletes;
-        this.condicaoPaleteNova = conditionNovaPalete;
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<>();
         File sourceDir = new File("src/main/resources");
@@ -94,14 +90,8 @@ public class LeitorCodigosQR implements Runnable {
                 // tendo o path do novo ficheiro, tentar criar a palete
                 try {
                     String material = readQR(childPath);
-                    try {
-                        lockPaletes.lock();
-                        paletesAGuardar.addNovaPalete(material);
-                        condicaoPaleteNova.signal();
-                        System.out.println("Palete registada: "+material);
-                    } finally {
-                        lockPaletes.unlock();
-                    }
+                    paletesAGuardar.addNovaPalete(material);
+                    System.out.println("Palete registada: "+material);
                 } catch (NotFoundException | IOException | InterruptedException e) {
                     e.printStackTrace();
                 }

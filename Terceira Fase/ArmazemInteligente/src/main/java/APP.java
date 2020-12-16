@@ -1,29 +1,26 @@
-import Business.Armazem.Robo.RoboFacade;
-import Business.Armazem.Stock.Palete;
 import Database.ConnectionPool;
 import Database.DBConnect;
-import Database.PaleteDAO;
-import Database.RoboDAO;
+import Database.RotaDAO;
 import Util.Coordenadas;
-import View.UI;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class APP {
-    public static void main(String[] args) throws SQLException {
-        try {
-            DBConnect.setupBD();
-            ConnectionPool.initialize();
-            UI ui = new UI();
-            ui.inicia();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Problema com a ligação à base de dados");
-        }
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+//        try {
+//            DBConnect.setupBD();
+//            ConnectionPool.initialize();
+//            UI ui = new UI();
+//            ui.inicia();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Problema com a ligação à base de dados");
+//        }
 
 
 
@@ -90,24 +87,52 @@ public class APP {
 //        percurso2.add(b3);
 //        percurso2.add(b4);
 //
-//        List<Coordenadas> percurso3 = new ArrayList<>();
-//        Coordenadas c1 = new Coordenadas(1,1);
-//        Coordenadas c2 = new Coordenadas(2,2);
-//        Coordenadas c3 = new Coordenadas(3,3);
-//        Coordenadas c4 = new Coordenadas(6,6);
-//        percurso3.add(c1);
-//        percurso3.add(c2);
-//        percurso3.add(c3);
-//        percurso3.add(c4);
+        DBConnect.setupBD();
+        ConnectionPool.initialize();
+        List<Coordenadas> percurso3 = new ArrayList<>();
+        Coordenadas c1 = new Coordenadas(1,1);
+        Coordenadas c2 = new Coordenadas(2,2);
+        Coordenadas c3 = new Coordenadas(3,3);
+        Coordenadas c4 = new Coordenadas(6,6);
+        percurso3.add(c1);
+        percurso3.add(c2);
+        percurso3.add(c3);
+        percurso3.add(c4);
 //
-//        List<Coordenadas> percurso4 = new ArrayList<>();
-//        Coordenadas d1 = new Coordenadas(1,1);
-//        Coordenadas d2 = new Coordenadas(2,2);
-//        Coordenadas d3 = new Coordenadas(7,7);
-//        percurso4.add(d1);
-//        percurso4.add(d2);
-//        percurso4.add(d3);
+        List<Coordenadas> percurso4 = new ArrayList<>();
+        Coordenadas d1 = new Coordenadas(1,1);
+        Coordenadas d2 = new Coordenadas(2,2);
+        Coordenadas d3 = new Coordenadas(3,1);
+        Coordenadas d4 = new Coordenadas(9,0);
+        Coordenadas d5 = new Coordenadas(7,7);
+        percurso4.add(d1);
+        percurso4.add(d2);
+        percurso4.add(d3);
+        percurso4.add(d4);
+        percurso4.add(d5);
+
+        Map<Integer,List<Coordenadas>> tlwp = new HashMap<>();
+        tlwp.put(3,percurso3);
+        tlwp.put(4,percurso4);
+
+        RotaDAO rotaDAO = new RotaDAO();
+        rotaDAO.adicionaRota(3,percurso3);
+        rotaDAO.adicionaRota(4,percurso4);
+
+        while(!rotaDAO.rotaTerminou(3)){
+            System.out.println(rotaDAO.getProximoPasso(3).toString());
+        }
+
+//        String[] parts = coordenadasCodificadas.split("/");
+//        for(String part : parts){
+//            System.out.println(".");
+//            System.out.println(part);
+//        }
 //
+//        List<Coordenadas> res = rotasDAO.get(coordenadasCodificadas);
+//        for(Coordenadas cord : res){
+//            System.out.println(cord.toString());
+//        }
 //        long start2 = System.currentTimeMillis();
 //        roboFacade.transmiteInfoRota(1,1,percurso1);
 //        roboFacade.transmiteInfoRota(2,2,percurso2);
@@ -132,6 +157,7 @@ public class APP {
 //        finish2 = System.currentTimeMillis();
 //        timeElapsed2 = finish2 - start2;
 //        System.out.println(timeElapsed2);
+
 
 
     }
