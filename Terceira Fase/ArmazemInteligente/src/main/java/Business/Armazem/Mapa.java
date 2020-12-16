@@ -101,7 +101,7 @@ public class Mapa {
      * Calcula uma rota mais curta desde as coordenadas de inicio até às coordenadas do fim
      * @param idZona zona destino
      * @param inicio Coordenada de inicio
-     * @return Queue de coordenadas a tomar para chegar ao seu destino
+     * @return Lista de coordenadas a tomar para chegar ao seu destino
      */
     public List<Coordenadas> calculaRota(int idZona, Coordenadas inicio) {
         int [][] localMap = mapa.clone();
