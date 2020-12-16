@@ -2,7 +2,7 @@ package Database;
 
 import Business.Armazem.Robo.Robo;
 import Util.Coordenadas;
-import Util.EstadoRobo;
+import Business.Armazem.Robo.EstadoRobo;
 import Util.Tuple;
 
 import java.sql.*;

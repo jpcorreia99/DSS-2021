@@ -1,7 +1,6 @@
 package Business.Armazem.Stock;
 
 import Database.PaleteDAO;
-import Util.EstadoPrateleira;
 
 public class Prateleira {
     private int id;

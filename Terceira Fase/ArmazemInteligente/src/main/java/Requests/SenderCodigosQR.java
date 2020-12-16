@@ -1,4 +1,4 @@
-package Util;
+package Requests;
 
 import com.google.zxing.WriterException;
 
@@ -15,7 +15,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 
 
-public class RequestSender {
+public class SenderCodigosQR {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 

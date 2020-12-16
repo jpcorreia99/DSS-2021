@@ -1,7 +1,7 @@
 package Database;
 
 import Business.Armazem.Stock.Palete;
-import Util.EstadoPalete;
+import Business.Armazem.Stock.EstadoPalete;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

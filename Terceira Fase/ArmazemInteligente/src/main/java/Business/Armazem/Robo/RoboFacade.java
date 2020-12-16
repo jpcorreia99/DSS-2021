@@ -3,13 +3,10 @@ package Business.Armazem.Robo;
 import Database.RoboDAO;
 import Business.Armazem.IRobo;
 import Util.Coordenadas;
-import Util.EstadoRobo;
 import Util.ResultadosMovimentoRobos;
 import Util.Tuple;
 
 import java.util.*;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 
 public class RoboFacade implements IRobo{
     Map<Integer, List<Coordenadas>> rotas;

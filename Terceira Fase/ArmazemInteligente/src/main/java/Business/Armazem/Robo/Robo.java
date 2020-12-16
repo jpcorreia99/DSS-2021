@@ -2,7 +2,6 @@ package Business.Armazem.Robo;
 
 import Database.PaleteDAO;
 import Util.Coordenadas;
-import Util.EstadoRobo;
 
 public class Robo {
     private int id;

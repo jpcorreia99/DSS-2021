@@ -1,4 +1,4 @@
-package Util;
+package Business.Armazem.Robo;
 
 public enum EstadoRobo {
     LIVRE(1),

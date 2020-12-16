@@ -1,4 +1,4 @@
-no método de recuparação de prateleiras, atualizar
-o campo disponivel para true em todas as paletes que estejam indisponíveis mas tenham idPalete a 0;
-
-A fazer: DAO das paletes no leitor de códigos QR que ativa o sinal e depois tem o método para se extrair uma palete que esteja recem chegada + mudanças de estado necessárias
+a fazer:
+métodos para o pedro
+reconstrução do estado do armazém em nova seleção -> try a ver se a bd existe, se não é contruó-la, se existir é  reconstruir
+atribuir várias paletes de uma só vez

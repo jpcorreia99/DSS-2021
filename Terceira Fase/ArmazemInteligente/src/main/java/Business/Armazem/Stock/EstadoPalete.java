@@ -1,4 +1,4 @@
-package Util;
+package Business.Armazem.Stock;
 
 public enum EstadoPalete {
     RECEM_CHEGADA(1),

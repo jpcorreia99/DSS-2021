@@ -1,11 +1,13 @@
 package Business.Armazem;
 
 import Business.Armazem.Gestor.GestorFacade;
+import Business.Armazem.Robo.EstadoRobo;
 import Business.Armazem.Robo.RoboFacade;
 import Business.Armazem.Stock.Palete;
 import Business.Armazem.Stock.StockFacade;
 import Business.IArmazemLN;
 
+import Requests.LeitorCodigosQR;
 import Util.*;
 
 import java.io.IOException;
@@ -44,21 +46,13 @@ public class ArmazemLNFacade implements IArmazemLN {
 
         Thread threadEscalonamentoRobos = new Thread(this::gereRobos);
         threadEscalonamentoRobos.start();
+    }
 
-//        Thread moveRobos = new Thread(this::moveRobos);
-//        moveRobos.start();
-    }
-    
-    public Map<Integer, Palete> getPaletes() {
-         return new HashMap<>(); 
-    }
-    
     public boolean login (String user, String password) {
         return this.gestorFacade.login(user,password);
     }
 
     private void gereRobos(){
-        Scanner sc = new Scanner(System.in);
         while(funciona){
             long start2 = System.currentTimeMillis();
             escalonaRobos();
@@ -66,7 +60,6 @@ public class ArmazemLNFacade implements IArmazemLN {
             long finish2 = System.currentTimeMillis();
             long timeElapsed2 = finish2 - start2;
             System.out.println(timeElapsed2);
-            sc.nextLine();
         }
     }
 
@@ -96,48 +89,73 @@ public class ArmazemLNFacade implements IArmazemLN {
         }
     }
 
+    /**
+     * Função que moverá processará no sistema todas as alterações resultantes da movimentação de todos os robos
+     * com rotas por 1 time step.
+     */
     private void moveRobos(){
             System.out.println(".");
             ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.moveRobos();
             // processamento da recolha de paletes
-            Map<Tuple<Integer,Integer>, Tuple<Integer, Coordenadas>> mapPaleteInfoRoboInfo =
-                    resultadosMovimentoRobos.getPaletesRecolhidas();
-
-            for(Map.Entry<Tuple<Integer,Integer>,Tuple<Integer,Coordenadas>> entradaPaleteRobo: mapPaleteInfoRoboInfo.entrySet()){
-                Tuple<Integer,Integer> tuploPaletePrateleira = entradaPaleteRobo.getKey();
-                Tuple <Integer,Coordenadas> tuploRoboCoordenadas = entradaPaleteRobo.getValue();
-                int idPalete = tuploPaletePrateleira.getO();
-                int idPrateleira = tuploPaletePrateleira.getT();
-                int idRobo = tuploRoboCoordenadas.getO();
-                Coordenadas coordenadasRobo = tuploRoboCoordenadas.getT();
-                System.out.println("Robo que recolheu: "+idPalete+","+idPrateleira+","+idRobo+","+coordenadasRobo.toString());
-
-                stockFacade.assinalaPaleteEmTransporte(idPalete);
-                List<Coordenadas> trajetoAtePrateleira = this.mapa.calculaTrajeto(idPrateleira, coordenadasRobo);
-                roboFacade.transmiteInfoRota(idPalete, idPrateleira,idRobo, trajetoAtePrateleira, EstadoRobo.TRANSPORTE);
-            }
+            processaRecolhaPaletes(resultadosMovimentoRobos.getPaletesRecolhidas());
 
             // processamento da entrega de paletes
             List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasPrateleiras =
                     resultadosMovimentoRobos.getTuplosPaletesArmazenadasPrateleiras();
             stockFacade.assinalaPaletesArmazenadas(tuplosPaletesArmazenadasPrateleiras);
 
-            // processamento dos robos que entregaram as paletes
-            Map<Integer, Tuple<Integer, Coordenadas>> infoRobosQueArmazenaram =
-                    resultadosMovimentoRobos.getInfoRobosQueArmazenaram();
+            // processamento dos robos que entregaram as paletes, calculando a rota de regresso
+            // ao estacionamento.
+            processaRobosQueEntregaram(resultadosMovimentoRobos.getInfoRobosQueArmazenaram());
 
-            for(Map.Entry<Integer, Tuple<Integer,Coordenadas>> infoRoboQueArmazenou : infoRobosQueArmazenaram.entrySet()){
-                int idRobo = infoRoboQueArmazenou.getKey();
-                int idEstacionamento = infoRoboQueArmazenou.getValue().getO();
-                Coordenadas coordenadasRobo = infoRoboQueArmazenou.getValue().getT();
 
-                List<Coordenadas> trajetoAteEstacionamento = this.mapa.calculaTrajeto(idEstacionamento, coordenadasRobo);
-                roboFacade.transmiteInfoRota(0,0,idRobo,trajetoAteEstacionamento,EstadoRobo.RETORNO);
-            }
             // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored){}
+    }
+
+    /**
+     * Função responsável por aplicar as alterações necessárias no sistema relativas às paletes que foram recolhidas na
+     * atual iteração da movimentação dos robôs. Esta irá marcar as paletes como recolhidas e calcular os trajetos dos
+     * robos por elas responsáveis desde a área de recolha até à prateleira
+     * @param mapPaleteInfoRoboInfo Map em que a chave é um tuplo composto pelo id de uma palete e o id da prateleira
+     *                             a que se destina, sendo o valor um par composto pelo id do robo que a transporta e
+     *                              pelas coordenadas atuais desse robo
+     */
+    private void processaRecolhaPaletes(Map<Tuple<Integer,Integer>,
+            Tuple<Integer, Coordenadas>> mapPaleteInfoRoboInfo) {
+        for(Map.Entry<Tuple<Integer,Integer>,Tuple<Integer,Coordenadas>> entradaPaleteRobo: mapPaleteInfoRoboInfo.entrySet()){
+            Tuple<Integer,Integer> tuploPaletePrateleira = entradaPaleteRobo.getKey();
+            Tuple <Integer,Coordenadas> tuploRoboCoordenadas = entradaPaleteRobo.getValue();
+
+            int idPalete = tuploPaletePrateleira.getO();
+            int idPrateleira = tuploPaletePrateleira.getT();
+            int idRobo = tuploRoboCoordenadas.getO();
+            Coordenadas coordenadasRobo = tuploRoboCoordenadas.getT();
+            System.out.println("Robo que recolheu: "+idPalete+","+idPrateleira+","+idRobo+","+coordenadasRobo.toString());
+
+            stockFacade.assinalaPaleteEmTransporte(idPalete);
+            List<Coordenadas> trajetoAtePrateleira = this.mapa.calculaTrajeto(idPrateleira, coordenadasRobo);
+            roboFacade.transmiteInfoRota(idPalete, idPrateleira,idRobo, trajetoAtePrateleira, EstadoRobo.TRANSPORTE);
+        }
+    }
+
+    /**
+     * Função responsável por aplicar as alterações necessárias no sistema relativas aos robots que acabaram de
+     * colocar a palete na prateleira e devem agora regressar ao seu local pré-definido
+     * @param infoRobosQueArmazenaram map em que a chave será o id de um robô e o valor um tuplo que contém o Id da
+     *                                zona pré-definida do robô assim como as suas coordenadas atuais.
+     */
+    private void processaRobosQueEntregaram(Map<Integer, Tuple<Integer, Coordenadas>> infoRobosQueArmazenaram){
+        for(Map.Entry<Integer, Tuple<Integer,Coordenadas>> infoRoboQueArmazenou : infoRobosQueArmazenaram.entrySet()){
+            int idRobo = infoRoboQueArmazenou.getKey();
+            int idEstacionamento = infoRoboQueArmazenou.getValue().getO();
+            Coordenadas coordenadasRobo = infoRoboQueArmazenou.getValue().getT();
+
+            List<Coordenadas> trajetoAteEstacionamento = this.mapa.calculaTrajeto(idEstacionamento, coordenadasRobo);
+            roboFacade.transmiteInfoRota(0,0,idRobo,trajetoAteEstacionamento,EstadoRobo.RETORNO);
+        }
     }
     
     public int[][] getMapa () {

@@ -1,9 +1,6 @@
 package Database;
 
-import Business.Armazem.Stock.Palete;
-import Business.Armazem.Stock.Prateleira;
-import Util.EstadoPalete;
-import Util.EstadoPrateleira;
+import Business.Armazem.Stock.EstadoPrateleira;
 import Util.Tuple;
 
 import java.sql.Connection;
