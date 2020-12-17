@@ -91,7 +91,7 @@ public class LeitorCodigosQR implements Runnable {
                 try {
                     String material = readQR(childPath);
                     paletesAGuardar.addNovaPalete(material);
-                    System.out.println("Palete registada: "+material);
+//                    System.out.println("Palete registada: "+material);
                 } catch (NotFoundException | IOException | InterruptedException e) {
                     e.printStackTrace();
                 }

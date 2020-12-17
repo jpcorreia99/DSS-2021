@@ -141,41 +141,4 @@ public class PaleteDAO {
             ConnectionPool.releaseConnection(conn);
         }
     }
-
-    public void atualiza(Integer paleteId, Palete palete) {
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement stm = conn.createStatement()) {
-            stm.executeUpdate(
-                    "INSERT INTO Palete VALUES (" + paleteId.toString() + ", " + palete.getMaterial() + "," +
-                            palete.getEstado().getValor() + ") " +
-                            "ON DUPLICATE KEY UPDATE material=VALUES(material)," +
-                            " estado=VALUES(estado)");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-    }
-
-    public Palete getPaleteAEspera() {
-        Connection conn = ConnectionPool.getConnection();
-        Palete palete = null;
-
-        try (Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Palete WHERE estado='"+ EstadoPalete.RECEM_CHEGADA.getValor()+"'");
-            if (rs.next()) {  // A chave existe na tabela
-                palete = new Palete(rs.getInt("id"),
-                        rs.getString("material"), EstadoPalete.RECEM_CHEGADA);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return palete;
-    }
 }

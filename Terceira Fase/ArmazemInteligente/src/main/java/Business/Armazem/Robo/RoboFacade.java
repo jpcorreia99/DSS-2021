@@ -10,7 +10,6 @@ import Util.Tuple;
 import java.util.*;
 
 public class RoboFacade implements IRobo{
-//    Map<Integer, List<Coordenadas>> rotas;
     RotaDAO rotaDAO;
     RoboDAO roboDAO;
 
