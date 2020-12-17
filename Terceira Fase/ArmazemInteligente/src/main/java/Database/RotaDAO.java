@@ -37,6 +37,7 @@ public class RotaDAO {
                 sb.append(coordenadas.getX()).append(",").append(coordenadas.getY()).append("/");
             }
             String rotaCodificada = sb.toString();
+            System.out.println(rotaCodificada);
             String sql = "INSERT INTO Rota VALUES (" + idRobo + ", '" + rotaCodificada +"') "+
                         "ON DUPLICATE KEY UPDATE valor=VALUES(valor)";
             stm.execute(sql);
@@ -47,10 +48,30 @@ public class RotaDAO {
         }
     }
 
+    public List<Integer> getIdsRobosEmTransito(){
+        Connection conn = ConnectionPool.getConnection();
+        List<Integer> idsRobosEmTransito = new ArrayList<>();
+
+        try (Statement stm = conn.createStatement()) {
+            String sql = "SELECT * from Rota;";
+            ResultSet rs = stm.executeQuery(sql);
+
+            while(rs.next()) {
+                idsRobosEmTransito.add(rs.getInt("idRobo"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return  idsRobosEmTransito;
+    }
+
     public Coordenadas getProximoPasso(int idRobo){
         Connection conn = ConnectionPool.getConnection();
         Coordenadas proximoPasso = null;
-        System.out.println(".");
+
         try (Statement stm = conn.createStatement()) {
             String sql = "SELECT * from Rota where idRobo="+idRobo+";";
             ResultSet rs = stm.executeQuery(sql);

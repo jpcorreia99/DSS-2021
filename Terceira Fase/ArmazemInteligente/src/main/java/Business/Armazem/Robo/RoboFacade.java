@@ -2,6 +2,7 @@ package Business.Armazem.Robo;
 
 import Database.RoboDAO;
 import Business.Armazem.IRobo;
+import Database.RotaDAO;
 import Util.Coordenadas;
 import Util.ResultadosMovimentoRobos;
 import Util.Tuple;
@@ -9,12 +10,13 @@ import Util.Tuple;
 import java.util.*;
 
 public class RoboFacade implements IRobo{
-    Map<Integer, List<Coordenadas>> rotas;
+//    Map<Integer, List<Coordenadas>> rotas;
+    RotaDAO rotaDAO;
     RoboDAO roboDAO;
 
     public RoboFacade(){
         this.roboDAO = RoboDAO.getInstance();
-        this.rotas = new HashMap<>();
+        this.rotaDAO = RotaDAO.getInstance();
     }
 
     public boolean existemRobosDisponiveis(){
@@ -31,18 +33,14 @@ public class RoboFacade implements IRobo{
         robo.setIdPrateleira(idPrateleira);
         robo.setEstado(estadoATer);
         roboDAO.put(idRobo,robo);
-        this.rotas.put(idRobo,percurso);
+        rotaDAO.adicionaRota(idRobo,percurso);
     }
 
     public ResultadosMovimentoRobos moveRobos(){
         ResultadosMovimentoRobos resultadosMovimentoRobos = new ResultadosMovimentoRobos();
-        Set<Integer> idsRobosEmTransito = rotas.keySet();
-        System.out.println("Robos em movimento:");
-        for(int id : idsRobosEmTransito){
-            System.out.print(id+", ");
-        }
-        System.out.println("\n");
+        List<Integer> idsRobosEmTransito = rotaDAO.getIdsRobosEmTransito();
         Map<Integer,Robo> robosEmTransito = roboDAO.getRobos(idsRobosEmTransito);
+
         System.out.println("Robos em movimento(confirmação): ");
         for(int id : robosEmTransito.keySet()){
             Robo r = roboDAO.get(id);
@@ -50,12 +48,15 @@ public class RoboFacade implements IRobo{
         }
         System.out.println("\n");
 
-        for(Map.Entry<Integer,Robo> r : robosEmTransito.entrySet()){
-            Robo robo = r.getValue();
-            Coordenadas proximoPasso = rotas.get(robo.getId()).remove(0);
+
+        for(Map.Entry<Integer,Robo> entradaIdRobo : robosEmTransito.entrySet()){
+            int idRobo = entradaIdRobo.getKey();
+            Robo robo = entradaIdRobo.getValue();
+
+            Coordenadas proximoPasso = rotaDAO.getProximoPasso(idRobo);
             robo.setCoordenadas(proximoPasso);
 
-            if(rotas.get(robo.getId()).isEmpty()) { // terminou uma parte do transporte
+            if(rotaDAO.rotaTerminou(idRobo)) { // terminou uma parte do transporte
                 EstadoRobo estadoRobo = robo.getEstado();
 
                 int idPrateleira = robo.getIdPrateleira();
@@ -76,7 +77,6 @@ public class RoboFacade implements IRobo{
                     robo.setEstado(EstadoRobo.LIVRE);
                     System.out.println("Robo " + robo.getId() + " chegou ao estacionamento");
                 }
-                rotas.remove(robo.getId()); // remove a entrada o robo nas rotas
             }
         }
         roboDAO.atualizaRobos(robosEmTransito);

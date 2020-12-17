@@ -129,7 +129,7 @@ public class RoboDAO {
         }
     }
 
-    public Map<Integer,Robo> getRobos(Set<Integer> listaRoboId){
+    public Map<Integer,Robo> getRobos(List<Integer> listaRoboId){
         Map<Integer,Robo> res = new HashMap<>();
         Connection conn = ConnectionPool.getConnection();
 

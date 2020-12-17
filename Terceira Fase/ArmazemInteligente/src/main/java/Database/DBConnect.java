@@ -101,6 +101,14 @@ public class DBConnect  {
         stm.execute("INSERT INTO Prateleira VALUES (15,1,0)");
         stm.execute("INSERT INTO Prateleira VALUES (16,1,0)");
         stm.execute("INSERT INTO Prateleira VALUES (17,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (18,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (19,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (20,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (21,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (22,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (23,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (24,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (25,1,0)");
     }
 
     private static void inicializaPaletes(Statement stm) throws SQLException {

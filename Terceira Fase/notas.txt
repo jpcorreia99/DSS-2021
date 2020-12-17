@@ -4,3 +4,4 @@ reconstrução do estado do armazém em nova seleção -> try a ver se a bd exis
 atribuir várias paletes de uma só vez
 fechar ligações á bd
 opção de sair do programa
+tratar armazém completamente cheio -  https://stackoverflow.com/questions/8776865/how-to-pass-exception-explicitly-to-the-main-thread-in-c-sharp

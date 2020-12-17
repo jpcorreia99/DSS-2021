@@ -2,6 +2,7 @@ import Database.ConnectionPool;
 import Database.DBConnect;
 import Database.RotaDAO;
 import Util.Coordenadas;
+import View.UI;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,15 +13,15 @@ import java.util.Map;
 
 public class APP {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        try {
-//            DBConnect.setupBD();
-//            ConnectionPool.initialize();
-//            UI ui = new UI();
-//            ui.inicia();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("Problema com a ligação à base de dados");
-//        }
+        try {
+            DBConnect.setupBD();
+            ConnectionPool.initialize();
+            UI ui = new UI();
+            ui.inicia();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Problema com a ligação à base de dados");
+        }
 
 
 
@@ -87,41 +88,41 @@ public class APP {
 //        percurso2.add(b3);
 //        percurso2.add(b4);
 //
-        DBConnect.setupBD();
-        ConnectionPool.initialize();
-        List<Coordenadas> percurso3 = new ArrayList<>();
-        Coordenadas c1 = new Coordenadas(1,1);
-        Coordenadas c2 = new Coordenadas(2,2);
-        Coordenadas c3 = new Coordenadas(3,3);
-        Coordenadas c4 = new Coordenadas(6,6);
-        percurso3.add(c1);
-        percurso3.add(c2);
-        percurso3.add(c3);
-        percurso3.add(c4);
+//        DBConnect.setupBD();
+//        ConnectionPool.initialize();
+//        List<Coordenadas> percurso3 = new ArrayList<>();
+//        Coordenadas c1 = new Coordenadas(1,1);
+//        Coordenadas c2 = new Coordenadas(2,2);
+//        Coordenadas c3 = new Coordenadas(3,3);
+//        Coordenadas c4 = new Coordenadas(6,6);
+//        percurso3.add(c1);
+//        percurso3.add(c2);
+//        percurso3.add(c3);
+//        percurso3.add(c4);
+////
+//        List<Coordenadas> percurso4 = new ArrayList<>();
+//        Coordenadas d1 = new Coordenadas(1,1);
+//        Coordenadas d2 = new Coordenadas(2,2);
+//        Coordenadas d3 = new Coordenadas(3,1);
+//        Coordenadas d4 = new Coordenadas(9,0);
+//        Coordenadas d5 = new Coordenadas(7,7);
+//        percurso4.add(d1);
+//        percurso4.add(d2);
+//        percurso4.add(d3);
+//        percurso4.add(d4);
+//        percurso4.add(d5);
 //
-        List<Coordenadas> percurso4 = new ArrayList<>();
-        Coordenadas d1 = new Coordenadas(1,1);
-        Coordenadas d2 = new Coordenadas(2,2);
-        Coordenadas d3 = new Coordenadas(3,1);
-        Coordenadas d4 = new Coordenadas(9,0);
-        Coordenadas d5 = new Coordenadas(7,7);
-        percurso4.add(d1);
-        percurso4.add(d2);
-        percurso4.add(d3);
-        percurso4.add(d4);
-        percurso4.add(d5);
-
-        Map<Integer,List<Coordenadas>> tlwp = new HashMap<>();
-        tlwp.put(3,percurso3);
-        tlwp.put(4,percurso4);
-
-        RotaDAO rotaDAO = new RotaDAO();
-        rotaDAO.adicionaRota(3,percurso3);
-        rotaDAO.adicionaRota(4,percurso4);
-
-        while(!rotaDAO.rotaTerminou(3)){
-            System.out.println(rotaDAO.getProximoPasso(3).toString());
-        }
+//        Map<Integer,List<Coordenadas>> tlwp = new HashMap<>();
+//        tlwp.put(3,percurso3);
+//        tlwp.put(4,percurso4);
+//
+//        RotaDAO rotaDAO = new RotaDAO();
+//        rotaDAO.adicionaRota(3,percurso3);
+//        rotaDAO.adicionaRota(4,percurso4);
+//
+//        while(!rotaDAO.rotaTerminou(3)){
+//            System.out.println(rotaDAO.getProximoPasso(3).toString());
+//        }
 
 //        String[] parts = coordenadasCodificadas.split("/");
 //        for(String part : parts){

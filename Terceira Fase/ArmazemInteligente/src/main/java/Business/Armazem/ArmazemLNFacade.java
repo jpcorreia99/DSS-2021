@@ -56,6 +56,12 @@ public class ArmazemLNFacade implements IArmazemLN {
             long start2 = System.currentTimeMillis();
             escalonaRobos();
             moveRobos();
+
+            // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ignored){}
+
             long finish2 = System.currentTimeMillis();
             long timeElapsed2 = finish2 - start2;
             System.out.println(timeElapsed2);
@@ -106,12 +112,6 @@ public class ArmazemLNFacade implements IArmazemLN {
             // processamento dos robos que entregaram as paletes, calculando a rota de regresso
             // ao estacionamento.
             processaRobosQueEntregaram(resultadosMovimentoRobos.getInfoRobosQueArmazenaram());
-
-
-            // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException ignored){}
     }
 
     /**
