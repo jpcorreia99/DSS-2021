@@ -1,11 +1,14 @@
 package Database;
 
 import Business.Armazem.Robo.Robo;
+import Util.Coordenadas;
+import Business.Armazem.Robo.EstadoRobo;
+import Util.Tuple;
 
 import java.sql.*;
 import java.util.*;
 
-public class RoboDAO implements Map<Integer, Robo> {
+public class RoboDAO {
     private static RoboDAO singleton = null;
 
     /**
@@ -20,123 +23,162 @@ public class RoboDAO implements Map<Integer, Robo> {
         return RoboDAO.singleton;
     }
 
-    @Override
+    public boolean existemRobosDisponiveis(){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement sta = conn.createStatement()) {
+            String sql = "SELECT * from Robo where estado="+EstadoRobo.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
+            ResultSet rs = sta.executeQuery(sql);
+            if(rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return false;
+    }
+
     public int size() {
         int i = 0;
+        Connection conn = ConnectionPool.getConnection();
 
-        try (Connection conn = DBConnect.connect();
-             Statement sta = conn.createStatement()) {
+        try (Statement sta = conn.createStatement()) {
             String sql = "SELECT count(*) AS Total from Robo";
             ResultSet rs = sta.executeQuery(sql);
             if(rs.next())
                 i = rs.getInt("Total");
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
         }
 
         return i;
     }
 
-    @Override
-    public Robo get(Object key) {
+    public Robo get(Object roboId) {
         Robo r = null;
+        Connection conn = ConnectionPool.getConnection();
 
-        try (Connection conn = DBConnect.connect();
-             Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='"+key+"'");
+        try (Statement stm = conn.createStatement()) {
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='"+roboId+"'");
             if (rs.next()) {  // A chave existe na tabela
                 r = new Robo(rs.getInt("id"),
-                        rs.getInt("x"), rs.getInt("y"),rs.getInt("idPrateleira"), rs.getInt("idPalete"));
+                        rs.getInt("x"), rs.getInt("y"),rs.getInt("idEstacionamento"),
+                        rs.getInt("idPrateleira"), rs.getInt("idPalete"), EstadoRobo.getEnumByValor(rs.getInt("estado")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
         }
 
         return r;
     }
 
-    @Override
-    public Robo put(Integer idRobo, Robo robo) {
-        Robo res;
+    public void put(Integer roboId, Robo robo) {
+        Connection conn = DBConnect.connect();
 
-        try (Connection conn = DBConnect.connect();
-             Statement stm = conn.createStatement()) {
+        try (Statement stm = conn.createStatement()) {
             // Actualizar o Robo
-            res = get(idRobo);
             stm.executeUpdate(
-                    "INSERT INTO Robo VALUES (" + idRobo.toString() + ", " + robo.getCoordenadas().getX() + "," +
-                            robo.getCoordenadas().getY()+","+
-                            robo.getIdPrateleira() + "," + robo.getIdPalete() + ") "+
+                    "INSERT INTO Robo VALUES (" + roboId.toString() + ", " + robo.getCoordenadas().getX() + "," +
+                            robo.getCoordenadas().getY()+","+ robo.getZonaEstacionamento() +","+
+                            robo.getIdPrateleira() + "," + robo.getIdPalete() + "," +
+                            robo.getEstado().getValor() +") "+
                              "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
-                            " y=VALUES(y),"+ " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete)");
+                            " y=VALUES(y),"+"idEstacionamento=Values(idEstacionamento)," +
+                            " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete), estado=VALUES(estado)");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
         }
+    }
+
+    /**
+     * devolve o Id de um robô que esteja disponível para transporte, atriuindo-lhe a palete que irá transportar
+     * @param idPalete
+     * @return
+     */
+    public Tuple<Integer, Coordenadas> encontraRoboLivre(int idPalete){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE estado='" + EstadoRobo.LIVRE.getValor() + "';");
+            rs.next();
+            int idRobo = rs.getInt("id");
+            Coordenadas coodernadasRobo =  new Coordenadas(rs.getInt("x"), rs.getInt("y"));
+
+            //atribui a palete ao robo
+            stm.executeUpdate("UPDATE Robo"+
+                             " SET idPalete="+idPalete+
+                             " WHERE id ="+idRobo+";");
+
+            return new Tuple<>(idRobo,coodernadasRobo);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+    }
+
+    public Map<Integer,Robo> getRobos(List<Integer> listaRoboId){
+        Map<Integer,Robo> res = new HashMap<>();
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+            for(Integer roboId: listaRoboId) {
+                ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + roboId + "'");
+
+                if (rs.next()) {  // A chave existe na tabela
+                    res.put(roboId, new Robo(rs.getInt("id"),
+                            rs.getInt("x"), rs.getInt("y"),
+                            rs.getInt("idEstacionamento"),
+                            rs.getInt("idPrateleira"),
+                            rs.getInt("idPalete"),
+                            EstadoRobo.getEnumByValor(rs.getInt("estado"))));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
         return res;
     }
 
-    @Override
-    public Collection<Robo> values() {
-        List<Robo> col = new ArrayList<>();
+    public void atualizaRobos(Map<Integer,Robo> robosEmTransito){
+        Connection conn = ConnectionPool.getConnection();
 
-        try (Connection conn = DBConnect.connect();
-             Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT id FROM Robo");
-            while (rs.next()) {   // Utilizamos o id para chamar o get e obter o robo
-                col.add(this.get(rs.getString("id")));
+        try (Statement stm = conn.createStatement()) {
+            // Actualizar o Robo
+            for(Map.Entry<Integer,Robo> entrada : robosEmTransito.entrySet()) {
+                Robo robo = entrada.getValue();
+                Integer roboId = entrada.getKey();
+
+                stm.executeUpdate("INSERT INTO Robo VALUES (" + roboId.toString() + ", " +
+                        robo.getCoordenadas().getX() + "," +
+                        robo.getCoordenadas().getY()+","+ robo.getZonaEstacionamento() +","+
+                        robo.getIdPrateleira() + "," + robo.getIdPalete() + "," +
+                        robo.getEstado().getValor() +") "+
+                        "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
+                        " y=VALUES(y),"+"idEstacionamento=Values(idEstacionamento)," +
+                        " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete), estado=VALUES(estado)");
             }
-        } catch (Exception e) {
-            // Database error!
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
         }
-
-        return col;
     }
-
-
-
-    @Override
-    public boolean isEmpty() {
-        throw new NullPointerException("method not implemented!");
-    }
-
-    @Override
-    public boolean containsKey(Object o) {
-        throw new NullPointerException("methodnot implemented!");
-    }
-
-    @Override
-    public boolean containsValue(Object o) {
-        throw new NullPointerException("method not implemented!");
-    }
-
-    @Override
-    public Robo remove(Object o) {
-        throw new NullPointerException("method not implemented!");
-    }
-
-    @Override
-    public void putAll(Map<? extends Integer, ? extends Robo> map) {
-
-    }
-
-    @Override
-    public void clear() {
-        throw new NullPointerException("method not implemented!");
-    }
-
-    @Override
-    public Set<Integer> keySet() {
-        throw new NullPointerException("method not implemented!");
-    }
-
-
-    @Override
-    public Set<Entry<Integer, Robo>> entrySet() {
-        throw new NullPointerException("method not implemented!");
-    }
-
 }

@@ -1,7 +1,6 @@
 package Database;
 
 import Business.Armazem.Gestor.Gestor;
-import Util.Estado;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -52,7 +51,7 @@ public class DBConnect  {
         inicializaRobos(stm);
         inicializaPrateleiras(stm);
         inicializaPaletes(stm);
-
+        inicializaRotas(stm);
     }
 
     private static void inicializaGestores(Statement stm) throws SQLException {
@@ -73,31 +72,43 @@ public class DBConnect  {
                 "  `id` INT NOT NULL,\n" +
                 "  `x` INT NOT NULL,\n" +
                 "  `y` INT NOT NULL,\n" +
+                "   `idEstacionamento` INT NOT NULL,\n" +
                 "  `idPrateleira` INT NOT NULL,\n" +
                 "  `idPalete` INT NOT NULL,\n" +
+                "  `estado` INT NOT NULL," +
                 "  PRIMARY KEY (`id`))";
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Robo VALUES (1,0,0,0,0)");
-        stm.execute("INSERT INTO Robo VALUES (2,1,0,0,0)");
-        stm.execute("INSERT INTO Robo VALUES (3,0,1,0,0)");
+        stm.execute("INSERT INTO Robo VALUES (1,2,4,1,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (2,2,5,2,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (3,2,6,3,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (4,2,7,4,0,0,1)");
     }
 
     private static void inicializaPrateleiras(Statement stm) throws SQLException {
         String sql = "CREATE TABLE Prateleira (" +
                 "  id INT NOT NULL PRIMARY KEY," +
-                "  paleteId INT NOT NULL);";
+                "  estado INT NOT NULL, "+
+                "  idPalete INT NOT NULL);";
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Prateleira VALUES (1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (2,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (3,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (4,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (5,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (6,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (7,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (11,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (12,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (13,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (14,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (15,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (16,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (17,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (18,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (19,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (20,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (21,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (22,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (23,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (24,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (25,1,0)");
     }
 
     private static void inicializaPaletes(Statement stm) throws SQLException {
@@ -106,6 +117,14 @@ public class DBConnect  {
                 "  material VARCHAR(45) NOT NULL, "+
                 "  estado INT NOT NULL);";
 
+        stm.execute(sql);
+    }
+
+    private static void inicializaRotas(Statement stm) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS `ArmazemInteligente`.`Rota` (\n" +
+                "  `idRobo` INT NOT NULL,\n" +
+                "  `valor` VARCHAR(1000) NOT NULL,\n" +
+                "  PRIMARY KEY (`idRobo`))";
         stm.execute(sql);
     }
 }

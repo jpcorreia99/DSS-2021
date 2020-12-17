@@ -1,4 +1,4 @@
-package Util;
+package Requests;
 
 import java.io.*;
 
@@ -14,6 +14,7 @@ import java.util.concurrent.locks.Lock;
 import javax.imageio.ImageIO;
 
 import Business.Armazem.Stock.Palete;
+import Database.PaleteDAO;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
@@ -33,21 +34,18 @@ public class LeitorCodigosQR implements Runnable {
 //    - Reset the key, and resume waiting for events.
 //    - Close the service: The watch service exits when either the thread exits or when it is closed (by invoking its closed method).
 
-    private final List<Palete> paletesAGuardar;
-    private final Lock lockPaletes;
-    private final Condition condicaoPaleteNova;
+    private final PaleteDAO paletesAGuardar;
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
-    private Path sourceDirPath;
+    private Boolean working; // DEVERÁ SER TORNADO FALSO PELA THREAD PRINCIPAL PARA ACABAR COM O TRABALHO DESTA THREAD
 
-    public LeitorCodigosQR(List<Palete> paletesAGuardar, Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
-        this.paletesAGuardar = paletesAGuardar;
-        this.lockPaletes = lockPaletes;
-        this.condicaoPaleteNova = conditionNovaPalete;
+    public LeitorCodigosQR( Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
+        this.paletesAGuardar = PaleteDAO.getInstance();
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<>();
         File sourceDir = new File("src/main/resources");
-        this.sourceDirPath = Paths.get(sourceDir.toURI());
+        Path sourceDirPath = Paths.get(sourceDir.toURI());
+        this.working=true;
 
         WatchKey key = sourceDirPath.register(watcher, ENTRY_CREATE); // verifica a criação de novos ficheiros na diretoria
         keys.put(key, sourceDirPath);
@@ -60,8 +58,7 @@ public class LeitorCodigosQR implements Runnable {
     public void run() {
         System.out.println("QRCode Reader funcional!");
         // loop infinito - está sempre a verificar se apareceu algum ficheiro novo
-        for (;;) {
-
+        while(working) {
             // espera que a chave do watcher da diretoria seja assinalada
             WatchKey key;
             try {
@@ -88,19 +85,13 @@ public class LeitorCodigosQR implements Runnable {
                 String childPath = dir.resolve(name).toString();
 
                 // print out event
-                System.out.format("%s: %s\n", event.kind().name(), childPath);
+//                System.out.format("%s: %s\n", event.kind().name(), childPath);
 
                 // tendo o path do novo ficheiro, tentar criar a palete
                 try {
-                    Palete palete = readQR(childPath);
-                    try {
-                        lockPaletes.lock();
-                        paletesAGuardar.add(palete);
-                        condicaoPaleteNova.signal();
-                        System.out.println("Palete registada!");
-                    } finally {
-                        lockPaletes.unlock();
-                    }
+                    String material = readQR(childPath);
+                    paletesAGuardar.addNovaPalete(material);
+//                    System.out.println("Palete registada: "+material);
                 } catch (NotFoundException | IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -127,11 +118,11 @@ public class LeitorCodigosQR implements Runnable {
     /**
      *
       * @param path path para um código QR
-     * @return Palete representada no QRCode
+     * @return material representado no QRCode
      * @throws IOException
      * @throws NotFoundException
      */
-    public static Palete readQR(String path)
+    public static String readQR(String path)
             throws IOException,
             NotFoundException, InterruptedException {
 
@@ -149,6 +140,10 @@ public class LeitorCodigosQR implements Runnable {
 
         fis.close();
 
-        return new Palete(result.getText());
+        return result.getText();
+    }
+
+    public void desliga(){
+        this.working=false;
     }
 }

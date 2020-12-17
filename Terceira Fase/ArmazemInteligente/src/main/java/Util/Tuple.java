@@ -2,8 +2,8 @@ package Util;
 
 public class Tuple<o,t> {
 
-    private o one;
-    private t two;
+    private final o one;
+    private final t two;
 
     public Tuple(o one, t two) {
         this.one = one;

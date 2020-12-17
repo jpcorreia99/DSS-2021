@@ -4,59 +4,16 @@ import Database.PaleteDAO;
 
 public class Prateleira {
     private int id;
+    /** Assinala se já existe uma palete que lhe foi atribuida (guardada ou a caminho*/
+    private EstadoPrateleira estado;
     private PaleteDAO paleteDAO;
-    private int paleteId;
+    private int idPalete;
 
-    /**
-     * Contrutor parametrizado
-     * @param id id da prateleira
-     * @param paleteId 0 se contém palete ou o id desta se existir
-     */
-    public Prateleira(int id,int paleteId) {
+
+    public Prateleira(int id, EstadoPrateleira estado, int idPalete) {
         this.id = id;
+        this.estado = estado;
         this.paleteDAO = PaleteDAO.getInstance();
-        this.paleteId = paleteId;
-    }
-
-    /**
-     * Contrutor por cópia
-     * @param prat Objeto a ser copiado
-     */
-    public Prateleira(Prateleira prat) {
-        setId(prat.getId());
-        setPaleteId(prat.getPaleteId());
-    }
-
-    /**
-     * Obtém Id da prateleira.
-     * @return Id da prateleira
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Atualiza id da prateleira
-     * @param id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    /**
-     * Obtém o id da palete contida
-     * @return 0 se não houver palete ou o id desta se existir
-     */
-    public int getPaleteId() {
-        return paleteId;
-    }
-
-    /**
-     * Atualzia o id da palete contida
-     * @param paleteId novo id.
-     */
-    public void setPaleteId(int paleteId) {
-        this.paleteId = paleteId;
+        this.idPalete = idPalete;
     }
 }

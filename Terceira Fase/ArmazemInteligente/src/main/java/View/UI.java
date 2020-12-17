@@ -1,15 +1,14 @@
 
 package View;
 
-import java.util.Scanner;
+import java.util.*;
+
 import Business.Armazem.ArmazemLNFacade;
+
 import Util.Tuple;
 import java.util.ArrayList;
 
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Map;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -161,6 +160,7 @@ public class UI {
     }
     
     public void inicia() {
+        this.model.start();
         showLogo();
         verificaLogin();
         showBoasVindas();
@@ -173,7 +173,7 @@ public class UI {
             else
                 System.out.println("Opcao não disponivel.\n Pressione 'Enter' para continuar.\n");
         } while (opcao != 0);
-        
+        this.model.desligaSistema();
         exitScreen();
     }
     
