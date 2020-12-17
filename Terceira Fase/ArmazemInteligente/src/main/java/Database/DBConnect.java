@@ -80,10 +80,10 @@ public class DBConnect  {
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Robo VALUES (1,1,1,1,0,0,1)");
-        stm.execute("INSERT INTO Robo VALUES (2,1,2,2,0,0,1)");
-        stm.execute("INSERT INTO Robo VALUES (3,1,3,3,0,0,1)");
-        stm.execute("INSERT INTO Robo VALUES (4,1,4,4,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (1,2,4,1,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (2,2,5,2,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (3,2,6,3,0,0,1)");
+        stm.execute("INSERT INTO Robo VALUES (4,2,7,4,0,0,1)");
     }
 
     private static void inicializaPrateleiras(Statement stm) throws SQLException {

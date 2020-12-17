@@ -4,20 +4,15 @@ package View;
 import java.util.*;
 
 import Business.Armazem.ArmazemLNFacade;
-import Business.Armazem.Stock.Palete;
+
+import Util.Tuple;
+import java.util.ArrayList;
+
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
 class MapaThread implements Runnable {
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-    
     ArmazemLNFacade model;
     private AtomicBoolean running;
     
@@ -40,6 +35,13 @@ class MapaThread implements Runnable {
                 System.out.flush();
                 
                 UI.showLogo();
+                
+                for (int i = 0; i < 12; i++) {
+                    for (int j = 0; j < 16; j++)
+                        System.out.print(mapa[i][j]);
+                    System.out.print("\n");
+                }
+                
                 for (int i = 0; i < 12; i++) {
                     System.out.print("                                                               ");
                     for (int j = 0; j < 16; j++) {
@@ -49,29 +51,29 @@ class MapaThread implements Runnable {
                                 break;
                             case 1:
                                 if ((i == 0 && j == 2) || (i == 2 && j == 0))
-                                    System.out.print(ANSI_BLUE + "╔" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "╔" + UI.ANSI_RESET);
                                 else if ((i == 2 && j == 2) || (i == 11 && j == 15))
-                                    System.out.print(ANSI_BLUE +"╝" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE +"╝" + UI.ANSI_RESET);
                                 else if ((i == 0 && j == 15) || (i == 9 && j == 2))
-                                    System.out.print(ANSI_BLUE + "╗" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "╗" + UI.ANSI_RESET);
                                 else if ((i == 9 && j == 0) || (i == 11 && j == 2))
-                                    System.out.print(ANSI_BLUE + "╚" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "╚" + UI.ANSI_RESET);
                                 else if (i == 0 || i == 11 || (i == 2 && j == 1) || (i == 9 && j == 1))
-                                    System.out.print(ANSI_BLUE + "═");
+                                    System.out.print(UI.ANSI_BLUE + "═");
                                 else
-                                    System.out.print(ANSI_BLUE + "║" + ANSI_RESET);
+                                    System.out.print(UI.ANSI_BLUE + "║" + UI.ANSI_RESET);
                                 break;
                             case 2: 
-                                System.out.print(ANSI_YELLOW + "☺" + ANSI_RESET);
+                                System.out.print(UI.ANSI_YELLOW + "☺" + UI.ANSI_RESET);
                                 break;
                             case 3: 
-                                System.out.print(ANSI_GREEN + "☻" + ANSI_RESET);
+                                System.out.print(UI.ANSI_GREEN + "☻" + UI.ANSI_RESET);
                                 break;
                             case 4: 
-                                System.out.print("○");
+                                System.out.print(UI.ANSI_BLUE + "○" + UI.ANSI_RESET);
                                 break;
                             case 5: 
-                                System.out.print("◙");
+                                System.out.print(UI.ANSI_RED + "◙" + UI.ANSI_RESET);
                                 break;
                         }
                     }
@@ -92,16 +94,25 @@ class MapaThread implements Runnable {
     
 }
 
+
 public class UI {
     private ArmazemLNFacade model;
     private Scanner scan;
     private List<String> opcoes;
+    private List<MenuHandler> handlers;
     private int opcao;
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+    
+    public interface MenuHandler {
+        void execute();
+    }
     
     public UI() {
         this.model = new ArmazemLNFacade();
@@ -110,6 +121,14 @@ public class UI {
                 "2. Consultar localização de todas as paletes em armazém",
                 "0. Sair");
         this.opcao = 0;
+        this.handlers = new ArrayList<>();
+        
+        addHandler(() -> showMapa());
+        addHandler(() -> showPaletes());
+    }
+    
+    private void addHandler(UI.MenuHandler h) {
+        this.handlers.add(h);
     }
     
     private void showMenu() {
@@ -139,42 +158,33 @@ public class UI {
         showLogo();
         System.out.println ("\n                           Bemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
     }
-
     
     public void inicia() {
-            this.model.start();
-            showLogo();
-            verificaLogin();
-            showBoasVindas();
-
+        this.model.start();
+        showLogo();
+        verificaLogin();
+        showBoasVindas();
+            
         do {
             showMenu();
-
-            switch ((opcao = getOpcao())) {
-                case 1:
-                    showMapa(this.model);
-                    break;
-                case 2:
-//                    Object paletes = this.model.getPaletes();
-//                    showPaletes(paletes);
-                    break;
-            }
+           
+            if ((opcao = getOpcao()) > 0 && opcao < 3)
+                this.handlers.get(opcao-1).execute();
+            else
+                System.out.println("Opcao não disponivel.\n Pressione 'Enter' para continuar.\n");
         } while (opcao != 0);
         this.model.desligaSistema();
         exitScreen();
     }
     
     
-    public void showPaletes (Object paletes) {
+    public void showPaletes () {
+        Map <Integer, Tuple <String, Integer>> paletes = this.model.getPaletes();
+        
         System.out.print("\033[H\033[2J");
         System.out.flush();
         
         showLogo();
-        
-        String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
-        Integer[] xs = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
-        Integer[] ys = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
-        Integer[] estado = {1, 2, 2, 1, 1, 0, 1, 1, 0, 1, 1};
       
         System.out.print(ANSI_CYAN + "                   --------------------------------------------------------------------------------------------");
         System.out.print("\n                   |                                      " + ANSI_RESET + String.format("%s", "Listagem de paletes") + ANSI_CYAN + "                                 |");
@@ -182,24 +192,27 @@ public class UI {
         System.out.print("\n                   |"  + ANSI_RESET + "      Palete" + ANSI_CYAN + "      ||" + ANSI_RESET + "         Material     " + ANSI_CYAN + "    || " + ANSI_RESET + "   Coordenadas " + ANSI_CYAN + "   ||  " + ANSI_RESET + "     Estado     " + ANSI_CYAN + "   |");
         System.out.println("\n                   --------------------------------------------------------------------------------------------");
         
-        for (int j = 0; j < 11; j++) {
+        for (Map.Entry<Integer, Tuple<String, Integer>> e : paletes.entrySet()) {
             String s = null;
-            
-            switch (estado[j]) {
-                case 0: 
+            Tuple <String, Integer> t = e.getValue();
+            switch (t.getT()) {
+                case 1: 
                     s = ANSI_RED + "EM ESPERA" + ANSI_CYAN;
                     break;
-                case 1:
+                case 2:
                     s = ANSI_YELLOW + "EM TRANSPORTE" + ANSI_CYAN;
                     break;
-                case 2:
+                case 3:
                     s = ANSI_GREEN + "ARMAZENADA" + ANSI_CYAN;
                     break;
-               
+                case 4: 
+                    s = ANSI_BLUE + "RECEM CHEGADA" + ANSI_BLUE;
+                    break;
             }
-            System.out.println("                   |" + ANSI_RESET + String.format("%9d%-9s", j, " ") + ANSI_CYAN + "|" +
-            String.format("%-10s%-21s", "|", ANSI_RESET + materiais[j], " ") + ANSI_CYAN + "|" +  
-            String.format("%-8s%-16s", "|", ANSI_RESET + "(" + xs[j].toString() + "," + ys[j].toString() + ")")  + ANSI_CYAN + "|" + 
+            
+            System.out.println("                   |" + ANSI_RESET + String.format("%9d%-9s", e.getKey(), " ") + ANSI_CYAN + "|" +
+            String.format("%-10s%-21s", "|", ANSI_RESET + t.getO(), " ") + ANSI_CYAN + "|" +  
+            String.format("%-8s%-16s", "|", ANSI_RESET + "(" + 0 + "," + 0 + ")")  + ANSI_CYAN + "|" + 
             String.format("%-6s%-26s", "|", s, " ") + ANSI_CYAN + "|");
         }
             System.out.println(ANSI_CYAN + "                   --------------------------------------------------------------------------------------------\n" + ANSI_RESET);
@@ -240,7 +253,7 @@ ANSI_GREEN + "                                                                  
 "" + ANSI_RESET);
     }
     
-    public void showMapa (ArmazemLNFacade model) {
+    public void showMapa () {
         MapaThread m;
         Thread t = new Thread ((m = new MapaThread(model)));
         t.start();

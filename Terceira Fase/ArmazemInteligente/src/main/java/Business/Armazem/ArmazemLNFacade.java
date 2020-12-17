@@ -7,11 +7,18 @@ import Business.Armazem.Stock.StockFacade;
 import Business.IArmazemLN;
 
 import Requests.LeitorCodigosQR;
-import Util.*;
+import Util.Coordenadas;
+import Util.ResultadosMovimentoRobos;
+import Util.Tuple;
 
 import java.io.IOException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,8 +50,23 @@ public class ArmazemLNFacade implements IArmazemLN {
         Thread threadLeitorCodigosQR = new Thread(this.leitorCodigosQR);
         threadLeitorCodigosQR.start();
 
+
         Thread threadEscalonamentoRobos = new Thread(this::gereRobos);
         threadEscalonamentoRobos.start();
+    }
+    
+    public Map<Integer, Tuple<String, Integer>> getPaletes() {
+        Map<Integer, Tuple<String, Integer>> paletes = new HashMap<>();
+         
+        String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
+        Integer[] ys = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
+        Integer[] xs = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
+        Integer[] estado = {1, 2, 2, 3, 1, 4, 1, 3, 2, 4, 1};
+        
+        for (int i = 0; i < 10; i++)
+            paletes.put(i+1, new Tuple<>(materiais[i], estado[i]));
+         //return stockFacade.getLocPaletes();
+         return paletes;
     }
 
     public boolean login (String user, String password) {
@@ -133,8 +155,12 @@ public class ArmazemLNFacade implements IArmazemLN {
             System.out.println("Robo que recolheu: "+idPalete+","+idPrateleira+","+idRobo+","+coordenadasRobo.toString());
 
             stockFacade.assinalaPaleteEmTransporte(idPalete);
-            List<Coordenadas> trajetoAtePrateleira = this.mapa.calculaTrajeto(idPrateleira, coordenadasRobo);
-            roboFacade.transmiteInfoRota(idPalete, idPrateleira,idRobo, trajetoAtePrateleira, EstadoRobo.TRANSPORTE);
+            List<Coordenadas> rotaAtePrateleira = this.mapa.calculaRota(idPrateleira, coordenadasRobo);
+//            System.out.println("Transmitida rota até à pratleira, robo: "+idRobo);
+//            for(Coordenadas c : rotaAtePrateleira){
+//                System.out.println(c.toString());
+//            }
+            roboFacade.transmiteInfoRota(idPalete, idPrateleira,idRobo, rotaAtePrateleira, EstadoRobo.TRANSPORTE);
         }
     }
 
@@ -150,13 +176,43 @@ public class ArmazemLNFacade implements IArmazemLN {
             int idEstacionamento = infoRoboQueArmazenou.getValue().getO();
             Coordenadas coordenadasRobo = infoRoboQueArmazenou.getValue().getT();
 
-            List<Coordenadas> trajetoAteEstacionamento = this.mapa.calculaTrajeto(idEstacionamento, coordenadasRobo);
-            roboFacade.transmiteInfoRota(0,0,idRobo,trajetoAteEstacionamento,EstadoRobo.RETORNO);
+            List<Coordenadas> rotaAteEstacionamento = this.mapa.calculaRota(idEstacionamento, coordenadasRobo);
+//            System.out.println("Transmitida rota até à base, robo: "+idRobo);
+//            for(Coordenadas c : rotaAteEstacionamento){
+//                System.out.println(c.toString());
+//            }
+            roboFacade.transmiteInfoRota(0,0,idRobo,rotaAteEstacionamento,EstadoRobo.RETORNO);
         }
     }
     
     public int[][] getMapa () {
-        return mapa.getMapa();
+        int[][] map = mapa.getMapa();
+        //List<Integer> prateleiras = stockFacade.getPrateleirasOcupadas();
+        //List<Tuple<Coordenadas, Boolean>> robos = roboFacade.getInfoRobo();
+ 
+        List <Integer> prateleiras = Arrays.asList(new Integer[] {16, 24, 25, 32, 40, 41, 42});
+        Tuple<Coordenadas, Boolean> robo1 = new Tuple(new Coordenadas(3,4), true);
+        Tuple<Coordenadas, Boolean> robo2 = new Tuple(new Coordenadas(6,2), false);
+        Tuple<Coordenadas, Boolean> robo3 = new Tuple(new Coordenadas(8,10), true);
+        Tuple<Coordenadas, Boolean> robo4 = new Tuple(new Coordenadas(9,2), false);
+        
+        List<Tuple<Coordenadas, Boolean>> robos = new ArrayList<>();
+        robos.add(robo1);
+        robos.add(robo2);
+        robos.add(robo3);
+        robos.add(robo4);
+        
+        for (Integer i : prateleiras) {
+            Coordenadas c = mapa.getCoords(i);
+            map[c.getY()][c.getX()] = 3;
+        }
+        
+        for (Tuple<Coordenadas, Boolean> t : robos) {
+            Coordenadas c = t.getO();
+            map[c.getY()][c.getX()] = t.getT() ? 5 : 4;
+        }
+        
+        return map;
     }
 
     public void desligaSistema(){

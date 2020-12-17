@@ -33,6 +33,7 @@ public class RoboFacade implements IRobo{
         robo.setEstado(estadoATer);
         roboDAO.put(idRobo,robo);
         rotaDAO.adicionaRota(idRobo,percurso);
+        System.out.println(".");
     }
 
     public ResultadosMovimentoRobos moveRobos(){
