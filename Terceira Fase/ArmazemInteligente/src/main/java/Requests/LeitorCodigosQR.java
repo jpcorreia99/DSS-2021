@@ -85,7 +85,7 @@ public class LeitorCodigosQR implements Runnable {
                 String childPath = dir.resolve(name).toString();
 
                 // print out event
-                System.out.format("%s: %s\n", event.kind().name(), childPath);
+//                System.out.format("%s: %s\n", event.kind().name(), childPath);
 
                 // tendo o path do novo ficheiro, tentar criar a palete
                 try {
@@ -118,7 +118,7 @@ public class LeitorCodigosQR implements Runnable {
     /**
      *
       * @param path path para um código QR
-     * @return Palete representada no QRCode
+     * @return material representado no QRCode
      * @throws IOException
      * @throws NotFoundException
      */

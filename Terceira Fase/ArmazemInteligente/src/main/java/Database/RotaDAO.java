@@ -37,7 +37,6 @@ public class RotaDAO {
                 sb.append(coordenadas.getX()).append(",").append(coordenadas.getY()).append("/");
             }
             String rotaCodificada = sb.toString();
-            System.out.println(rotaCodificada);
             String sql = "INSERT INTO Rota VALUES (" + idRobo + ", '" + rotaCodificada +"') "+
                         "ON DUPLICATE KEY UPDATE valor=VALUES(valor)";
             stm.execute(sql);
@@ -78,14 +77,12 @@ public class RotaDAO {
             rs.next();
             String rotaCodificada = rs.getString("valor");
             List<Coordenadas> rotaDescodificada = descodificaRota(rotaCodificada);
-            System.out.println(rotaDescodificada.size());
             proximoPasso = rotaDescodificada.remove(0);
-            System.out.println(rotaDescodificada.size());
+
             // se a lista estiver vazia depois de remover o próximo passo, remove-se a entrada na tabela
             if(rotaDescodificada.isEmpty()){
                 String queryDeEliminacao = "DELETE from Rota where idRobo="+idRobo +";";
                 stm.executeUpdate(queryDeEliminacao);
-                System.out.println("Apagou a rota do robo"+idRobo);
             }else{ // atualiza a rota
                 adicionaRota(idRobo,rotaDescodificada);
             }
@@ -100,7 +97,7 @@ public class RotaDAO {
 
     public boolean rotaTerminou(int idRobo){
         Connection conn = ConnectionPool.getConnection();
-        System.out.println(",");
+
         try (Statement stm = conn.createStatement()) {
             String sql = "SELECT * from Rota where idRobo="+idRobo+";";
             ResultSet rs = stm.executeQuery(sql);

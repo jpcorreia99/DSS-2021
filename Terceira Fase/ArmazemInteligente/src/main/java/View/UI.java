@@ -1,13 +1,11 @@
 
 package View;
 
-import java.util.Scanner;
-import Business.Armazem.ArmazemLNFacade;
+import java.util.*;
 
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Map;
+import Business.Armazem.ArmazemLNFacade;
+import Business.Armazem.Stock.Palete;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -145,26 +143,25 @@ public class UI {
     
     public void inicia() {
             this.model.start();
-//            showLogo();
-//            verificaLogin();
-//            showBoasVindas();
-//
-//        do {
-//            showMenu();
-//
-//            switch ((opcao = getOpcao())) {
-//                case 1:
-//                    showMapa(this.model);
-//                    break;
-//                case 2:
+            showLogo();
+            verificaLogin();
+            showBoasVindas();
+
+        do {
+            showMenu();
+
+            switch ((opcao = getOpcao())) {
+                case 1:
+                    showMapa(this.model);
+                    break;
+                case 2:
 //                    Object paletes = this.model.getPaletes();
 //                    showPaletes(paletes);
-//                    break;
-//            }
-//        } while (opcao != 0);
-//        this.model.desligaSistema();
-//        exitScreen();
-//
+                    break;
+            }
+        } while (opcao != 0);
+        this.model.desligaSistema();
+        exitScreen();
     }
     
     

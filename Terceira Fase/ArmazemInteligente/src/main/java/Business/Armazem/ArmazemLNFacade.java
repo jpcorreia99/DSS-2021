@@ -59,38 +59,37 @@ public class ArmazemLNFacade implements IArmazemLN {
 
             // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (InterruptedException ignored){}
 
             long finish2 = System.currentTimeMillis();
             long timeElapsed2 = finish2 - start2;
-            System.out.println(timeElapsed2);
+//            System.out.println("Tempo gasto: "+timeElapsed2);
         }
     }
 
     private void escalonaRobos(){
-        System.out.println("Boy estou a tentar escalonar");
         if(stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()){
             int idPalete =stockFacade.getPaleteRecemChegada();
             int idPrateleira = stockFacade.encontraPrateleiraLivre();
-            System.out.println("ESTOU A ESCALONAR OMG!!!, idPalete=" + idPalete + ",idPrateleira" + idPrateleira);
             if (idPrateleira != 0) {
                 stockFacade.marcaPaleteEmLevantamento(idPalete);
                 Tuple<Integer, Coordenadas> tuploIdCoordenadas =
                         roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
                 List<Coordenadas> percursoInicial = new ArrayList<>();
                 percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
+                System.out.println("Escalonou-se o robo="+tuploIdCoordenadas.getO()+", idPalete=" + idPalete + ",idPrateleira" + idPrateleira);
 
                 roboFacade.transmiteInfoRota(idPalete, idPrateleira, tuploIdCoordenadas.getO(), percursoInicial, EstadoRobo.RECOLHA);
             }else {
-                System.out.println("Big poopoo");
+                System.out.println("Armazém cheio");
             }
         }else{
-            if(!stockFacade.existemPaletesRecemChegadas()) {
-                System.out.println("Não há paletes");
-            }else{
-                System.out.println("Não há robos");
-            }
+//            if(!stockFacade.existemPaletesRecemChegadas()) {
+//                System.out.println("Não há paletes");
+//            }else{
+//                System.out.println("Não há robos");
+//            }
         }
     }
 
@@ -99,7 +98,6 @@ public class ArmazemLNFacade implements IArmazemLN {
      * com rotas por 1 time step.
      */
     private void moveRobos(){
-            System.out.println(".");
             ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.moveRobos();
             // processamento da recolha de paletes
             processaRecolhaPaletes(resultadosMovimentoRobos.getPaletesRecolhidas());

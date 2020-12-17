@@ -41,12 +41,11 @@ public class RoboFacade implements IRobo{
         List<Integer> idsRobosEmTransito = rotaDAO.getIdsRobosEmTransito();
         Map<Integer,Robo> robosEmTransito = roboDAO.getRobos(idsRobosEmTransito);
 
-        System.out.println("Robos em movimento(confirmação): ");
-        for(int id : robosEmTransito.keySet()){
-            Robo r = roboDAO.get(id);
-            System.out.print(id+", estado: "+r.getEstado()+", palete: "+ r.getIdPalete());
-        }
-        System.out.println("\n");
+//        System.out.print("Robos em movimento: ");
+//        for(int id : robosEmTransito.keySet()){
+//            System.out.print(id+" ");
+//        }
+//        System.out.println("");
 
 
         for(Map.Entry<Integer,Robo> entradaIdRobo : robosEmTransito.entrySet()){
@@ -72,10 +71,8 @@ public class RoboFacade implements IRobo{
                     robo.setIdPalete(0);
                     robo.setIdPrateleira(0);
                     robo.setEstado(EstadoRobo.RETORNO);
-                    System.out.println("Robo " + robo.getId() + " entregou a palete");
                 } else { // só sobra estar a retornar, logo deve ficar livre
                     robo.setEstado(EstadoRobo.LIVRE);
-                    System.out.println("Robo " + robo.getId() + " chegou ao estacionamento");
                 }
             }
         }
