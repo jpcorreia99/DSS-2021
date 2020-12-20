@@ -1,6 +1,7 @@
 package Database;
 
 import Business.Armazem.Robo.Robo;
+import Transportation.RoboTransportador;
 import Util.Coordenadas;
 import Business.Armazem.Robo.EstadoRobo;
 import Util.Tuple;
@@ -23,6 +24,24 @@ public class RoboDAO {
         return RoboDAO.singleton;
     }
 
+    public boolean existeRobo(int idRobo){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement sta = conn.createStatement()) {
+            String sql = "SELECT * from Robo where id="+idRobo+";";
+            ResultSet rs = sta.executeQuery(sql);
+            if(rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return false;
+    }
+
     public boolean existemRobosDisponiveis(){
         Connection conn = ConnectionPool.getConnection();
 
@@ -41,30 +60,12 @@ public class RoboDAO {
         return false;
     }
 
-    public int size() {
-        int i = 0;
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement sta = conn.createStatement()) {
-            String sql = "SELECT count(*) AS Total from Robo";
-            ResultSet rs = sta.executeQuery(sql);
-            if(rs.next())
-                i = rs.getInt("Total");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return i;
-    }
-
-    public Robo get(int roboId) {
+    public Robo get(int idRobo) {
         Robo r = null;
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + roboId + "'");
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + idRobo + "'");
             if (rs.next()) {  // A chave existe na tabela
                 r = new Robo(rs.getInt("id"),
                         rs.getInt("x"), rs.getInt("y"), rs.getInt("idEstacionamento"),
@@ -80,8 +81,29 @@ public class RoboDAO {
         return r;
     }
 
+    public RoboTransportador getRoboTransportador(int idRobo){
+        RoboTransportador r = null;
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + idRobo + "'");
+            if (rs.next()) {  // A chave existe na tabela
+                r = new RoboTransportador(rs.getInt("id"),
+                        rs.getInt("x"), rs.getInt("y"), rs.getInt("idEstacionamento"),
+                        rs.getInt("idPrateleira"), rs.getInt("idPalete"), EstadoRobo.getEnumByValor(rs.getInt("estado")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        } finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return r;
+    }
+
     public void atualiza(Robo robo) {
-        Connection conn = DBConnect.connect();
+        Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
             // Actualizar o Robo

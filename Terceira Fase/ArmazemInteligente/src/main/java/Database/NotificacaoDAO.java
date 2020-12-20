@@ -2,6 +2,7 @@ package Database;
 
 import Business.Armazem.Stock.EstadoPalete;
 import Business.Armazem.Stock.Palete;
+import Util.DirecionalidadeNotificacao;
 import Util.Notificacao;
 import Util.TipoNotificacao;
 
@@ -26,7 +27,7 @@ public class NotificacaoDAO {
         return NotificacaoDAO.singleton;
     }
 
-    public void enviarNotificacao(Notificacao notificacao){
+    public void enviarNotificacao(Notificacao notificacao, DirecionalidadeNotificacao direcionalidadeNotificacao){
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
@@ -41,12 +42,12 @@ public class NotificacaoDAO {
         }
     }
 
-    public List<Notificacao> lerNotificacoes(){
+    public List<Notificacao> lerNotificacoesServidor(){
         Connection conn = ConnectionPool.getConnection();
         List<Notificacao> notificacoes = new ArrayList<>();
 
         try (Statement stm = conn.createStatement()) {
-            String sql = "SELECT * from Notificacao;";
+            String sql = "SELECT * from Notificacao where direcionalidade = "+DirecionalidadeNotificacao.PARA_SERVIDOR +";";
             ResultSet rs = stm.executeQuery(sql);
 
             while(rs.next()) {

@@ -15,16 +15,17 @@ import java.util.Map;
 
 public class APP {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        try {
-            DBConnect.setupBD();
-            ConnectionPool.initialize();
-            UI ui = new UI();
-            ui.inicia();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Problema com a ligação à base de dados");
-        }
+//        try {
+//            DBConnect.setupBD();
+//            ConnectionPool.initialize();
+//            UI ui = new UI();
+//            ui.inicia();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Problema com a ligação à base de dados");
+//        }
 
+        DBConnect.setupBD();
 
 //        DBConnect.setupBD();
 //        ConnectionPool.initialize();

@@ -11,7 +11,6 @@ import java.util.*;
 
 import static javax.swing.UIManager.getInt;
 
-/** nota: quando o programa é reiniciado, prateleiras com boleano ocupado mas sem palete ficam livres */
 public class PrateleiraDAO {
     private static PrateleiraDAO singleton = null;
 

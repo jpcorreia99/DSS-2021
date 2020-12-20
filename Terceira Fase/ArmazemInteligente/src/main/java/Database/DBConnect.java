@@ -125,19 +125,22 @@ public class DBConnect  {
 
     private static void inicializaRotas(Statement stm) throws SQLException {
         String sql = "CREATE TABLE Rota (" +
-                "  `idRobo` INT NOT NULL," +
-                "  `valor` VARCHAR(1000) NOT NULL," +
-                "  PRIMARY KEY (`idRobo`))";
+                "  idRobo INT NOT NULL," +
+                "  valor VARCHAR(1000) NOT NULL," +
+                "  PRIMARY KEY (idRobo))";
         stm.execute(sql);
     }
 
     private static void inicializaNotificacoes(Statement stm) throws SQLException {
         String sql = "CREATE TABLE Notificacao ("+
-                " `id` INT NOT NULL," +
-                " `idRobo` INT NOT NULL," +
-                " `tipo` INT NOT NULL,"+
+                " id INT NOT NULL AUTO_INCREMENT," +
+                " idRobo INT NOT NULL," +
+                " tipo INT NOT NULL,"+
+                "  direcionalidade INT NOT NULL," +
                 "  PRIMARY KEY (`id`))";
-
         stm.execute(sql);
+
+        String sql2 = "CREATE INDEX idx_idRobo on Notificacao (idRobo)";
+        stm.execute(sql2);
     }
 }

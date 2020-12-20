@@ -4,7 +4,8 @@ import Business.Armazem.Robo.EstadoRobo;
 
 public enum TipoNotificacao {
     RECOLHA(1),
-    ENTREGA(2);
+    ENTREGA(2),
+    NOVA_ROTA(3);
 
 
     private final int valor;

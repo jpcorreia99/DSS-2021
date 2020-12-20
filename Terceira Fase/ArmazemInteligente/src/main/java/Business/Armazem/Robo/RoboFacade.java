@@ -34,7 +34,11 @@ public class RoboFacade implements IRobo{
         robo.setEstado(estadoATer);
         roboDAO.atualiza(robo);
         rotaDAO.adicionaRota(idRobo,percurso);
-        System.out.println(".");
+
+
+        Notificacao notificacao = new Notificacao(idRobo,TipoNotificacao.NOVA_ROTA);
+        notificacaoDAO.enviarNotificacao(notificacao,DirecionalidadeNotificacao.PARA_ROBO);
+        System.out.println("Rota enviada ao robo "+idRobo);
     }
 
     public ResultadosMovimentoRobos moveRobos(){
@@ -64,13 +68,13 @@ public class RoboFacade implements IRobo{
 
                 if (estadoRobo == EstadoRobo.RECOLHA) { // está a reoclher a palete
                     Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.RECOLHA);
-                    notificacaoDAO.enviarNotificacao(notificacao);
+                    notificacaoDAO.enviarNotificacao(notificacao, DirecionalidadeNotificacao.PARA_SERVIDOR);
                     resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idPrateleira, robo.getId(), robo.getCoordenadas());
                 } else if (estadoRobo == EstadoRobo.TRANSPORTE) { // indica que se está a deslocar para a ir entregar a palete
                     resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idPrateleira);
 
                     Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.ENTREGA);
-                    notificacaoDAO.enviarNotificacao(notificacao);
+                    notificacaoDAO.enviarNotificacao(notificacao, DirecionalidadeNotificacao.PARA_SERVIDOR);
                     resultadosMovimentoRobos.addRoboQueArmazenou(robo.getId(),
                             robo.getZonaEstacionamento(), robo.getCoordenadas());
 
@@ -88,7 +92,7 @@ public class RoboFacade implements IRobo{
 
     public ResultadosMovimentoRobos processaNotificacoes(){
         ResultadosMovimentoRobos resultadosMovimentoRobos = new ResultadosMovimentoRobos();
-        List<Notificacao> notificacoes = notificacaoDAO.lerNotificacoes();
+        List<Notificacao> notificacoes = notificacaoDAO.lerNotificacoesServidor();
 
         for(Notificacao notificacao : notificacoes) {
             Robo robo = roboDAO.get(notificacao.getIdRobo());
@@ -136,13 +140,13 @@ public class RoboFacade implements IRobo{
 
                 if (estadoRobo == EstadoRobo.RECOLHA) { // está a reoclher a palete
                     Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.RECOLHA);
-                    notificacaoDAO.enviarNotificacao(notificacao);
+                    notificacaoDAO.enviarNotificacao(notificacao,DirecionalidadeNotificacao.PARA_ROBO);
                     resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idPrateleira, robo.getId(), robo.getCoordenadas());
                 } else if (estadoRobo == EstadoRobo.TRANSPORTE) { // indica que se está a deslocar para a ir entregar a palete
                     resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idPrateleira);
 
                     Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.ENTREGA);
-                    notificacaoDAO.enviarNotificacao(notificacao);
+                    notificacaoDAO.enviarNotificacao(notificacao, DirecionalidadeNotificacao.PARA_SERVIDOR);
                     resultadosMovimentoRobos.addRoboQueArmazenou(robo.getId(),
                             robo.getZonaEstacionamento(), robo.getCoordenadas());
 

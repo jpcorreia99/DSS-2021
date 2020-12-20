@@ -67,6 +67,24 @@ public class RotaDAO {
         return  idsRobosEmTransito;
     }
 
+    public boolean roboEmTransito(int idRobo){
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement sta = conn.createStatement()) {
+            String sql = "SELECT * from Rota where idRobo="+idRobo+";";
+            ResultSet rs = sta.executeQuery(sql);
+            if(rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return false;
+    }
+
     public Coordenadas getProximoPasso(int idRobo){
         Connection conn = ConnectionPool.getConnection();
         Coordenadas proximoPasso = null;
