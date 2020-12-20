@@ -3,6 +3,9 @@ package Business.Armazem.Robo;
 import Database.PaleteDAO;
 import Util.Coordenadas;
 
+/**
+ * Representação do robo na lógica de negócio
+ */
 public class Robo {
     private int id;
     //coordenadas atiais do robo;

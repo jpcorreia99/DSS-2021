@@ -1,0 +1,27 @@
+package Util;
+
+import Business.Armazem.Robo.EstadoRobo;
+
+public enum TipoNotificacao {
+    RECOLHA(1),
+    ENTREGA(2);
+
+
+    private final int valor;
+
+    private TipoNotificacao(int valor)
+    {
+        this.valor = valor;
+    }
+
+    public int getValor(){
+        return this.valor;
+    }
+
+    public static TipoNotificacao getEnumByValor(int valor){
+        for(TipoNotificacao e : TipoNotificacao.values()){
+            if(e.valor==valor) return e;
+        }
+        return null;
+    }
+}
