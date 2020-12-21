@@ -107,15 +107,19 @@ public class Mapa {
         List<Coordenadas> finalList = new ArrayList<>();
         Coordenadas curPos = inicio.clone();
         int vetX, vetY, passoAtual, nextStep;
-        while((passoAtual = localMap[curPos.getY()][curPos.getX()]) != 0)
-            for(vetX = -1; vetX <= 1; vetX++)
-                for(vetY = -1; vetY <= 1; vetY++)
+        boolean chosen;
+        while((passoAtual = localMap[curPos.getY()][curPos.getX()]) != 0) {
+            chosen = false;
+            for (vetX = 1; vetX >= -1 && !chosen; vetX--)
+                for (vetY = -1; vetY <= 1 && !chosen; vetY++)
                     if ((vetX == 0 && vetY != 0) || (vetX != 0 && vetY == 0))
-                        if((nextStep = localMap[curPos.getY() + vetY][curPos.getX() + vetX]) >= 0 && nextStep < passoAtual) {
+                        if ((nextStep = localMap[curPos.getY() + vetY][curPos.getX() + vetX]) >= 0 && nextStep < passoAtual) {
+                            chosen = true;
                             curPos.addY(vetY);
                             curPos.addX(vetX);
                             finalList.add(curPos.clone());
                         }
+        }
         return finalList;
     }
 
