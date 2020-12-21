@@ -1,7 +1,9 @@
-import Database.ConnectionPool;
-import Database.DBConnect;
-import Database.RotaDAO;
+import Business.Armazem.Robo.EstadoRobo;
+import Business.Armazem.Robo.Robo;
+import Database.*;
 import Util.Coordenadas;
+import Util.Notificacao;
+import Util.TipoNotificacao;
 import View.UI;
 
 import java.sql.SQLException;
@@ -23,6 +25,24 @@ public class APP {
             System.out.println("Problema com a ligação à base de dados");
         }
 
+
+//        DBConnect.setupBD();
+//        ConnectionPool.initialize();
+//        Notificacao n1 = new Notificacao(1, TipoNotificacao.RECOLHA);
+//        Notificacao n2 = new Notificacao(2, TipoNotificacao.ENTREGA);
+//        Notificacao n3 = new Notificacao(1, TipoNotificacao.RECOLHA);
+//        Notificacao n4 = new Notificacao(2, TipoNotificacao.ENTREGA);
+//
+//        NotificacaoDAO notificacaoDAO = NotificacaoDAO.getInstance();
+//        notificacaoDAO.enviarNotificacao(n1);
+//        notificacaoDAO.enviarNotificacao(n2);
+//        notificacaoDAO.enviarNotificacao(n3);
+//        notificacaoDAO.enviarNotificacao(n4);
+//
+//        List<Notificacao> l =notificacaoDAO.lerNotificacoes();
+//        for(Notificacao n : l){
+//            System.out.println(n.toString());
+//        }
 
 
 //        ConnectionPool.initialize();

@@ -12,13 +12,17 @@ public class DBConnect  {
     private static String DATABASE = "ArmazemInteligente";
     private static final String USERNAME = "dss";
     private static final String PASSWORD = "1234";
+    private static boolean initialized = false;
 
     public static void setupBD() throws SQLException, ClassNotFoundException {
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            DriverManager.getConnection("jdbc:mysql://"+URL+"/" + DATABASE, USERNAME, PASSWORD);
-        }catch (SQLException e){
-            inicializaBD();
+        if(!initialized) {
+            initialized=true;
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                DriverManager.getConnection("jdbc:mysql://" + URL + "/" + DATABASE, USERNAME, PASSWORD);
+            } catch (SQLException e) {
+                inicializaBD();
+            }
         }
     }
 
@@ -52,6 +56,9 @@ public class DBConnect  {
         inicializaPrateleiras(stm);
         inicializaPaletes(stm);
         inicializaRotas(stm);
+        inicializaNotificacoes(stm);
+
+        conn.close();
     }
 
     private static void inicializaGestores(Statement stm) throws SQLException {
@@ -109,6 +116,12 @@ public class DBConnect  {
         stm.execute("INSERT INTO Prateleira VALUES (23,1,0)");
         stm.execute("INSERT INTO Prateleira VALUES (24,1,0)");
         stm.execute("INSERT INTO Prateleira VALUES (25,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (26,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (27,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (28,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (29,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (30,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (31,1,0)");
     }
 
     private static void inicializaPaletes(Statement stm) throws SQLException {
@@ -121,10 +134,23 @@ public class DBConnect  {
     }
 
     private static void inicializaRotas(Statement stm) throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS `ArmazemInteligente`.`Rota` (\n" +
-                "  `idRobo` INT NOT NULL,\n" +
-                "  `valor` VARCHAR(1000) NOT NULL,\n" +
-                "  PRIMARY KEY (`idRobo`))";
+        String sql = "CREATE TABLE Rota (" +
+                "  idRobo INT NOT NULL," +
+                "  valor VARCHAR(1000) NOT NULL," +
+                "  PRIMARY KEY (idRobo))";
         stm.execute(sql);
+    }
+
+    private static void inicializaNotificacoes(Statement stm) throws SQLException {
+        String sql = "CREATE TABLE Notificacao ("+
+                " id INT NOT NULL AUTO_INCREMENT," +
+                " idRobo INT NOT NULL," +
+                " tipo INT NOT NULL,"+
+                "  direcionalidade INT NOT NULL," +
+                "  PRIMARY KEY (`id`))";
+        stm.execute(sql);
+
+        String sql2 = "CREATE INDEX idx_idRobo on Notificacao (idRobo)";
+        stm.execute(sql2);
     }
 }

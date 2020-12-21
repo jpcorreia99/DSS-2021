@@ -1,6 +1,7 @@
 package Database;
 
 import Business.Armazem.Robo.Robo;
+import Transportation.RoboTransportador;
 import Util.Coordenadas;
 import Business.Armazem.Robo.EstadoRobo;
 import Util.Tuple;
@@ -41,58 +42,42 @@ public class RoboDAO {
         return false;
     }
 
-    public int size() {
-        int i = 0;
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement sta = conn.createStatement()) {
-            String sql = "SELECT count(*) AS Total from Robo";
-            ResultSet rs = sta.executeQuery(sql);
-            if(rs.next())
-                i = rs.getInt("Total");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return i;
-    }
-
-    public Robo get(Object roboId) {
+    public Robo get(int idRobo) {
         Robo r = null;
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='"+roboId+"'");
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + idRobo + "'");
             if (rs.next()) {  // A chave existe na tabela
                 r = new Robo(rs.getInt("id"),
-                        rs.getInt("x"), rs.getInt("y"),rs.getInt("idEstacionamento"),
+                        rs.getInt("x"), rs.getInt("y"), rs.getInt("idEstacionamento"),
                         rs.getInt("idPrateleira"), rs.getInt("idPalete"), EstadoRobo.getEnumByValor(rs.getInt("estado")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
-        }finally {
+        } finally {
             ConnectionPool.releaseConnection(conn);
         }
 
         return r;
     }
 
-    public void put(Integer roboId, Robo robo) {
-        Connection conn = DBConnect.connect();
+    public void atualiza(Robo robo) {
+        Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
             // Actualizar o Robo
-            stm.executeUpdate(
-                    "INSERT INTO Robo VALUES (" + roboId.toString() + ", " + robo.getCoordenadas().getX() + "," +
-                            robo.getCoordenadas().getY()+","+ robo.getZonaEstacionamento() +","+
-                            robo.getIdPrateleira() + "," + robo.getIdPalete() + "," +
-                            robo.getEstado().getValor() +") "+
-                             "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
-                            " y=VALUES(y),"+"idEstacionamento=Values(idEstacionamento)," +
-                            " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete), estado=VALUES(estado)");
+            String sql = "UPDATE Robo SET x = "  + robo.getCoordenadas().getX() + "," +
+                            " y = "+robo.getCoordenadas().getY()+","+
+                            " idEstacionamento ="+robo.getZonaEstacionamento() +","+
+                            " idPrateleira = "+robo.getIdPrateleira() + "," +
+                            " idPalete = "+ robo.getIdPalete() + "," +
+                            " estado = "+ robo.getEstado().getValor() +
+                            " WHERE id = "+ robo.getId()+";";
+
+            stm.executeUpdate(sql);
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());

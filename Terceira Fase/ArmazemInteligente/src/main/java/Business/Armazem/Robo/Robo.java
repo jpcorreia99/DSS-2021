@@ -3,6 +3,9 @@ package Business.Armazem.Robo;
 import Database.PaleteDAO;
 import Util.Coordenadas;
 
+/**
+ * Representação do robo na lógica de negócio
+ */
 public class Robo {
     private int id;
     //coordenadas atiais do robo;
@@ -16,7 +19,6 @@ public class Robo {
     // estado do robo
     private EstadoRobo estado;
 
-    PaleteDAO paleteDAO;
 
     public Robo(int id, int x, int y, int zonaEstacionamento ,int idPrateleira,int idPalete, EstadoRobo estado) {
         this.id = id;
@@ -25,7 +27,6 @@ public class Robo {
         this.idPrateleira = idPrateleira;
         this.idPalete = idPalete;
         this.estado = estado;
-        this.paleteDAO = PaleteDAO.getInstance();
     }
 
     public int getId() {
