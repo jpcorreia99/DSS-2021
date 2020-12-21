@@ -24,24 +24,6 @@ public class RoboDAO {
         return RoboDAO.singleton;
     }
 
-    public boolean existeRobo(int idRobo){
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement sta = conn.createStatement()) {
-            String sql = "SELECT * from Robo where id="+idRobo+";";
-            ResultSet rs = sta.executeQuery(sql);
-            if(rs.next()) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return false;
-    }
-
     public boolean existemRobosDisponiveis(){
         Connection conn = ConnectionPool.getConnection();
 
@@ -68,27 +50,6 @@ public class RoboDAO {
             ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + idRobo + "'");
             if (rs.next()) {  // A chave existe na tabela
                 r = new Robo(rs.getInt("id"),
-                        rs.getInt("x"), rs.getInt("y"), rs.getInt("idEstacionamento"),
-                        rs.getInt("idPrateleira"), rs.getInt("idPalete"), EstadoRobo.getEnumByValor(rs.getInt("estado")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
-        } finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return r;
-    }
-
-    public RoboTransportador getRoboTransportador(int idRobo){
-        RoboTransportador r = null;
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement stm = conn.createStatement()) {
-            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + idRobo + "'");
-            if (rs.next()) {  // A chave existe na tabela
-                r = new RoboTransportador(rs.getInt("id"),
                         rs.getInt("x"), rs.getInt("y"), rs.getInt("idEstacionamento"),
                         rs.getInt("idPrateleira"), rs.getInt("idPalete"), EstadoRobo.getEnumByValor(rs.getInt("estado")));
             }

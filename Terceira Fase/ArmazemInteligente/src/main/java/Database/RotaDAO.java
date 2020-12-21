@@ -92,17 +92,18 @@ public class RotaDAO {
         try (Statement stm = conn.createStatement()) {
             String sql = "SELECT * from Rota where idRobo="+idRobo+";";
             ResultSet rs = stm.executeQuery(sql);
-            rs.next();
-            String rotaCodificada = rs.getString("valor");
-            List<Coordenadas> rotaDescodificada = descodificaRota(rotaCodificada);
-            proximoPasso = rotaDescodificada.remove(0);
+            if(rs.next()) {
+                String rotaCodificada = rs.getString("valor");
+                List<Coordenadas> rotaDescodificada = descodificaRota(rotaCodificada);
+                proximoPasso = rotaDescodificada.remove(0);
 
-            // se a lista estiver vazia depois de remover o próximo passo, remove-se a entrada na tabela
-            if(rotaDescodificada.isEmpty()){
-                String queryDeEliminacao = "DELETE from Rota where idRobo="+idRobo +";";
-                stm.executeUpdate(queryDeEliminacao);
-            }else{ // atualiza a rota
-                adicionaRota(idRobo,rotaDescodificada);
+                // se a lista estiver vazia depois de remover o próximo passo, remove-se a entrada na tabela
+                if (rotaDescodificada.isEmpty()) {
+                    String queryDeEliminacao = "DELETE from Rota where idRobo=" + idRobo + ";";
+                    stm.executeUpdate(queryDeEliminacao);
+                } else { // atualiza a rota
+                    adicionaRota(idRobo, rotaDescodificada);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

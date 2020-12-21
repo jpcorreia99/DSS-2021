@@ -90,7 +90,7 @@ public class LeitorCodigosQR implements Runnable {
                 // tendo o path do novo ficheiro, tentar criar a palete
                 try {
                     String material = readQR(childPath);
-                    paletesAGuardar.addNovaPalete(material);
+                    comunicaCodigoQR(material); // comunica leitura de um novo código QR diretamente para a BD
 //                    System.out.println("Palete registada: "+material);
                 } catch (NotFoundException | IOException | InterruptedException e) {
                     e.printStackTrace();
@@ -141,6 +141,14 @@ public class LeitorCodigosQR implements Runnable {
         fis.close();
 
         return result.getText();
+    }
+
+    /**
+     * Insere a palete lida na BD
+     * @param materialLido material indicado no código QR;
+     */
+    private void comunicaCodigoQR(String materialLido) {
+        paletesAGuardar.addNovaPalete(materialLido);
     }
 
     public void desliga(){

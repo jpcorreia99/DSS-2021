@@ -10,7 +10,7 @@ public enum TipoNotificacao {
 
     private final int valor;
 
-    private TipoNotificacao(int valor)
+    TipoNotificacao(int valor)
     {
         this.valor = valor;
     }

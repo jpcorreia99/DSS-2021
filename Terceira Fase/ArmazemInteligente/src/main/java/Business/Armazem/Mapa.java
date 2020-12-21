@@ -136,6 +136,7 @@ public class Mapa {
         waiting.add(fim.clone());
         finalMap[fim.getY()][fim.getX()] = 0;
         while(!waiting.contains(inicio)) {
+            System.out.println(".");
             for(Coordenadas temp : waiting)
                 for (vetX = -1; vetX <= 1; vetX++)
                     for (vetY = -1; vetY <= 1; vetY++)

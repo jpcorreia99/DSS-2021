@@ -81,12 +81,12 @@ public class ArmazemLNFacade implements IArmazemLN {
 
             // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException ignored){}
 
             long finish2 = System.currentTimeMillis();
             long timeElapsed2 = finish2 - start2;
-//            System.out.println("Tempo gasto: "+timeElapsed2);
+            System.out.println("Tempo gasto: "+timeElapsed2);
         }
     }
 
@@ -107,11 +107,11 @@ public class ArmazemLNFacade implements IArmazemLN {
                 System.out.println("Armazém cheio");
             }
         }else{
-//            if(!stockFacade.existemPaletesRecemChegadas()) {
-//                System.out.println("Não há paletes");
-//            }else{
-//                System.out.println("Não há robos");
-//            }
+            if(!stockFacade.existemPaletesRecemChegadas()) {
+                System.out.println("Não há paletes");
+            }else{
+                System.out.println("Não há robos");
+            }
         }
     }
 
@@ -120,7 +120,7 @@ public class ArmazemLNFacade implements IArmazemLN {
      * com rotas por 1 time step.
      */
     private void moveRobos(){
-            ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.moveRobos();
+            ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.processaNotificacoes();
             // processamento da recolha de paletes
             processaRecolhaPaletes(resultadosMovimentoRobos.getPaletesRecolhidas());
 

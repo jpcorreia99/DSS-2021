@@ -12,13 +12,17 @@ public class DBConnect  {
     private static String DATABASE = "ArmazemInteligente";
     private static final String USERNAME = "dss";
     private static final String PASSWORD = "1234";
+    private static boolean initialized = false;
 
     public static void setupBD() throws SQLException, ClassNotFoundException {
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            DriverManager.getConnection("jdbc:mysql://"+URL+"/" + DATABASE, USERNAME, PASSWORD);
-        }catch (SQLException e){
-            inicializaBD();
+        if(!initialized) {
+            initialized=true;
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                DriverManager.getConnection("jdbc:mysql://" + URL + "/" + DATABASE, USERNAME, PASSWORD);
+            } catch (SQLException e) {
+                inicializaBD();
+            }
         }
     }
 
@@ -112,6 +116,12 @@ public class DBConnect  {
         stm.execute("INSERT INTO Prateleira VALUES (23,1,0)");
         stm.execute("INSERT INTO Prateleira VALUES (24,1,0)");
         stm.execute("INSERT INTO Prateleira VALUES (25,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (26,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (27,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (28,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (29,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (30,1,0)");
+        stm.execute("INSERT INTO Prateleira VALUES (31,1,0)");
     }
 
     private static void inicializaPaletes(Statement stm) throws SQLException {
