@@ -131,8 +131,6 @@ public class RoboTransportador {
                     } else {
                         System.out.println("Robo Livre");
                         this.estado = EstadoRobo.LIVRE;
-                        this.idPalete = 0;
-                        this.idPrateleira = 0;
                     }
                 }
                 // inserir dados atualizados na BD
