@@ -26,26 +26,10 @@ public class DBConnect  {
         }
     }
 
-    public static Connection connect() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection("jdbc:mysql://"+URL+"/" + DATABASE, USERNAME, PASSWORD);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void close(Connection connection) {
-        try {
-            connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private static void inicializaBD() throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://"+URL+"/", USERNAME, PASSWORD);
+        Connection conn = DriverManager.getConnection("jdbc:mysql://" + URL + "/", USERNAME, PASSWORD);
+
         Statement stm = conn.createStatement();
 
         stm.executeUpdate("CREATE DATABASE ArmazemInteligente;");
@@ -58,6 +42,7 @@ public class DBConnect  {
         inicializaRotas(stm);
         inicializaNotificacoes(stm);
 
+        stm.close();
         conn.close();
     }
 
@@ -101,27 +86,9 @@ public class DBConnect  {
 
         stm.execute(sql);
 
-        stm.execute("INSERT INTO Prateleira VALUES (11,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (12,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (13,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (14,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (15,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (16,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (17,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (18,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (19,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (20,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (21,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (22,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (23,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (24,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (25,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (26,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (27,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (28,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (29,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (30,1,0)");
-        stm.execute("INSERT INTO Prateleira VALUES (31,1,0)");
+        for(int i=10; i<=57;i++) {
+            stm.execute("INSERT INTO Prateleira VALUES ("+i+",1,0)");
+        }
     }
 
     private static void inicializaPaletes(Statement stm) throws SQLException {

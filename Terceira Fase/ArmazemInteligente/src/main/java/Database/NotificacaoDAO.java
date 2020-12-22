@@ -11,8 +11,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class NotificacaoDAO {
     private static NotificacaoDAO singleton = null;
@@ -39,14 +37,15 @@ public class NotificacaoDAO {
 
         try {
             mutex.acquire();
-
             Statement stm = conn.createStatement();
-                String s = "INSERT INTO Notificacao (idRobo,tipo,direcionalidade) VALUES (" +
-                        notificacao.getIdRobo() + ", " +
-                        notificacao.getTipo().getValor() + ", " +
-                        direcionalidadeNotificacao.getValor() + ")";
+            String s = "INSERT INTO Notificacao (idRobo,tipo,direcionalidade) VALUES (" +
+                    notificacao.getIdRobo() + ", " +
+                    notificacao.getTipo().getValor() + ", " +
+                    direcionalidadeNotificacao.getValor() + ")";
 
-                stm.execute(s);
+            stm.execute(s);
+
+            stm.close();
         } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         } finally {
@@ -61,18 +60,18 @@ public class NotificacaoDAO {
 
         try {
             mutex.acquire();
-
             Statement stm = conn.createStatement();
-                String sql = "SELECT * from Notificacao where direcionalidade = " + DirecionalidadeNotificacao.PARA_SERVIDOR.getValor() + ";";
-                ResultSet rs = stm.executeQuery(sql);
+            String sql = "SELECT * from Notificacao where direcionalidade = " + DirecionalidadeNotificacao.PARA_SERVIDOR.getValor() + ";";
 
-                while (rs.next()) {
-                    notificacoes.add(new Notificacao(rs.getInt("id"), rs.getInt("idRobo"), TipoNotificacao.getEnumByValor(rs.getInt("tipo"))));
-                }
+            ResultSet rs = stm.executeQuery(sql);
+            while (rs.next()) {
+                notificacoes.add(new Notificacao(rs.getInt("id"), rs.getInt("idRobo"), TipoNotificacao.getEnumByValor(rs.getInt("tipo"))));
+            }
 
-                // eliminar as notificações lidas - não elimina a mais devido ao lock
-                String sql2 = "DELETE from Notificacao where direcionalidade = " + DirecionalidadeNotificacao.PARA_SERVIDOR.getValor() + ";";
-                stm.executeUpdate(sql2);
+            // eliminar as notificações lidas - não elimina a mais devido ao mutex
+            String sql2 = "DELETE from Notificacao where direcionalidade = " + DirecionalidadeNotificacao.PARA_SERVIDOR.getValor() + ";";
+            stm.executeUpdate(sql2);
+            stm.close();
         } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         } finally {
@@ -103,6 +102,7 @@ public class NotificacaoDAO {
                     return true;
                 }
 
+            stm.close();
         } catch (InterruptedException | SQLException e){
             e.printStackTrace();
         } finally {

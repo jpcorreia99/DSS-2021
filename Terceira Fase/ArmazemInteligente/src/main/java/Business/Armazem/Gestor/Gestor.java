@@ -13,10 +13,6 @@ public class Gestor {
         this.password = password;
     }
     
-    public void setPassword (String password) {
-        this.password = password;
-    }
-    
     public static String generate(final String password) {
         try {
             byte[] hash = MessageDigest.getInstance("SHA-256").digest((password).getBytes());

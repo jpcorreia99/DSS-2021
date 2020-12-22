@@ -5,15 +5,10 @@ import java.io.*;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import java.nio.file.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-
 
 import javax.imageio.ImageIO;
 
-import Business.Armazem.Stock.Palete;
 import Database.PaleteDAO;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
@@ -37,7 +32,6 @@ public class LeitorCodigosQR implements Runnable {
     private final PaleteDAO paletesAGuardar;
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
-    private Boolean working; // DEVERÁ SER TORNADO FALSO PELA THREAD PRINCIPAL PARA ACABAR COM O TRABALHO DESTA THREAD
 
     public LeitorCodigosQR() throws IOException {
         this.paletesAGuardar = PaleteDAO.getInstance();
@@ -45,7 +39,6 @@ public class LeitorCodigosQR implements Runnable {
         this.keys = new HashMap<>();
         File sourceDir = new File("src/main/resources");
         Path sourceDirPath = Paths.get(sourceDir.toURI());
-        this.working=true;
 
         WatchKey key = sourceDirPath.register(watcher, ENTRY_CREATE); // verifica a criação de novos ficheiros na diretoria
         keys.put(key, sourceDirPath);
@@ -56,9 +49,9 @@ public class LeitorCodigosQR implements Runnable {
      *
      */
     public void run() {
-        System.out.println("QRCode Reader funcional!");
-        // loop infinito - está sempre a verificar se apareceu algum ficheiro novo
-        while(working) {
+        // loop infinito - está sempre a verificar se apareceu algum ficheiro novo, apenas termina quando o método
+        // de desligar o leitor é chamado
+        while(true) {
             // espera que a chave do watcher da diretoria seja assinalada
             WatchKey key;
             try {
@@ -84,14 +77,11 @@ public class LeitorCodigosQR implements Runnable {
                 Path name = ev.context();
                 String childPath = dir.resolve(name).toString();
 
-                // print out event
-//                System.out.format("%s: %s\n", event.kind().name(), childPath);
 
                 // tendo o path do novo ficheiro, tentar criar a palete
                 try {
                     String material = readQR(childPath);
                     comunicaCodigoQR(material); // comunica leitura de um novo código QR diretamente para a BD
-//                    System.out.println("Palete registada: "+material);
                 } catch (NotFoundException | IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -149,9 +139,5 @@ public class LeitorCodigosQR implements Runnable {
      */
     private void comunicaCodigoQR(String materialLido) {
         paletesAGuardar.addNovaPalete(materialLido);
-    }
-
-    public void desliga(){
-        this.working=false;
     }
 }

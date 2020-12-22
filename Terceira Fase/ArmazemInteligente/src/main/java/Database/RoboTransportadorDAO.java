@@ -1,8 +1,7 @@
 package Database;
 
-import Business.Armazem.Robo.EstadoRobo;
+import Util.EstadoRobo;
 import Transportation.RoboTransportador;
-import Util.Coordenadas;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -43,24 +42,6 @@ public class RoboTransportadorDAO {
         }
 
         return r;
-    }
-
-    public boolean existeRobo(int idRobo){
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement stm = conn.createStatement()) {
-            String sql = "SELECT * from Robo where id="+idRobo+";";
-            ResultSet rs = stm.executeQuery(sql);
-            if(rs.next()) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return false;
     }
 
     public void leDadosRoboTransportador(RoboTransportador roboTransportador){

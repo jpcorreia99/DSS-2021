@@ -8,11 +8,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class RotaDAO {
     private static RotaDAO singleton = null;
+    private Lock lock;
 
+    public RotaDAO(){
+        this.lock = new ReentrantLock();
+    }
     /**
      * Implementação do padrão Singleton
      *
@@ -30,6 +36,8 @@ public class RotaDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try(Statement stm = conn.createStatement()){
+            lock.lock();
+
             StringBuilder sb = new StringBuilder();
             for (Coordenadas coordenadas : rota){
                 sb.append(coordenadas.getX()).append(",").append(coordenadas.getY()).append("/");
@@ -42,52 +50,17 @@ public class RotaDAO {
             e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
     }
 
-    public List<Integer> getIdsRobosEmTransito(){
-        Connection conn = ConnectionPool.getConnection();
-        List<Integer> idsRobosEmTransito = new ArrayList<>();
-
-        try (Statement stm = conn.createStatement()) {
-            String sql = "SELECT * from Rota;";
-            ResultSet rs = stm.executeQuery(sql);
-
-            while(rs.next()) {
-                idsRobosEmTransito.add(rs.getInt("idRobo"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return  idsRobosEmTransito;
-    }
-
-    public boolean roboEmTransito(int idRobo){
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement sta = conn.createStatement()) {
-            String sql = "SELECT * from Rota where idRobo="+idRobo+";";
-            ResultSet rs = sta.executeQuery(sql);
-            if(rs.next()) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-
-        return false;
-    }
 
     public Coordenadas getProximoPasso(int idRobo){
         Connection conn = ConnectionPool.getConnection();
         Coordenadas proximoPasso = null;
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             String sql = "SELECT * from Rota where idRobo="+idRobo+";";
             ResultSet rs = stm.executeQuery(sql);
             if(rs.next()) {
@@ -107,6 +80,7 @@ public class RotaDAO {
             e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return proximoPasso;
@@ -116,6 +90,7 @@ public class RotaDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             String sql = "SELECT * from Rota where idRobo="+idRobo+";";
             ResultSet rs = stm.executeQuery(sql);
             return !rs.next(); // se tiver alguma entrada significa que ainda existe a rota,
@@ -124,6 +99,7 @@ public class RotaDAO {
             e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return true;

@@ -1,35 +1,26 @@
 package Business.Armazem;
 
 import Business.Armazem.Gestor.GestorFacade;
-import Business.Armazem.Robo.EstadoRobo;
+import Util.EstadoRobo;
 import Business.Armazem.Robo.RoboFacade;
-import Util.EstadoPalete;
 import Business.Armazem.Stock.StockFacade;
 import Business.IArmazemLN;
 
-import Requests.LeitorCodigosQR;
 import Util.Coordenadas;
 import Util.ResultadosMovimentoRobos;
 import Util.Tuple;
-
-import java.io.IOException;
+import Util.EstadoPalete;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ArmazemLNFacade implements IArmazemLN {
     RoboFacade roboFacade;
     StockFacade stockFacade;
     GestorFacade gestorFacade;
-    LeitorCodigosQR leitorCodigosQR;
-    Boolean funciona = true;
+    Boolean funciona;
     Mapa mapa;
 
     public ArmazemLNFacade () {
@@ -37,19 +28,10 @@ public class ArmazemLNFacade implements IArmazemLN {
         stockFacade = new StockFacade();
         gestorFacade = new GestorFacade();
         mapa = new Mapa();
-
-        try {
-            this.leitorCodigosQR = new LeitorCodigosQR();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        funciona=true;
     }
 
     public void start() {
-        Thread threadLeitorCodigosQR = new Thread(this.leitorCodigosQR);
-        threadLeitorCodigosQR.start();
-
-
         Thread threadEscalonamentoRobos = new Thread(this::gereRobos);
         threadEscalonamentoRobos.start();
     }
@@ -94,26 +76,24 @@ public class ArmazemLNFacade implements IArmazemLN {
         return this.gestorFacade.login(user,password);
     }
 
+    /**
+     * Função principal de gestão do sistema, responsável por escalonar os robos e paletes e tratar as notificações
+     * por eles enviadas relativas ao transporte delas.
+     */
     private void gereRobos(){
         while(funciona){
-            long start2 = System.currentTimeMillis();
             escalonaRobos();
             atualizaSistema();
 
-            // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored){}
-
-            long finish2 = System.currentTimeMillis();
-            long timeElapsed2 = finish2 - start2;
-//            System.out.println("Tempo gasto: "+timeElapsed2);
         }
     }
 
     private void escalonaRobos(){
-        if(stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()){
-            int idPalete =stockFacade.getPaleteRecemChegada();
+        if(stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()) {
+            int idPalete = stockFacade.getPaleteRecemChegada();
             int idPrateleira = stockFacade.encontraPrateleiraLivre();
             if (idPrateleira != 0) {
                 stockFacade.marcaPaleteEmLevantamento(idPalete);
@@ -121,18 +101,11 @@ public class ArmazemLNFacade implements IArmazemLN {
                         roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
                 List<Coordenadas> percursoInicial = new ArrayList<>();
                 percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
-                System.out.println("Escalonou-se o robo="+tuploIdCoordenadas.getO()+", idPalete=" + idPalete + ",idPrateleira" + idPrateleira);
 
                 roboFacade.transmiteInfoRota(idPalete, idPrateleira, tuploIdCoordenadas.getO(), percursoInicial, EstadoRobo.RECOLHA);
-            }else {
+            } else {
                 System.out.println("Armazém cheio");
             }
-        }else{
-//            if(!stockFacade.existemPaletesRecemChegadas()) {
-//                System.out.println("Não há paletes");
-//            }else{
-//                System.out.println("Não há robos");
-//            }
         }
     }
 
@@ -174,14 +147,10 @@ public class ArmazemLNFacade implements IArmazemLN {
             int idPrateleira = tuploPaletePrateleira.getT();
             int idRobo = tuploRoboCoordenadas.getO();
             Coordenadas coordenadasRobo = tuploRoboCoordenadas.getT();
-            System.out.println("Robo que recolheu: "+idPalete+","+idPrateleira+","+idRobo+","+coordenadasRobo.toString());
 
             stockFacade.assinalaPaleteEmTransporte(idPalete);
             List<Coordenadas> rotaAtePrateleira = this.mapa.calculaRota(idPrateleira, coordenadasRobo);
-//            System.out.println("Transmitida rota até à pratleira, robo: "+idRobo);
-//            for(Coordenadas c : rotaAtePrateleira){
-//                System.out.println(c.toString());
-//            }
+
             roboFacade.transmiteInfoRota(idPalete, idPrateleira,idRobo, rotaAtePrateleira, EstadoRobo.TRANSPORTE);
         }
     }
@@ -226,7 +195,6 @@ public class ArmazemLNFacade implements IArmazemLN {
     }
 
     public void desligaSistema(){
-        this.leitorCodigosQR.desliga();
         this.funciona=false;
     }
 }

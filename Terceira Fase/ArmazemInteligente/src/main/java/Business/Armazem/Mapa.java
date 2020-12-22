@@ -126,7 +126,6 @@ public class Mapa {
         List<Coordenadas> nextWaiting = new ArrayList<>();
         waiting.add(fim.clone());
         finalMap[fim.getY()][fim.getX()] = 0;
-        System.out.print("A calcular a rota -> ");
         while(!waiting.contains(inicio)) {
             for(Coordenadas temp : waiting)
                 for (vetX = -1; vetX <= 1; vetX++)
@@ -140,7 +139,6 @@ public class Mapa {
             waiting = nextWaiting;
             nextWaiting = new ArrayList<>();
         }
-        System.out.println("Calculada!");
         return finalMap;
     }
 

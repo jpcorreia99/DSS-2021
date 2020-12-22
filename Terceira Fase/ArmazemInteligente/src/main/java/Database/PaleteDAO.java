@@ -67,8 +67,6 @@ public class PaleteDAO {
             ResultSet rs = stm.executeQuery(sql);
             rs.next();
             idPalete = rs.getInt("id");
-            String material = rs.getString("material");
-            System.out.println("Foi selecionada a palete " + idPalete + ", com o material: " + material);
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -162,5 +160,4 @@ public class PaleteDAO {
 
         return paletes;
     }
-
 }

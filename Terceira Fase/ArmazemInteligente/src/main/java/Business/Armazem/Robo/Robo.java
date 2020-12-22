@@ -1,14 +1,14 @@
 package Business.Armazem.Robo;
 
-import Database.PaleteDAO;
 import Util.Coordenadas;
+import Util.EstadoRobo;
 
 /**
  * Representação do robo na lógica de negócio
  */
 public class Robo {
     private int id;
-    //coordenadas atiais do robo;
+    //coordenadas atuais do robo;
     private Coordenadas coordenadas;
     //id da zona onde o robo estaciona
     private final int zonaEstacionamento;

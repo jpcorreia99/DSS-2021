@@ -1,7 +1,5 @@
 package Util;
 
-import java.util.Objects;
-
 public class Coordenadas {
     private int x;
     private int y;

@@ -3,7 +3,6 @@ package Business.Armazem.Stock;
 import Business.Armazem.IStock;
 import Database.PaleteDAO;
 import Database.PrateleiraDAO;
-import Util.Coordenadas;
 import Util.EstadoPalete;
 import Util.Tuple;
 

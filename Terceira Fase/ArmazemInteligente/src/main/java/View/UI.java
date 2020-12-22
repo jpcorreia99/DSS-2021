@@ -1,4 +1,3 @@
-
 package View;
 
 import java.util.*;
@@ -28,7 +27,6 @@ class MapaThread implements Runnable {
     }
     
     public void run() {
-        int vezes = 0;
         while (running.get()) {
             try {
                 int[][] mapa = model.getMapa();
@@ -37,12 +35,6 @@ class MapaThread implements Runnable {
                 System.out.flush();
                 
                 UI.showLogo();
-                
-//                for (int i = 0; i < 12; i++) {
-//                    for (int j = 0; j < 16; j++)
-//                        System.out.print(mapa[i][j]);
-//                    System.out.print("\n");
-//                }
                 
                 for (int i = 0; i < 12; i++) {
                     System.out.print("                                                               ");
@@ -82,8 +74,6 @@ class MapaThread implements Runnable {
                     System.out.println();
                 }
                 
-                vezes++;
-                System.out.println("\n                                                           Imprimi esta merda " + vezes + " vezes :)");
                 System.out.println("\nPressione 'Enter' para voltar ao menu principal.\n");
                 Thread.sleep(1000);
                 
@@ -125,14 +115,18 @@ public class UI {
         this.opcao = 0;
         this.handlers = new ArrayList<>();
         
-        addHandler(() -> showMapa());
-        addHandler(() -> showPaletes());
+        addHandler(this::showMapa);
+        addHandler(this::showPaletes);
     }
     
     private void addHandler(UI.MenuHandler h) {
         this.handlers.add(h);
     }
-    
+
+    public void show(String s){
+      System.out.println(s);
+    }
+
     private void showMenu() {
         for (String s : opcoes)
             System.out.println(s);
@@ -156,23 +150,19 @@ public class UI {
         return op;
     }
     
-    public void showBoasVindas() {
-        showLogo();
-        System.out.println ("\n                           Bemvindo ao programa etc pls don't forget to change this or Creissac kill you :)\n");
-    }
-    
     public void inicia() {
         this.model.start();
         showLogo();
         verificaLogin();
-        showBoasVindas();
+        showLogo();
             
         do {
             showMenu();
-           
-            if ((opcao = getOpcao()) > 0 && opcao < 3)
+
+            opcao = getOpcao();
+            if (opcao > 0 && opcao < 3)
                 this.handlers.get(opcao-1).execute();
-            else
+            else if(opcao< 0 || opcao >= 3)
                 System.out.println("Opcao não disponivel.\n Pressione 'Enter' para continuar.\n");
         } while (opcao != 0);
         this.model.desligaSistema();
@@ -241,7 +231,6 @@ public class UI {
     public void exitScreen () {
         showLogo();
         System.out.println("                                 \n\n     Logging off, thank you for using ArmazémInteligente™ technologies.\n\n");
-        System.exit(0);
     }
     
     public static void showLogo () {

@@ -1,4 +1,4 @@
-package Business.Armazem.Robo;
+package Util;
 
 public enum EstadoRobo {
     LIVRE(1),
@@ -8,7 +8,7 @@ public enum EstadoRobo {
 
     private final int valor;
 
-    private EstadoRobo(int valor)
+    EstadoRobo(int valor)
     {
         this.valor = valor;
     }

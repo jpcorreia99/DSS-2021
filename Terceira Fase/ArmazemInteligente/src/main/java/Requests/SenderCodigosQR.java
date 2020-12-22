@@ -2,9 +2,10 @@ package Requests;
 
 import com.google.zxing.WriterException;
 
-import java.io.*;
 
 import java.io.IOException;
+
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -27,7 +28,7 @@ public class SenderCodigosQR {
             // Path onde o código QR será guardado, terá uma timestamp
             ZonedDateTime date = ZonedDateTime.now();
             String timestamp = DateTimeFormatter.ofPattern("dd_MM_yyyy__hh_mm_ss").format(date);
-            String path = "src/main/resources/" + timestamp.toString() + ".png";
+            String path = "src/main/resources/" + timestamp + ".png";
 
             // Encoding charset
             String charset = "UTF-8";
@@ -54,9 +55,9 @@ public class SenderCodigosQR {
                 new String(data.getBytes(charset), charset),
                 BarcodeFormat.QR_CODE, width, height);
 
-        MatrixToImageWriter.writeToFile(
+        MatrixToImageWriter.writeToPath(
                 matrix,
                 path.substring(path.lastIndexOf('.') + 1), // indica o formato (.png)
-                new File(path));
+                Paths.get(path));
     }
 }

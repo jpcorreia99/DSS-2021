@@ -41,7 +41,6 @@ public class RoboFacade implements IRobo{
 
         Notificacao notificacao = new Notificacao(idRobo,TipoNotificacao.NOVA_ROTA);
         notificacaoDAO.enviarNotificacao(notificacao,DirecionalidadeNotificacao.PARA_ROBO);
-        System.out.println("Rota enviada ao robo "+idRobo+": "+sb.toString());
     }
 
     /**
@@ -60,10 +59,8 @@ public class RoboFacade implements IRobo{
             int idPalete = robo.getIdPalete();
             TipoNotificacao tipoNotificacao = notificacao.getTipo();
             if (tipoNotificacao == TipoNotificacao.RECOLHA) {
-                System.out.println("Notificação de recolha do robo " + robo.getId());
                 resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idPrateleira, robo.getId(), robo.getCoordenadas());
             } else { // TipoNotificacao.ENTREGA
-                System.out.println("Notificação de entrega do robo " + robo.getId());
                 resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idPrateleira);
                 resultadosMovimentoRobos.addRoboQueArmazenou(robo.getId(),
                         robo.getZonaEstacionamento(), robo.getCoordenadas());

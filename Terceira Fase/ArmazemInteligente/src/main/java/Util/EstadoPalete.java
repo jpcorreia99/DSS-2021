@@ -8,7 +8,7 @@ public enum EstadoPalete {
 
     private final int valor;
 
-    private EstadoPalete(int valor)
+    EstadoPalete(int valor)
     {
         this.valor = valor;
     }

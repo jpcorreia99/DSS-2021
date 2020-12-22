@@ -1,9 +1,8 @@
 package Database;
 
+import Util.EstadoRobo;
 import Business.Armazem.Robo.Robo;
-import Transportation.RoboTransportador;
 import Util.Coordenadas;
-import Business.Armazem.Robo.EstadoRobo;
 import Util.Tuple;
 
 import java.sql.*;
@@ -138,31 +137,6 @@ public class RoboDAO {
         return res;
     }
 
-    public void atualizaRobos(Map<Integer,Robo> robosEmTransito){
-        Connection conn = ConnectionPool.getConnection();
-
-        try (Statement stm = conn.createStatement()) {
-            // Actualizar o Robo
-            for(Map.Entry<Integer,Robo> entrada : robosEmTransito.entrySet()) {
-                Robo robo = entrada.getValue();
-                Integer roboId = entrada.getKey();
-
-                stm.executeUpdate("INSERT INTO Robo VALUES (" + roboId.toString() + ", " +
-                        robo.getCoordenadas().getX() + "," +
-                        robo.getCoordenadas().getY()+","+ robo.getZonaEstacionamento() +","+
-                        robo.getIdPrateleira() + "," + robo.getIdPalete() + "," +
-                        robo.getEstado().getValor() +") "+
-                        "ON DUPLICATE KEY UPDATE x=VALUES(x)," +
-                        " y=VALUES(y),"+"idEstacionamento=Values(idEstacionamento)," +
-                        " idPrateleira=VALUES(idPrateleira), idPalete=VALUES(idPalete), estado=VALUES(estado)");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
-    }
 
     /**
      * Devolve o robo que está a transportar a palete indicada

@@ -1,7 +1,5 @@
 package Util;
 
-import Business.Armazem.Robo.EstadoRobo;
-
 public enum TipoNotificacao {
     RECOLHA(1),
     ENTREGA(2),
