@@ -136,7 +136,7 @@ public class RoboTransportador {
                 // inserir dados atualizados na BD
                 this.roboTransportadorDAO.atualizaDadosRoboTransportador(this);
             }
-            Thread.sleep(3000);
+            Thread.sleep(1000);
             long finish = System.currentTimeMillis();
             long timeElapsed = finish - start;
             System.out.println("Tempo gasto: "+timeElapsed);

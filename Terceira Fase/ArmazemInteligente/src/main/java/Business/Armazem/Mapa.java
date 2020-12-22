@@ -2,10 +2,7 @@ package Business.Armazem;
 
 import Util.Coordenadas;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class Mapa {
@@ -61,7 +58,7 @@ public class Mapa {
     }
 
     public int[][] getMapa() {
-            return this.mapa.clone();
+            return Arrays.stream(mapa).map(int[]::clone).toArray(int[][]::new);
     }
 
     public Util.Coordenadas getCoordChegadaZona(int id) {
@@ -81,7 +78,7 @@ public class Mapa {
      * @return Lista de coordenadas a tomar para chegar ao seu destino
      */
     public List<Coordenadas> calculaRota(int idZona, Coordenadas inicio) {
-        int [][] localMap = mapa.clone();
+        int [][] localMap = Arrays.stream(mapa).map(int[]::clone).toArray(int[][]::new);
         Coordenadas fim = this.getCoordChegadaZona(idZona);
         localMap = preencheMapa(inicio, fim, localMap);
         return getRota(inicio, localMap);
@@ -129,8 +126,8 @@ public class Mapa {
         List<Coordenadas> nextWaiting = new ArrayList<>();
         waiting.add(fim.clone());
         finalMap[fim.getY()][fim.getX()] = 0;
+        System.out.print("A calcular a rota -> ");
         while(!waiting.contains(inicio)) {
-            System.out.println(".");
             for(Coordenadas temp : waiting)
                 for (vetX = -1; vetX <= 1; vetX++)
                     for (vetY = -1; vetY <= 1; vetY++)
@@ -143,6 +140,7 @@ public class Mapa {
             waiting = nextWaiting;
             nextWaiting = new ArrayList<>();
         }
+        System.out.println("Calculada!");
         return finalMap;
     }
 

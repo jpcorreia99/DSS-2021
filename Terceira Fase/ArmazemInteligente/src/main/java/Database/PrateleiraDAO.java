@@ -88,6 +88,29 @@ public class PrateleiraDAO {
         return idPrateleira;
     }
 
+    /**
+     * Devolve lista de ids de prateleira ocupadas
+     * @return
+     */
+    public List<Integer> getPrateleirasOcupadas(){
+        Connection conn = ConnectionPool.getConnection();
+        List<Integer> ids = new ArrayList<>();
+
+        try (Statement stm = conn.createStatement()) {
+            String sql = "SELECT * from Prateleira where estado="+EstadoPrateleira.OCUPADA.getValor()+";";
+            ResultSet rs = stm.executeQuery(sql);
+            while(rs.next()) {
+                ids.add(rs.getInt("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return ids;
+    }
+
 //    /**
 //     * Calcula o tamanho da estrutura de dados
 //     * @return Tamanho

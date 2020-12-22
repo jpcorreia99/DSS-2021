@@ -70,4 +70,12 @@ public class StockFacade implements IStock {
         return prateleiraDAO.getIdPrateleiraQueGuardaPalete(idPalete);
     }
 
+    /**
+     * Devolve lista de ids de prateleira ocupadas
+     * @return
+     */
+    public List<Integer> getPrateleirasOcupadas(){
+        return this.prateleiraDAO.getPrateleirasOcupadas();
+    }
+
 }

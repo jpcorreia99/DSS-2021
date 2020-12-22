@@ -10,13 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class NotificacaoDAO {
     private static NotificacaoDAO singleton = null;
 
-    private Lock lock;
+    private Semaphore mutex;
     /**
      * Implementação do padrão Singleton
      *
@@ -30,39 +31,38 @@ public class NotificacaoDAO {
     }
 
     public NotificacaoDAO(){
-        this.lock = new ReentrantLock();
+        this.mutex = new Semaphore(1);;
     }
 
     public void enviarNotificacao(Notificacao notificacao, DirecionalidadeNotificacao direcionalidadeNotificacao){
-        try {
-            lock.lock();
-            Connection conn = ConnectionPool.getConnection();
+        Connection conn = ConnectionPool.getConnection();
 
-            try (Statement stm = conn.createStatement()) {
+        try {
+            mutex.acquire();
+
+            Statement stm = conn.createStatement();
                 String s = "INSERT INTO Notificacao (idRobo,tipo,direcionalidade) VALUES (" +
                         notificacao.getIdRobo() + ", " +
                         notificacao.getTipo().getValor() + ", " +
                         direcionalidadeNotificacao.getValor() + ")";
 
                 stm.execute(s);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw new NullPointerException(e.getMessage());
-            } finally {
-                ConnectionPool.releaseConnection(conn);
-            }
-        }finally {
-            lock.unlock();
+        } catch (InterruptedException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionPool.releaseConnection(conn);
+            mutex.release();
         }
     }
 
     public List<Notificacao> lerNotificacoesServidor(){
-        try {
-            lock.lock();
-            Connection conn = ConnectionPool.getConnection();
-            List<Notificacao> notificacoes = new ArrayList<>();
+        List<Notificacao> notificacoes = new ArrayList<>();
+        Connection conn = ConnectionPool.getConnection();
 
-            try (Statement stm = conn.createStatement()) {
+        try {
+            mutex.acquire();
+
+            Statement stm = conn.createStatement();
                 String sql = "SELECT * from Notificacao where direcionalidade = " + DirecionalidadeNotificacao.PARA_SERVIDOR.getValor() + ";";
                 ResultSet rs = stm.executeQuery(sql);
 
@@ -73,16 +73,14 @@ public class NotificacaoDAO {
                 // eliminar as notificações lidas - não elimina a mais devido ao lock
                 String sql2 = "DELETE from Notificacao where direcionalidade = " + DirecionalidadeNotificacao.PARA_SERVIDOR.getValor() + ";";
                 stm.executeUpdate(sql2);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                ConnectionPool.releaseConnection(conn);
-            }
-
-            return notificacoes;
-        }finally {
-            lock.unlock();
+        } catch (InterruptedException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionPool.releaseConnection(conn);
+            mutex.release();
         }
+
+        return notificacoes;
     }
 
     /**
@@ -93,20 +91,24 @@ public class NotificacaoDAO {
     public boolean recebeuNovaRota(int idRobo) {
         Connection conn = ConnectionPool.getConnection();
 
-        try (Statement stm = conn.createStatement()) {
-            String sql = "SELECT * from Notificacao where idRobo="+idRobo+" AND direcionalidade="+ DirecionalidadeNotificacao.PARA_ROBO.getValor()+";";
-            ResultSet rs = stm.executeQuery(sql);
-            if(rs.next()) {
-                String sql2 = "DELETE from Notificacao where idRobo="+idRobo+" AND direcionalidade="+ DirecionalidadeNotificacao.PARA_ROBO.getValor()+";";
-                stm.executeUpdate(sql2);
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            ConnectionPool.releaseConnection(conn);
-        }
+        try {
+            mutex.acquire();
 
+            Statement stm = conn.createStatement();
+                String sql = "SELECT * from Notificacao where idRobo=" + idRobo + " AND direcionalidade=" + DirecionalidadeNotificacao.PARA_ROBO.getValor() + ";";
+                ResultSet rs = stm.executeQuery(sql);
+                if (rs.next()) {
+                    String sql2 = "DELETE from Notificacao where idRobo=" + idRobo + " AND direcionalidade=" + DirecionalidadeNotificacao.PARA_ROBO.getValor() + ";";
+                    stm.executeUpdate(sql2);
+                    return true;
+                }
+
+        } catch (InterruptedException | SQLException e){
+            e.printStackTrace();
+        } finally {
+            ConnectionPool.releaseConnection(conn);
+            mutex.release();
+        }
         return false;
     }
 }

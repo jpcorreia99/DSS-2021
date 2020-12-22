@@ -38,11 +38,11 @@ class MapaThread implements Runnable {
                 
                 UI.showLogo();
                 
-                for (int i = 0; i < 12; i++) {
-                    for (int j = 0; j < 16; j++)
-                        System.out.print(mapa[i][j]);
-                    System.out.print("\n");
-                }
+//                for (int i = 0; i < 12; i++) {
+//                    for (int j = 0; j < 16; j++)
+//                        System.out.print(mapa[i][j]);
+//                    System.out.print("\n");
+//                }
                 
                 for (int i = 0; i < 12; i++) {
                     System.out.print("                                                               ");
@@ -85,7 +85,7 @@ class MapaThread implements Runnable {
                 vezes++;
                 System.out.println("\n                                                           Imprimi esta merda " + vezes + " vezes :)");
                 System.out.println("\nPressione 'Enter' para voltar ao menu principal.\n");
-                Thread.sleep(1500);
+                Thread.sleep(1000);
                 
             } catch (Exception e) {
                 Thread.currentThread().interrupt();

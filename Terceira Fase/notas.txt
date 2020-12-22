@@ -6,4 +6,5 @@ opção de sair do programa
 tratar armazém completamente cheio -  https://stackoverflow.com/questions/8776865/how-to-pass-exception-explicitly-to-the-main-thread-in-c-sharp
 verificar que use case existe como função
 criar segunda thread em cada robõ para o fechar
-
+criar o número certo de prateleiras
+robos terminam-se quando a BD breaka

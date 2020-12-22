@@ -44,58 +44,6 @@ public class RoboFacade implements IRobo{
         System.out.println("Rota enviada ao robo "+idRobo+": "+sb.toString());
     }
 
-    public ResultadosMovimentoRobos moveRobos(){
-        ResultadosMovimentoRobos resultadosMovimentoRobos = new ResultadosMovimentoRobos();
-        List<Integer> idsRobosEmTransito = rotaDAO.getIdsRobosEmTransito();
-        Map<Integer,Robo> robosEmTransito = roboDAO.getRobos(idsRobosEmTransito);
-
-//        System.out.print("Robos em movimento: ");
-//        for(int id : robosEmTransito.keySet()){
-//            System.out.print(id+" ");
-//        }
-//        System.out.println("");
-
-
-        for(Map.Entry<Integer,Robo> entradaIdRobo : robosEmTransito.entrySet()){
-            int idRobo = entradaIdRobo.getKey();
-            Robo robo = entradaIdRobo.getValue();
-
-            Coordenadas proximoPasso = rotaDAO.getProximoPasso(idRobo);
-            robo.setCoordenadas(proximoPasso);
-
-            if(rotaDAO.rotaTerminou(idRobo)) { // terminou uma parte do transporte
-                EstadoRobo estadoRobo = robo.getEstado();
-
-                int idPrateleira = robo.getIdPrateleira();
-                int idPalete = robo.getIdPalete();
-
-                if (estadoRobo == EstadoRobo.RECOLHA) { // está a reoclher a palete
-                    Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.RECOLHA);
-                    notificacaoDAO.enviarNotificacao(notificacao, DirecionalidadeNotificacao.PARA_SERVIDOR);
-                    resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idPrateleira, robo.getId(), robo.getCoordenadas());
-                    System.out.println("Robo "+idRobo+" está a transportar");
-                } else if (estadoRobo == EstadoRobo.TRANSPORTE) { // indica que se está a deslocar para a ir entregar a palete
-                    resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idPrateleira);
-
-                    Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.ENTREGA);
-                    notificacaoDAO.enviarNotificacao(notificacao, DirecionalidadeNotificacao.PARA_SERVIDOR);
-                    resultadosMovimentoRobos.addRoboQueArmazenou(robo.getId(),
-                            robo.getZonaEstacionamento(), robo.getCoordenadas());
-
-                    robo.setIdPalete(0);
-                    robo.setIdPrateleira(0);
-                    robo.setEstado(EstadoRobo.RETORNO);
-                    System.out.println("Robo "+idRobo+" está a retornar");
-                } else { // só sobra estar a retornar, logo deve ficar livre
-                    System.out.println("Robo "+idRobo+" ficou livre");
-                    robo.setEstado(EstadoRobo.LIVRE);
-                }
-            }
-        }
-        roboDAO.atualizaRobos(robosEmTransito);
-        return resultadosMovimentoRobos;
-    }
-
     /**
      * Função que irá ler todas as notificações enviadas ao sistema pelos robos e organizará a informação retida nelas num objeto
      * que será passado ao sistema de movo a que ele possa implementar as mudanças necessárias
@@ -137,5 +85,22 @@ public class RoboFacade implements IRobo{
             return roboQueTransportaPalete.getCoordenadas();
         else
             return  new Coordenadas(0,0);
+    }
+
+    /**
+     * Devolve uma lista com um tuplo contendo as coordenadas do robo e um booleano
+     * que indica se ele está a ir entregar a palete ou não
+     * @return
+     */
+    public  List<Tuple<Coordenadas, Boolean>> getInfoRobos(){
+        List<Tuple<Coordenadas,Boolean>> res = new ArrayList<>();
+        List<Robo> lista = roboDAO.getRobos();
+
+        for(Robo r: lista){
+            Boolean emTransporte = r.getEstado()==EstadoRobo.TRANSPORTE;
+            res.add(new Tuple<>(r.getCoordenadas(), emTransporte));
+        }
+
+        return res;
     }
 }

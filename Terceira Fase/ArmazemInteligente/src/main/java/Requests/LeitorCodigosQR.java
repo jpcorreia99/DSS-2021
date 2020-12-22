@@ -39,7 +39,7 @@ public class LeitorCodigosQR implements Runnable {
     private final Map<WatchKey, Path> keys;
     private Boolean working; // DEVERÁ SER TORNADO FALSO PELA THREAD PRINCIPAL PARA ACABAR COM O TRABALHO DESTA THREAD
 
-    public LeitorCodigosQR( Lock lockPaletes, Condition conditionNovaPalete) throws IOException {
+    public LeitorCodigosQR() throws IOException {
         this.paletesAGuardar = PaleteDAO.getInstance();
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<>();

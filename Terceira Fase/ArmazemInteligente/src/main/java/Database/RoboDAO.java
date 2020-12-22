@@ -114,22 +114,19 @@ public class RoboDAO {
         }
     }
 
-    public Map<Integer,Robo> getRobos(List<Integer> listaRoboId){
-        Map<Integer,Robo> res = new HashMap<>();
+    public List<Robo> getRobos(){
+        List<Robo> res = new ArrayList<>();
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-            for(Integer roboId: listaRoboId) {
-                ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + roboId + "'");
-
-                if (rs.next()) {  // A chave existe na tabela
-                    res.put(roboId, new Robo(rs.getInt("id"),
-                            rs.getInt("x"), rs.getInt("y"),
-                            rs.getInt("idEstacionamento"),
-                            rs.getInt("idPrateleira"),
-                            rs.getInt("idPalete"),
-                            EstadoRobo.getEnumByValor(rs.getInt("estado"))));
-                }
+                ResultSet rs = stm.executeQuery("SELECT * FROM Robo");
+            while (rs.next()) {  // A chave existe na tabela
+                res.add( new Robo(rs.getInt("id"),
+                        rs.getInt("x"), rs.getInt("y"),
+                        rs.getInt("idEstacionamento"),
+                        rs.getInt("idPrateleira"),
+                        rs.getInt("idPalete"),
+                        EstadoRobo.getEnumByValor(rs.getInt("estado"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
