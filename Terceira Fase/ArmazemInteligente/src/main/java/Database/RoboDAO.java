@@ -166,4 +166,34 @@ public class RoboDAO {
             ConnectionPool.releaseConnection(conn);
         }
     }
+
+    /**
+     * Devolve o robo que está a transportar a palete indicada
+     * @param idPalete
+     * @return
+     */
+    public Robo getRoboQueTransportaPalete(int idPalete){
+        Robo res = null;
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement stm = conn.createStatement()) {
+                ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE idPalete='" + idPalete + "'");
+
+            if (rs.next()) {  // A chave existe na tabela
+                res = new Robo(rs.getInt("id"),
+                        rs.getInt("x"), rs.getInt("y"),
+                        rs.getInt("idEstacionamento"),
+                        rs.getInt("idPrateleira"),
+                        rs.getInt("idPalete"),
+                        EstadoRobo.getEnumByValor(rs.getInt("estado")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return res;
+    }
 }

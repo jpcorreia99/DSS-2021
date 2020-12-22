@@ -1,5 +1,7 @@
 package Business.Armazem.Stock;
 
+import Util.EstadoPalete;
+
 public class Palete {
     private static int numeroPaletes = 0;
     private int id;

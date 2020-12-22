@@ -5,6 +5,8 @@ import java.util.*;
 
 import Business.Armazem.ArmazemLNFacade;
 
+import Util.Coordenadas;
+import Util.EstadoPalete;
 import Util.Tuple;
 import java.util.ArrayList;
 
@@ -179,7 +181,7 @@ public class UI {
     
     
     public void showPaletes () {
-        Map <Integer, Tuple <String, Integer>> paletes = this.model.getPaletes();
+        Map<Integer,Tuple<String,Tuple<EstadoPalete, Coordenadas>>> paletesInfo = this.model.getPaletes();
         
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -192,27 +194,31 @@ public class UI {
         System.out.print("\n                   |"  + ANSI_RESET + "      Palete" + ANSI_CYAN + "      ||" + ANSI_RESET + "         Material     " + ANSI_CYAN + "    || " + ANSI_RESET + "   Coordenadas " + ANSI_CYAN + "   ||  " + ANSI_RESET + "     Estado     " + ANSI_CYAN + "   |");
         System.out.println("\n                   --------------------------------------------------------------------------------------------");
         
-        for (Map.Entry<Integer, Tuple<String, Integer>> e : paletes.entrySet()) {
+        for (Map.Entry<Integer, Tuple<String,Tuple<EstadoPalete, Coordenadas>>> e : paletesInfo.entrySet()) {
             String s = null;
-            Tuple <String, Integer> t = e.getValue();
-            switch (t.getT()) {
-                case 1: 
-                    s = ANSI_RED + "EM ESPERA" + ANSI_CYAN;
-                    break;
-                case 2:
-                    s = ANSI_YELLOW + "EM TRANSPORTE" + ANSI_CYAN;
-                    break;
-                case 3:
-                    s = ANSI_GREEN + "ARMAZENADA" + ANSI_CYAN;
-                    break;
-                case 4: 
-                    s = ANSI_BLUE + "RECEM CHEGADA" + ANSI_BLUE;
-                    break;
+            int idPalete = e.getKey();
+            Tuple<String,Tuple<EstadoPalete, Coordenadas>> t = e.getValue();
+            String material = t.getO();
+            EstadoPalete estado = t.getT().getO();
+            Coordenadas coordenadas = t.getT().getT();
+            String coordenadasTextual;
+            if(coordenadas.getX()==0 && coordenadas.getY()==0){
+                coordenadasTextual="ERRO";
+            }else{
+                coordenadasTextual = "("+coordenadas.getX() +"," + coordenadas.getY()+")";
+            }
+
+
+            switch (estado) {
+                case RECEM_CHEGADA -> s = ANSI_RED + "RECÉM CHEGADA" + ANSI_CYAN;
+                case EM_LEVANTAMENTO -> s = ANSI_YELLOW + "EM LEVANTAMENTO" + ANSI_CYAN;
+                case TRANSPORTE -> s = ANSI_GREEN + "EM TRANSPORTE" + ANSI_CYAN;
+                case ARMAZENADA -> s = ANSI_BLUE + "ARMAZENADA" + ANSI_BLUE;
             }
             
-            System.out.println("                   |" + ANSI_RESET + String.format("%9d%-9s", e.getKey(), " ") + ANSI_CYAN + "|" +
-            String.format("%-10s%-21s", "|", ANSI_RESET + t.getO(), " ") + ANSI_CYAN + "|" +  
-            String.format("%-8s%-16s", "|", ANSI_RESET + "(" + 0 + "," + 0 + ")")  + ANSI_CYAN + "|" + 
+            System.out.println("                   |" + ANSI_RESET + String.format("%9d%-9s", idPalete, " ") + ANSI_CYAN + "|" +
+            String.format("%-10s%-21s", "|", ANSI_RESET + material, " ") + ANSI_CYAN + "|" +
+            String.format("%-8s%-16s", "|", ANSI_RESET + coordenadasTextual)  + ANSI_CYAN + "|" +
             String.format("%-6s%-26s", "|", s, " ") + ANSI_CYAN + "|");
         }
             System.out.println(ANSI_CYAN + "                   --------------------------------------------------------------------------------------------\n" + ANSI_RESET);

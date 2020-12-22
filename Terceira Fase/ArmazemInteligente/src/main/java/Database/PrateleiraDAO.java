@@ -1,6 +1,8 @@
 package Database;
 
 import Business.Armazem.Stock.EstadoPrateleira;
+import Business.Armazem.Stock.Palete;
+import Util.EstadoPalete;
 import Util.Tuple;
 
 import java.sql.Connection;
@@ -60,6 +62,25 @@ public class PrateleiraDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return idPrateleira;
+    }
+
+    public int getIdPrateleiraQueGuardaPalete(int idPalete){
+        Connection conn = ConnectionPool.getConnection();
+        int idPrateleira = 0;
+
+        try (Statement stm = conn.createStatement()) {
+            String sql = "SELECT * from Prateleira where idPalete="+idPalete+";";
+            ResultSet rs = stm.executeQuery(sql);
+            if(rs.next()) {
+                idPrateleira = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
         }

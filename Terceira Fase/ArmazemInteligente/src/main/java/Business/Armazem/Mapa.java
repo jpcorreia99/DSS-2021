@@ -14,7 +14,8 @@ public class Mapa {
     
     public Mapa () {
         zonas = new HashMap <>();
-        
+
+        zonas.put(0, new Coordenadas(1,1));
         for (int i = 1; i < 5; i++)
             zonas.put(i, new Coordenadas(2, i+3));
         
@@ -50,22 +51,11 @@ public class Mapa {
             {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {0,0,1,1,1,2,2,2,2,2,2,2,2,1,1,1},
         };
-
-        /* DEBUG
-        for (int i = 0; i < 12 ; i++) {
-            for (int j = 0; j < 16; j++) {
-                System.out.print(mapa[i][j]);
-            }
-            System.out.println();
-        }
-        
-        for (Map.Entry<Integer, Coordenadas> e : this.zonas.entrySet()) {
-            Coordenadas c = e.getValue();
-            System.out.println("A zona " + e.getKey() + " tem coordenadas " + "(" + c.getX() + "," + c.getY() + ")");
-        }
-         */
     }
-    
+    public Coordenadas getCoordsZonaLevantamento(){
+        return zonas.get(0).clone();
+    }
+
     public Util.Coordenadas getCoords (int p) {
         return zonas.get(p).clone();
     }

@@ -1,12 +1,13 @@
 package Database;
 
 import Business.Armazem.Stock.Palete;
-import Business.Armazem.Stock.EstadoPalete;
+import Util.EstadoPalete;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PaleteDAO {
@@ -141,4 +142,25 @@ public class PaleteDAO {
             ConnectionPool.releaseConnection(conn);
         }
     }
+
+    public List<Palete> getTodasPaletes() {
+        Connection conn = ConnectionPool.getConnection();
+        List<Palete> paletes = new ArrayList<>();
+
+        try (Statement stm = conn.createStatement()) {
+            String sql = "SELECT * from Palete;";
+            ResultSet rs = stm.executeQuery(sql);
+            while(rs.next()) {
+                 paletes.add(new Palete(rs.getInt("id"), rs.getString("material"),
+                         EstadoPalete.getEnumByValor(rs.getInt("estado"))));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return paletes;
+    }
+
 }

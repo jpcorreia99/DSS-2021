@@ -107,10 +107,10 @@ public class RoboFacade implements IRobo{
             int idPalete = robo.getIdPalete();
             TipoNotificacao tipoNotificacao = notificacao.getTipo();
             if (tipoNotificacao == TipoNotificacao.RECOLHA) {
-                System.out.println("Notificação de recolha do robo "+robo.getId());
+                System.out.println("Notificação de recolha do robo " + robo.getId());
                 resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idPrateleira, robo.getId(), robo.getCoordenadas());
             } else { // TipoNotificacao.ENTREGA
-                System.out.println("Notificação de entrega do robo "+robo.getId());
+                System.out.println("Notificação de entrega do robo " + robo.getId());
                 resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idPrateleira);
                 resultadosMovimentoRobos.addRoboQueArmazenou(robo.getId(),
                         robo.getZonaEstacionamento(), robo.getCoordenadas());
@@ -123,46 +123,14 @@ public class RoboFacade implements IRobo{
         }
 
         return resultadosMovimentoRobos;
+    }
 
+    public Coordenadas getCoordPalete(int idPalete){
+        Robo roboQueTransportaPalete = this.roboDAO.getRoboQueTransportaPalete(idPalete);
 
-//        ResultadosMovimentoRobos resultadosMovimentoRobos = new ResultadosMovimentoRobos();
-//        List<Integer> idsRobosEmTransito = rotaDAO.getIdsRobosEmTransito();
-//        Map<Integer,Robo> robosEmTransito = roboDAO.getRobos(idsRobosEmTransito);
-//
-//        for(Map.Entry<Integer,Robo> entradaIdRobo : robosEmTransito.entrySet()){
-//            int idRobo = entradaIdRobo.getKey();
-//            Robo robo = entradaIdRobo.getValue();
-//
-//            Coordenadas proximoPasso = rotaDAO.getProximoPasso(idRobo);
-//            robo.setCoordenadas(proximoPasso);
-//
-//            if(rotaDAO.rotaTerminou(idRobo)) { // terminou uma parte do transporte
-//                EstadoRobo estadoRobo = robo.getEstado();
-//
-//                int idPrateleira = robo.getIdPrateleira();
-//                int idPalete = robo.getIdPalete();
-//
-//                if (estadoRobo == EstadoRobo.RECOLHA) { // está a reoclher a palete
-//                    Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.RECOLHA);
-//                    notificacaoDAO.enviarNotificacao(notificacao,DirecionalidadeNotificacao.PARA_ROBO);
-//                    resultadosMovimentoRobos.addPaleteRecolhida(idPalete, idPrateleira, robo.getId(), robo.getCoordenadas());
-//                } else if (estadoRobo == EstadoRobo.TRANSPORTE) { // indica que se está a deslocar para a ir entregar a palete
-//                    resultadosMovimentoRobos.addTuploPaleteArmazenadaPrateleira(idPalete, idPrateleira);
-//
-//                    Notificacao notificacao = new Notificacao(robo.getId(), TipoNotificacao.ENTREGA);
-//                    notificacaoDAO.enviarNotificacao(notificacao, DirecionalidadeNotificacao.PARA_SERVIDOR);
-//                    resultadosMovimentoRobos.addRoboQueArmazenou(robo.getId(),
-//                            robo.getZonaEstacionamento(), robo.getCoordenadas());
-//
-//                    robo.setIdPalete(0);
-//                    robo.setIdPrateleira(0);
-//                    robo.setEstado(EstadoRobo.RETORNO);
-//                } else { // só sobra estar a retornar, logo deve ficar livre
-//                    robo.setEstado(EstadoRobo.LIVRE);
-//                }
-//            }
-//        }
-//        roboDAO.atualizaRobos(robosEmTransito);
-//        return resultadosMovimentoRobos;
+        if(roboQueTransportaPalete!=null)
+            return roboQueTransportaPalete.getCoordenadas();
+        else
+            return  new Coordenadas(0,0);
     }
 }

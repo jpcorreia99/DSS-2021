@@ -3,6 +3,7 @@ package Business.Armazem;
 import Business.Armazem.Gestor.GestorFacade;
 import Business.Armazem.Robo.EstadoRobo;
 import Business.Armazem.Robo.RoboFacade;
+import Util.EstadoPalete;
 import Business.Armazem.Stock.StockFacade;
 import Business.IArmazemLN;
 
@@ -54,19 +55,51 @@ public class ArmazemLNFacade implements IArmazemLN {
         Thread threadEscalonamentoRobos = new Thread(this::gereRobos);
         threadEscalonamentoRobos.start();
     }
-    
-    public Map<Integer, Tuple<String, Integer>> getPaletes() {
-        Map<Integer, Tuple<String, Integer>> paletes = new HashMap<>();
-         
-        String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
-        Integer[] ys = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
-        Integer[] xs = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
-        Integer[] estado = {1, 2, 2, 3, 1, 4, 1, 3, 2, 4, 1};
-        
-        for (int i = 0; i < 10; i++)
-            paletes.put(i+1, new Tuple<>(materiais[i], estado[i]));
-         //return stockFacade.getLocPaletes();
-         return paletes;
+
+    /**
+     * Devolve um conjunto de informação relativa a cada palete existente no sistema
+     * @return Map em que a chave é o id de uma palete e o valor é uma estrutura composta por:
+     * tuplo composto pelo material da palete e um segundo tuplo
+     * composto pelo estado da palete e as suas coordenadas
+     */
+    public Map<Integer,Tuple<String,Tuple<EstadoPalete,Coordenadas>>> getPaletes() {
+//        Map<Integer, Tuple<String, Integer>> paletes = new HashMap<>();
+//
+//        String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
+//        Integer[] ys = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
+//        Integer[] xs = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
+//        Integer[] estado = {1, 2, 2, 3, 1, 4, 1, 3, 2, 4, 1};
+//
+//        for (int i = 0; i < 10; i++)
+//            paletes.put(i+1, new Tuple<>(materiais[i], estado[i]));
+//        return paletes;
+        Map<Integer,Tuple<String,Tuple<EstadoPalete,Coordenadas>>> infoSobrePaletes = new HashMap<>();
+
+        Map<Integer,Tuple<String, EstadoPalete>> mapIdMaterialEstado = stockFacade.getLocPaletes();
+        for(Map.Entry<Integer,Tuple<String,EstadoPalete>> entry : mapIdMaterialEstado.entrySet()){
+            int idPalete = entry.getKey();
+            Tuple<String,EstadoPalete> tuploMaterialEstado = entry.getValue();
+            String material = tuploMaterialEstado.getO();
+            EstadoPalete estadoPalete = tuploMaterialEstado.getT();
+
+            Coordenadas coordenadasPalete;
+            if(estadoPalete==EstadoPalete.RECEM_CHEGADA || estadoPalete==EstadoPalete.EM_LEVANTAMENTO){
+                coordenadasPalete = this.mapa.getCoordsZonaLevantamento();
+            } else if(estadoPalete == EstadoPalete.TRANSPORTE) {
+                coordenadasPalete = this.roboFacade.getCoordPalete(idPalete);
+            } else{ // (estadoPalete== EstadoPalete.ARMAZENADA)
+                int idPrateleira = stockFacade.getIdPrateleiraGuardaPalete(idPalete);
+                if(idPrateleira!=0) {
+                    coordenadasPalete = this.mapa.getCoords(idPrateleira);
+                } else{
+                    coordenadasPalete = new Coordenadas(0,0);
+                }
+            }
+            Tuple<EstadoPalete,Coordenadas> tuploEstadoCoordenadas = new Tuple<>(estadoPalete,coordenadasPalete);
+            Tuple<String,Tuple<EstadoPalete,Coordenadas>> tuploMaterialInfo = new Tuple<>(material,tuploEstadoCoordenadas);
+            infoSobrePaletes.put(idPalete,tuploMaterialInfo);
+        }
+        return infoSobrePaletes;
     }
 
     public boolean login (String user, String password) {
@@ -86,7 +119,7 @@ public class ArmazemLNFacade implements IArmazemLN {
 
             long finish2 = System.currentTimeMillis();
             long timeElapsed2 = finish2 - start2;
-            System.out.println("Tempo gasto: "+timeElapsed2);
+//            System.out.println("Tempo gasto: "+timeElapsed2);
         }
     }
 
@@ -107,11 +140,11 @@ public class ArmazemLNFacade implements IArmazemLN {
                 System.out.println("Armazém cheio");
             }
         }else{
-            if(!stockFacade.existemPaletesRecemChegadas()) {
-                System.out.println("Não há paletes");
-            }else{
-                System.out.println("Não há robos");
-            }
+//            if(!stockFacade.existemPaletesRecemChegadas()) {
+//                System.out.println("Não há paletes");
+//            }else{
+//                System.out.println("Não há robos");
+//            }
         }
     }
 

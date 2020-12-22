@@ -1,7 +1,5 @@
 package Database;
 
-import Business.Armazem.Stock.EstadoPalete;
-import Business.Armazem.Stock.Palete;
 import Util.DirecionalidadeNotificacao;
 import Util.Notificacao;
 import Util.TipoNotificacao;

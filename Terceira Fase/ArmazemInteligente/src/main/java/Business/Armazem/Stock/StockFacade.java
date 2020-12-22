@@ -3,9 +3,13 @@ package Business.Armazem.Stock;
 import Business.Armazem.IStock;
 import Database.PaleteDAO;
 import Database.PrateleiraDAO;
+import Util.Coordenadas;
+import Util.EstadoPalete;
 import Util.Tuple;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class StockFacade implements IStock {
@@ -45,6 +49,25 @@ public class StockFacade implements IStock {
 
     public int encontraPrateleiraLivre(){
         return this.prateleiraDAO.encontraPrateleiraLivre();
+    }
+
+    public Map<Integer,Tuple<String, EstadoPalete>> getLocPaletes(){
+        List<Palete> listaPaletes = paleteDAO.getTodasPaletes();
+        Map<Integer, Tuple<String,EstadoPalete>> locPaletes = new HashMap<>();
+
+        for(Palete palete : listaPaletes) {
+            String material = palete.getMaterial();
+            EstadoPalete estado = palete.getEstado();
+            Tuple<String,EstadoPalete> tuploMaterialEstado = new Tuple<>(material,estado);
+
+            locPaletes.put(palete.getId(), tuploMaterialEstado);
+        }
+
+        return locPaletes;
+    }
+
+    public int getIdPrateleiraGuardaPalete(int idPalete) {
+        return prateleiraDAO.getIdPrateleiraQueGuardaPalete(idPalete);
     }
 
 }
