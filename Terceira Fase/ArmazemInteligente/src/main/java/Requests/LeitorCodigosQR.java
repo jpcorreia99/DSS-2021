@@ -37,7 +37,7 @@ public class LeitorCodigosQR implements Runnable {
         this.paletesAGuardar = PaleteDAO.getInstance();
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<>();
-        File sourceDir = new File("src/main/resources");
+        File sourceDir = new File("../src/main/resources");
         Path sourceDirPath = Paths.get(sourceDir.toURI());
 
         WatchKey key = sourceDirPath.register(watcher, ENTRY_CREATE); // verifica a criação de novos ficheiros na diretoria
