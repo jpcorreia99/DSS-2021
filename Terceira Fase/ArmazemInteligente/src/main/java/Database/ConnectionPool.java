@@ -31,15 +31,24 @@ public class ConnectionPool {
     }
 
     public static Connection getConnection() {
+        Connection conn = null;
         try {
             lock.lock();
-            Connection connection = connectionPool
+            conn = connectionPool
                     .remove(connectionPool.size() - 1);
-            usedConnections.add(connection);
-            return connection;
+
+            if (!conn.isValid(5)) {
+                conn = DriverManager.getConnection("jdbc:mysql://" + URL +
+                        "/" + DATABASE, USERNAME, PASSWORD);
+            }
+            usedConnections.add(conn);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         } finally {
             lock.unlock();
         }
+
+        return conn;
     }
 
     public static void releaseConnection(Connection connection) {

@@ -96,7 +96,12 @@ public class RoboFacade implements IRobo{
         return resultadosMovimentoRobos;
     }
 
-    public ResultadosMovimentoRobos processaNotificacoes() {
+    /**
+     * Função que irá ler todas as notificações enviadas ao sistema pelos robos e organizará a informação retida nelas num objeto
+     * que será passado ao sistema de movo a que ele possa implementar as mudanças necessárias
+     * @return
+     */
+    public ResultadosMovimentoRobos recolheNotificacoes() {
         ResultadosMovimentoRobos resultadosMovimentoRobos = new ResultadosMovimentoRobos();
         List<Notificacao> notificacoes = notificacaoDAO.lerNotificacoesServidor();
 

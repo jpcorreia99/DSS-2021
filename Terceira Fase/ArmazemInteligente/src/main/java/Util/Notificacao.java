@@ -5,6 +5,7 @@ public class Notificacao {
     private final TipoNotificacao tipo;
     private int id;
     private static int counter=0;
+
     public Notificacao(int idRobo, TipoNotificacao tipo) {
         counter++;
         this.id=counter;

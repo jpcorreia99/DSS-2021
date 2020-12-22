@@ -63,16 +63,6 @@ public class ArmazemLNFacade implements IArmazemLN {
      * composto pelo estado da palete e as suas coordenadas
      */
     public Map<Integer,Tuple<String,Tuple<EstadoPalete,Coordenadas>>> getPaletes() {
-//        Map<Integer, Tuple<String, Integer>> paletes = new HashMap<>();
-//
-//        String[] materiais = {"Frangos", "Vibradores", "Tremoços", "Iogurtes", "Memes", "2ª fase de DSS", "Valérios", "Pinguins", "Esperanças", "Pantufas", "Caloiros"};
-//        Integer[] ys = {0, 7, 6, 4, 1, 8, 3, 2, 8, 2, 9};
-//        Integer[] xs = {7, 3, 3, 2, 9, 0, 0, 2, 3, 1, 11};
-//        Integer[] estado = {1, 2, 2, 3, 1, 4, 1, 3, 2, 4, 1};
-//
-//        for (int i = 0; i < 10; i++)
-//            paletes.put(i+1, new Tuple<>(materiais[i], estado[i]));
-//        return paletes;
         Map<Integer,Tuple<String,Tuple<EstadoPalete,Coordenadas>>> infoSobrePaletes = new HashMap<>();
 
         Map<Integer,Tuple<String, EstadoPalete>> mapIdMaterialEstado = stockFacade.getLocPaletes();
@@ -110,7 +100,7 @@ public class ArmazemLNFacade implements IArmazemLN {
         while(funciona){
             long start2 = System.currentTimeMillis();
             escalonaRobos();
-            moveRobos();
+            atualizaSistema();
 
             // quando um robo termina o trajeto deve dar signal no lock e deve alterar o seu idDestino
             try {
@@ -148,12 +138,13 @@ public class ArmazemLNFacade implements IArmazemLN {
         }
     }
 
+
     /**
-     * Função que moverá processará no sistema todas as alterações resultantes da movimentação de todos os robos
-     * com rotas por 1 time step.
+     * Função responsável por aplicar as mudanças no sistema relativas às alterações causadas pelas notificações
+     * recebidas no sistema enviadas pelos vários robos
      */
-    private void moveRobos(){
-            ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.processaNotificacoes();
+    private void atualizaSistema(){
+            ResultadosMovimentoRobos resultadosMovimentoRobos = roboFacade.recolheNotificacoes();
             // processamento da recolha de paletes
             processaRecolhaPaletes(resultadosMovimentoRobos.getPaletesRecolhidas());
 
