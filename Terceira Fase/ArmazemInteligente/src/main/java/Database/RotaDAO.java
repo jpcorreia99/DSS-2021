@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+// TODO devolver coordenada (0,0) caso exista problema de leitura
 
 public class RotaDAO {
     private static RotaDAO singleton = null;
