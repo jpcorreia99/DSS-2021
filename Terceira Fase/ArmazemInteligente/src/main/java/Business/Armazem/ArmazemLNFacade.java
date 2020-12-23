@@ -86,7 +86,7 @@ public class ArmazemLNFacade implements IArmazemLN {
             atualizaSistema();
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(250);
             } catch (InterruptedException ignored){}
         }
     }
@@ -102,6 +102,7 @@ public class ArmazemLNFacade implements IArmazemLN {
                     stockFacade.marcaPaleteEmLevantamento(idPalete);
                     Tuple<Integer, Coordenadas> tuploIdCoordenadas =
                             roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
+
                     List<Coordenadas> percursoInicial = new ArrayList<>();
                     percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
 
@@ -150,7 +151,13 @@ public class ArmazemLNFacade implements IArmazemLN {
             Coordenadas coordenadasRobo = tuploRoboCoordenadas.getT();
 
             stockFacade.assinalaPaleteEmTransporte(idPalete);
-            List<Coordenadas> rotaAtePrateleira = this.mapa.calculaRota(idPrateleira, coordenadasRobo);
+            List<Coordenadas> rotaAtePrateleira;
+            if(!(coordenadasRobo.getX()==0 || coordenadasRobo.getY() == 0)) {
+                rotaAtePrateleira = this.mapa.calculaRota(idPrateleira, coordenadasRobo);
+            }else { // ocorreu erro -> devolver robo à zona de estacionamento
+                rotaAtePrateleira = new ArrayList<>();
+                rotaAtePrateleira.add(this.mapa.getCoords(roboFacade.getIdZonaEstacionamento(idRobo)));
+            }
 
             roboFacade.transmiteInfoRota(idPalete, idPrateleira,idRobo, rotaAtePrateleira, EstadoRobo.TRANSPORTE);
         }
@@ -168,7 +175,13 @@ public class ArmazemLNFacade implements IArmazemLN {
             int idEstacionamento = infoRoboQueArmazenou.getValue().getO();
             Coordenadas coordenadasRobo = infoRoboQueArmazenou.getValue().getT();
 
-            List<Coordenadas> rotaAteEstacionamento = this.mapa.calculaRota(idEstacionamento, coordenadasRobo);
+            List<Coordenadas> rotaAteEstacionamento;
+            if(!(coordenadasRobo.getX()==0 || coordenadasRobo.getY() == 0)) {
+                rotaAteEstacionamento = this.mapa.calculaRota(idEstacionamento, coordenadasRobo);
+            }else { // ocorreu erro -> devolver robo à zona de estacionamento
+                rotaAteEstacionamento = new ArrayList<>();
+                rotaAteEstacionamento.add(this.mapa.getCoords(roboFacade.getIdZonaEstacionamento(idRobo)));
+            }
             roboFacade.transmiteInfoRota(0,0,idRobo,rotaAteEstacionamento,EstadoRobo.RETORNO);
         }
     }

@@ -17,7 +17,7 @@ public class RotaDAO {
     private static RotaDAO singleton = null;
     private final Lock lock;
 
-    public RotaDAO(){
+    private RotaDAO(){
         this.lock = new ReentrantLock();
     }
 

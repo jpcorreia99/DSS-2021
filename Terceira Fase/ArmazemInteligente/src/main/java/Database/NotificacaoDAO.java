@@ -28,7 +28,7 @@ public class NotificacaoDAO {
         return NotificacaoDAO.singleton;
     }
 
-    public NotificacaoDAO(){
+    private NotificacaoDAO(){
         this.mutex = new Semaphore(1);;
     }
 
@@ -68,9 +68,11 @@ public class NotificacaoDAO {
                 notificacoes.add(new Notificacao(rs.getInt("id"), rs.getInt("idRobo"), TipoNotificacao.getEnumByValor(rs.getInt("tipo"))));
             }
 
-            // eliminar as notificações lidas - não elimina a mais devido ao mutex
-            String sql2 = "DELETE from Notificacao where direcionalidade = " + DirecionalidadeNotificacao.PARA_SERVIDOR.getValor() + ";";
-            stm.executeUpdate(sql2);
+            // eliminar as notificações lidas
+            for(Notificacao notificacao : notificacoes) {
+                String sql2 = "DELETE from Notificacao where id="+notificacao.getId()+";";
+                stm.executeUpdate(sql2);
+            }
             stm.close();
         } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
@@ -97,7 +99,7 @@ public class NotificacaoDAO {
                 String sql = "SELECT * from Notificacao where idRobo=" + idRobo + " AND direcionalidade=" + DirecionalidadeNotificacao.PARA_ROBO.getValor() + ";";
                 ResultSet rs = stm.executeQuery(sql);
                 if (rs.next()) {
-                    String sql2 = "DELETE from Notificacao where idRobo=" + idRobo + " AND direcionalidade=" + DirecionalidadeNotificacao.PARA_ROBO.getValor() + ";";
+                    String sql2 = "DELETE from Notificacao where id="+rs.getInt("id")+";";
                     stm.executeUpdate(sql2);
                     return true;
                 }

@@ -46,10 +46,11 @@ public class APP {
 
 
             // fim do programa
+            // termina leitor de códigod QR
             threadLeitorCodigosQR.interrupt(); // não é possível criar uma flag de interrupção pois o watch service bloqueia à espera
             ui.show("Leitor de códigos códigos QR desligado!");
 
-
+            // termina cada um dos robos
             for (int i = 0; i<=3; i++){
                 robosExternos[i].desliga();
                 try {
@@ -59,6 +60,10 @@ public class APP {
                     e.printStackTrace();
                 }
             }
+
+            // fecha todas as ligações criadas na connection Pool
+            ConnectionPool.fecharTodasLigacoes();
+            ui.show("Ligações à BD terminadas!");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             System.out.println("Problema com a ligação à base de dados");

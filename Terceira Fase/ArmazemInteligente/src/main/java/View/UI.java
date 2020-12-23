@@ -31,8 +31,8 @@ class MapaThread implements Runnable {
             try {
                 int[][] mapa = model.getMapa();
                 
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
+//                System.out.print("\033[H\033[2J");
+//                System.out.flush();
                 
                 UI.showLogo();
                 
@@ -75,7 +75,7 @@ class MapaThread implements Runnable {
                 }
                 
                 System.out.println("\nPressione 'Enter' para voltar ao menu principal.\n");
-                Thread.sleep(1000);
+                Thread.sleep(250);
                 
             } catch (Exception e) {
                 Thread.currentThread().interrupt();

@@ -1,5 +1,6 @@
 package Database;
 
+import Business.Armazem.Robo.Robo;
 import Util.EstadoRobo;
 import Transportation.RoboTransportador;
 
@@ -7,10 +8,17 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class RoboTransportadorDAO {
     private static RoboTransportadorDAO singleton = null;
 
+    private Lock lock;
+
+    private RoboTransportadorDAO() {
+        this.lock = new ReentrantLock();
+    }
     /**
      * Implementação do padrão Singleton
      *
@@ -28,6 +36,7 @@ public class RoboTransportadorDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + idRobo + "'");
             if (rs.next()) {  // A chave existe na tabela
                 r = new RoboTransportador(rs.getInt("id"),
@@ -39,6 +48,7 @@ public class RoboTransportadorDAO {
             throw new NullPointerException(e.getMessage());
         } finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return r;
@@ -48,6 +58,7 @@ public class RoboTransportadorDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             // Actualizar o Robo
             String sql = "Select * from Robo where id="+roboTransportador.getId();
 
@@ -63,6 +74,7 @@ public class RoboTransportadorDAO {
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
     }
 
@@ -70,6 +82,7 @@ public class RoboTransportadorDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             // Actualizar o Robo
             String sql = "UPDATE Robo SET x = "  + roboTransportador.getCoordenadas().getX() + "," +
                     " y = "+roboTransportador.getCoordenadas().getY()+","+
@@ -85,6 +98,7 @@ public class RoboTransportadorDAO {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
         }finally {
+            lock.unlock();
             ConnectionPool.releaseConnection(conn);
         }
     }

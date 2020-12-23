@@ -87,8 +87,8 @@ public class RoboTransportador implements Runnable {
             }
 
             Coordenadas proximoPasso;
-            // para evitar situações imprevistas, é devolvida a coordenada (0,0) em situações em que se falha na leitura da rota
-            if ((proximoPasso = rotaDAO.getProximoPasso(this.id)) != null && !(proximoPasso.getX()==0 && proximoPasso.getY()==0)) {
+
+            if ((proximoPasso = rotaDAO.getProximoPasso(this.id)) != null) {
                 this.coordenadas = proximoPasso;
                 if (rotaDAO.rotaTerminou(this.id)) {
                     if (this.estado == EstadoRobo.RECOLHA) {
@@ -99,9 +99,14 @@ public class RoboTransportador implements Runnable {
                         this.estado = EstadoRobo.LIVRE;
                     }
                 }
+
+                if((proximoPasso.getX()==0 || proximoPasso.getY()==0)) { // para evitar situações imprevistas, é devolvida a coordenada (0,0) em situações em que se falha na leitura da rota
+                    this.coordenadas = new Coordenadas(2,this.id+3);
+                }
                 // inserir dados atualizados na BD
                 this.roboTransportadorDAO.atualizaDadosRoboTransportador(this);
             }
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

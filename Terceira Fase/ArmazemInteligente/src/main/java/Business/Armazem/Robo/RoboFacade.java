@@ -43,6 +43,9 @@ public class RoboFacade implements IRobo{
         notificacaoDAO.enviarNotificacao(notificacao,DirecionalidadeNotificacao.PARA_ROBO);
     }
 
+    public int getIdZonaEstacionamento(int idRobo){
+        return  this.roboDAO.get(idRobo).getZonaEstacionamento();
+    }
     /**
      * Função que irá ler todas as notificações enviadas ao sistema pelos robos e organizará a informação retida nelas num objeto
      * que será passado ao sistema de movo a que ele possa implementar as mudanças necessárias

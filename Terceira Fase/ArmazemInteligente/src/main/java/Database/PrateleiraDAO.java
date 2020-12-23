@@ -16,9 +16,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import static javax.swing.UIManager.getInt;
 
 public class PrateleiraDAO {
+    private Lock lock;
 
     private static PrateleiraDAO singleton = null;
 
+    private PrateleiraDAO(){
+        lock = new ReentrantLock();
+    }
     /**inse
      * Devolve uma instância do objeto
      * @return Instância
@@ -33,6 +37,7 @@ public class PrateleiraDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement sta = conn.createStatement()) {
+            lock.lock();
             String sql = "SELECT * from Prateleira where estado="+ EstadoPrateleira.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
             ResultSet rs = sta.executeQuery(sql);
             if(rs.next()) {
@@ -42,6 +47,7 @@ public class PrateleiraDAO {
             e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return false;
@@ -51,6 +57,7 @@ public class PrateleiraDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             for(Tuple<Integer,Integer> tuploPaletePrateleira: tuplosPaletesArmazenadasZonas) {
                 stm.executeUpdate("UPDATE Prateleira"+
                         " SET estado="+ EstadoPrateleira.OCUPADA.getValor()+
@@ -62,6 +69,7 @@ public class PrateleiraDAO {
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
     }
 
@@ -70,6 +78,7 @@ public class PrateleiraDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             ResultSet rs = stm.executeQuery("SELECT * FROM Prateleira WHERE estado='"+ EstadoPrateleira.LIVRE.getValor()+"'");
             if (rs.next()) {  // Existe alguma prateleira livre
                 idPrateleira = rs.getInt("id");
@@ -84,6 +93,7 @@ public class PrateleiraDAO {
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return idPrateleira;
@@ -91,9 +101,11 @@ public class PrateleiraDAO {
 
     public int getIdPrateleiraQueGuardaPalete(int idPalete){
         Connection conn = ConnectionPool.getConnection();
+
         int idPrateleira = 0;
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             String sql = "SELECT * from Prateleira where idPalete="+idPalete+";";
             ResultSet rs = stm.executeQuery(sql);
             if(rs.next()) {
@@ -103,6 +115,7 @@ public class PrateleiraDAO {
             e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return idPrateleira;
@@ -117,6 +130,7 @@ public class PrateleiraDAO {
         List<Integer> ids = new ArrayList<>();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             String sql = "SELECT * from Prateleira where estado="+EstadoPrateleira.OCUPADA.getValor()+";";
             ResultSet rs = stm.executeQuery(sql);
             while(rs.next()) {
@@ -126,6 +140,7 @@ public class PrateleiraDAO {
             e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return ids;

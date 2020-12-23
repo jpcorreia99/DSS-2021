@@ -86,7 +86,7 @@ public class DBConnect  {
 
         stm.execute(sql);
 
-        for(int i=10; i<=15;i++) {
+        for(int i=10; i<=57;i++) {
             stm.execute("INSERT INTO Prateleira VALUES ("+i+",1,0)");
         }
     }
