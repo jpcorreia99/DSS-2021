@@ -24,6 +24,23 @@ public class PrateleiraDAO {
         return PrateleiraDAO.singleton;
     }
 
+    public boolean armazemTemEspacoDisponivel() {
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement sta = conn.createStatement()) {
+            String sql = "SELECT * from Prateleira where estado="+ EstadoPrateleira.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
+            ResultSet rs = sta.executeQuery(sql);
+            if(rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return false;
+    }
 
     public void inserePaletes(List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasZonas){
         Connection conn = ConnectionPool.getConnection();

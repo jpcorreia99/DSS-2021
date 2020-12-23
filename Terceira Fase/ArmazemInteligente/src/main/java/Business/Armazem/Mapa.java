@@ -3,6 +3,7 @@ package Business.Armazem;
 import Util.Coordenadas;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Mapa {
@@ -107,7 +108,7 @@ public class Mapa {
                             finalList.add(curPos.clone());
                         }
         }
-        return finalList;
+        return finalList.stream().filter(c -> c.getX()!=1 && c.getX()!=0).collect(Collectors.toList());
     }
 
     /**

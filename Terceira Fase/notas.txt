@@ -1,10 +1,10 @@
 a fazer:
 
-- meter tudo a ser iniciado no app
 fechar ligações á bd
-opção de sair do programa
-tratar armazém completamente cheio -  https://stackoverflow.com/questions/8776865/how-to-pass-exception-explicitly-to-the-main-thread-in-c-sharp
 verificar que use case existe como função
 
-criar o número certo de prateleiras
-ELIMINAR PALAAAAAAAAVROES NO PRINT DO MAPA E LOGIN
+na pasta em qeu tem o pom.xml -> mvn clean install assembly:single
+
+na pasta target java -jar ArmazemInteligente-jar-with-dependencies.jar
+
+opcional: adicionar tuplo da ocupação

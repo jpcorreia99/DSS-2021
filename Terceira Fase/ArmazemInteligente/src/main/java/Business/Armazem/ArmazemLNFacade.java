@@ -20,7 +20,7 @@ public class ArmazemLNFacade implements IArmazemLN {
     RoboFacade roboFacade;
     StockFacade stockFacade;
     GestorFacade gestorFacade;
-    Boolean funciona;
+    Boolean funcional;
     Mapa mapa;
 
     public ArmazemLNFacade () {
@@ -28,7 +28,7 @@ public class ArmazemLNFacade implements IArmazemLN {
         stockFacade = new StockFacade();
         gestorFacade = new GestorFacade();
         mapa = new Mapa();
-        funciona=true;
+        funcional=true;
     }
 
     public void start() {
@@ -81,21 +81,21 @@ public class ArmazemLNFacade implements IArmazemLN {
      * por eles enviadas relativas ao transporte delas.
      */
     private void gereRobos(){
-        while(funciona){
+        while(funcional){
             escalonaRobos();
             atualizaSistema();
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(50);
             } catch (InterruptedException ignored){}
         }
     }
 
     private void escalonaRobos(){
-        if(stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()) {
-            int idPalete = stockFacade.getPaleteRecemChegada();
-            int idPrateleira = stockFacade.encontraPrateleiraLivre();
-            if (idPrateleira != 0) {
+        if(stockFacade.armazemTemEspacoDisponivel()) {// Armazem não está cheio
+            if (stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()) {
+                int idPalete = stockFacade.getPaleteRecemChegada();
+                int idPrateleira = stockFacade.encontraPrateleiraLivre();
                 stockFacade.marcaPaleteEmLevantamento(idPalete);
                 Tuple<Integer, Coordenadas> tuploIdCoordenadas =
                         roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
@@ -103,8 +103,6 @@ public class ArmazemLNFacade implements IArmazemLN {
                 percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
 
                 roboFacade.transmiteInfoRota(idPalete, idPrateleira, tuploIdCoordenadas.getO(), percursoInicial, EstadoRobo.RECOLHA);
-            } else {
-                System.out.println("Armazém cheio");
             }
         }
     }
@@ -195,6 +193,6 @@ public class ArmazemLNFacade implements IArmazemLN {
     }
 
     public void desligaSistema(){
-        this.funciona=false;
+        this.funcional=false;
     }
 }

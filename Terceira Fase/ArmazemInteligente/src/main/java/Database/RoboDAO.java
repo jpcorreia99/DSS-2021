@@ -7,8 +7,12 @@ import Util.Tuple;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class RoboDAO {
+    private Lock lock = new ReentrantLock();
+
     private static RoboDAO singleton = null;
 
     /**
@@ -27,6 +31,7 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement sta = conn.createStatement()) {
+            lock.lock();
             String sql = "SELECT * from Robo where estado="+EstadoRobo.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
             ResultSet rs = sta.executeQuery(sql);
             if(rs.next()) {
@@ -36,6 +41,7 @@ public class RoboDAO {
             e.printStackTrace();
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return false;
@@ -46,6 +52,7 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE id='" + idRobo + "'");
             if (rs.next()) {  // A chave existe na tabela
                 r = new Robo(rs.getInt("id"),
@@ -57,6 +64,7 @@ public class RoboDAO {
             throw new NullPointerException(e.getMessage());
         } finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return r;
@@ -66,6 +74,7 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             // Actualizar o Robo
             String sql = "UPDATE Robo SET x = "  + robo.getCoordenadas().getX() + "," +
                             " y = "+robo.getCoordenadas().getY()+","+
@@ -82,6 +91,7 @@ public class RoboDAO {
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
     }
 
@@ -94,6 +104,7 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
+            lock.lock();
             ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE estado='" + EstadoRobo.LIVRE.getValor() + "';");
             rs.next();
             int idRobo = rs.getInt("id");
@@ -110,6 +121,7 @@ public class RoboDAO {
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
     }
 
@@ -118,7 +130,8 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-                ResultSet rs = stm.executeQuery("SELECT * FROM Robo");
+            lock.lock();
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo");
             while (rs.next()) {  // A chave existe na tabela
                 res.add( new Robo(rs.getInt("id"),
                         rs.getInt("x"), rs.getInt("y"),
@@ -132,6 +145,7 @@ public class RoboDAO {
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return res;
@@ -148,7 +162,8 @@ public class RoboDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement stm = conn.createStatement()) {
-                ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE idPalete='" + idPalete + "'");
+            lock.lock();
+            ResultSet rs = stm.executeQuery("SELECT * FROM Robo WHERE idPalete='" + idPalete + "'");
 
             if (rs.next()) {  // A chave existe na tabela
                 res = new Robo(rs.getInt("id"),
@@ -163,6 +178,7 @@ public class RoboDAO {
             throw new NullPointerException(e.getMessage());
         }finally {
             ConnectionPool.releaseConnection(conn);
+            lock.unlock();
         }
 
         return res;

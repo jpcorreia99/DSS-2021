@@ -116,7 +116,7 @@ public class LeitorCodigosQR implements Runnable {
             throws IOException,
             NotFoundException, InterruptedException {
 
-        Thread.sleep(250); // necessário um pequeno sleep por questões de sincronização causadas pelo watcher no repositório
+        Thread.sleep(1000); // necessário um pequeno sleep por questões de sincronização causadas pelo watcher no repositório
 
         FileInputStream fis = new FileInputStream(path);
 

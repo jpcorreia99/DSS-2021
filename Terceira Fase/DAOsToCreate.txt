@@ -12,11 +12,3 @@ mysql -u user -p
 CREATE DATABASE DSS;
 
 SHOW DATABASES;
-
-utilizador
-prateleiras
-palete
-robo
-codigos 
-
-Pedido de descarga passa a pertencer ao PedidoFacade
