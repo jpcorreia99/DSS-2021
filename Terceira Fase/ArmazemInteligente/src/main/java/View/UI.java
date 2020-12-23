@@ -110,7 +110,7 @@ public class UI {
         this.scan = new Scanner(System.in);
         this.opcoes = Arrays.asList("1. Ver Mapa do Armazém em tempo real",
                 "2. Consultar localização de todas as paletes em armazém",
-                "0. Sair");
+                "0. Sair do programa");
         this.opcao = 0;
         this.handlers = new ArrayList<>();
         
@@ -131,8 +131,11 @@ public class UI {
             System.out.println(s);
     }
     
-    private int getOpcao() {
+    private int Menu() {
         int op = -1;
+        
+        showLogo();
+        showMenu();
         
         do {
             try {
@@ -141,34 +144,33 @@ public class UI {
                 } else scan.next();
             } catch (InputMismatchException e) {
                 op = -1;
-               // System.out.println(e.toString());
             }
 
             if (op<0 || op>(this.opcoes.size()-1) ) {
-                System.out.println("A opção selecionada não é válida.");
+                showLogo();
+                System.out.println("\nA opção selecionada não é válida.\n");
+                showMenu();
                 op = -1;
             }
-        } while (op <0 || op > 2); 
+        } while (op < 0 || op > 2); 
         return op;
     }
     
-    public void inicia() {
+    public void start() {
         this.model.start();
+        
+        boolean login = verificaLogin();
         showLogo();
-        verificaLogin();
-        showLogo();
-            
-        do {
-            showMenu();
-
-            opcao = getOpcao();
-            if (opcao > 0)
-                this.handlers.get(opcao-1).execute();
-            /*else if(opcao< 0 || opcao >= 3)
-                System.out.println("Opcao não disponivel.\n Pressione 'Enter' para continuar.\n");*/
-        } while (opcao != 0);
+        
+        if (login) {
+            do {
+                opcao = Menu();
+                if (opcao > 0)
+                    this.handlers.get(opcao-1).execute();
+            } while (opcao != 0);
+        }
         this.model.desligaSistema();
-        exitScreen();
+        exitScreen(login);
     }
     
     
@@ -230,9 +232,12 @@ public class UI {
         } catch (Exception e) {}
     }
     
-    public void exitScreen () {
+    public void exitScreen (boolean login) {
         showLogo();
-        System.out.println("                                 \n\n     Logging off, thank you for using ArmazémInteligente™ technologies.\n\n");
+        if (!login)
+            System.out.println("                                 \n\n     Excedeu o número de tentativas permitidas, contacte um admnistrador para reaver "
+                            + "acesso à aplicação.");
+            System.out.println("                                 \n\n     A encerrar, obrigado por utilizar ArmazémInteligente™ technologies.\n\n");
     }
     
     public static void showLogo () {
@@ -262,13 +267,15 @@ ANSI_GREEN + "                                                                  
         showLogo();
     }
     
-    public void verificaLogin () {
+    public boolean verificaLogin () {
         String user = null;
         String password = null;
         boolean sucesso = false;
         int tentativas = 0;
         
-        while (!sucesso) {
+        showLogo();
+        
+        while (!sucesso && tentativas < 3) {
             try {
                 System.out.println("\nInsira o seu nome:");
                 user = scan.nextLine();
@@ -280,19 +287,14 @@ ANSI_GREEN + "                                                                  
 
             sucesso = this.model.login(user, password);
 
-            if (!sucesso) {
-                if (++tentativas < 3) {
-                    showLogo();
-                    System.out.println("Os dados que inseriu não são válidos, tente novamente.\n" 
+            if (!sucesso && ++tentativas < 3) {
+                showLogo();
+                System.out.println("Os dados que inseriu não são válidos, tente novamente.\n" 
                             + "Tentativas remanescentes: " + (3 - tentativas));
-                } else {
-                    showLogo();
-                    System.out.println("Excedeu o número de tentativas permitidas, contacte o admnistrador para reaver "
-                            + "acesso à aplicação. \n\n Até breve.\n");
-                    System.exit(0);
-                }
-            }
+            }   
         }
+        
+        return sucesso;
     }
 }
 
