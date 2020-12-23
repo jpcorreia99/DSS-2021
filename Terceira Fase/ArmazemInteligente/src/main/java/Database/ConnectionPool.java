@@ -61,4 +61,13 @@ public class ConnectionPool {
         }
     }
 
+    public static void fecharTodasLigacoes() {
+        for(Connection conn: connectionPool){
+            try {
+                conn.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
 }
