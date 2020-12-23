@@ -15,11 +15,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class RotaDAO {
     private static RotaDAO singleton = null;
-    private Lock lock;
+    private final Lock lock;
 
     public RotaDAO(){
         this.lock = new ReentrantLock();
     }
+
     /**
      * Implementação do padrão Singleton
      *
@@ -67,7 +68,12 @@ public class RotaDAO {
             if(rs.next()) {
                 String rotaCodificada = rs.getString("valor");
                 List<Coordenadas> rotaDescodificada = descodificaRota(rotaCodificada);
-                proximoPasso = rotaDescodificada.remove(0);
+
+                if(!rotaDescodificada.isEmpty()) {
+                    proximoPasso = rotaDescodificada.remove(0);
+                } else{
+                    proximoPasso = new Coordenadas(0,0);
+                }
 
                 // se a lista estiver vazia depois de remover o próximo passo, remove-se a entrada na tabela
                 if (rotaDescodificada.isEmpty()) {
@@ -109,14 +115,15 @@ public class RotaDAO {
     private List<Coordenadas> descodificaRota(String coordenadasCodificadas){
         List<Coordenadas> res = new ArrayList<>();
 
-        String[] coordenadasTexto = coordenadasCodificadas.split("/");
-        for(String coordenadaTexto : coordenadasTexto){
-            String[] coordenada_x_y = coordenadaTexto.split(",");
-            int x = Integer.parseInt(coordenada_x_y[0]);
-            int y = Integer.parseInt(coordenada_x_y[1]);
-            res.add(new Coordenadas(x,y));
+        if(!coordenadasCodificadas.isBlank() || coordenadasCodificadas.equals("/")) {
+            String[] coordenadasTexto = coordenadasCodificadas.split("/");
+            for (String coordenadaTexto : coordenadasTexto) {
+                String[] coordenada_x_y = coordenadaTexto.split(",");
+                int x = Integer.parseInt(coordenada_x_y[0]);
+                int y = Integer.parseInt(coordenada_x_y[1]);
+                res.add(new Coordenadas(x, y));
+            }
         }
-
         return res;
     }
 }

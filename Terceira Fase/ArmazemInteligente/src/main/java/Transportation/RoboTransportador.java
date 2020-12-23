@@ -87,7 +87,8 @@ public class RoboTransportador implements Runnable {
             }
 
             Coordenadas proximoPasso;
-            if ((proximoPasso = rotaDAO.getProximoPasso(this.id)) != null) {
+            // para evitar situações imprevistas, é devolvida a coordenada (0,0) em situações em que se falha na leitura da rota
+            if ((proximoPasso = rotaDAO.getProximoPasso(this.id)) != null && !(proximoPasso.getX()==0 && proximoPasso.getY()==0)) {
                 this.coordenadas = proximoPasso;
                 if (rotaDAO.rotaTerminou(this.id)) {
                     if (this.estado == EstadoRobo.RECOLHA) {
