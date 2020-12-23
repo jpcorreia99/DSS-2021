@@ -9,8 +9,6 @@ import Util.Coordenadas;
 import Util.EstadoPalete;
 import Util.Tuple;
 import java.util.ArrayList;
-
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -134,20 +132,23 @@ public class UI {
     }
     
     private int getOpcao() {
-        int op;
+        int op = -1;
         
-        try {
-            op = scan.nextInt();
-            System.out.println("Opção: " + op);
-        } catch (InputMismatchException e) {
-            op = -1;
-            System.out.println(e.toString());
-        }
-        
-        if (op<0 || op>this.opcoes.size()) {
-            System.out.println("A opção selecionada não é válida.");
-            op = -1;
-        }
+        do {
+            try {
+                if (scan.hasNextInt()) {
+                    op = scan.nextInt();
+                } else scan.next();
+            } catch (InputMismatchException e) {
+                op = -1;
+               // System.out.println(e.toString());
+            }
+
+            if (op<0 || op>(this.opcoes.size()-1) ) {
+                System.out.println("A opção selecionada não é válida.");
+                op = -1;
+            }
+        } while (op <0 || op > 2); 
         return op;
     }
     
@@ -161,10 +162,10 @@ public class UI {
             showMenu();
 
             opcao = getOpcao();
-            if (opcao > 0 && opcao < 3)
+            if (opcao > 0)
                 this.handlers.get(opcao-1).execute();
-            else if(opcao< 0 || opcao >= 3)
-                System.out.println("Opcao não disponivel.\n Pressione 'Enter' para continuar.\n");
+            /*else if(opcao< 0 || opcao >= 3)
+                System.out.println("Opcao não disponivel.\n Pressione 'Enter' para continuar.\n");*/
         } while (opcao != 0);
         this.model.desligaSistema();
         exitScreen();
