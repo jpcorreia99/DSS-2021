@@ -96,6 +96,7 @@ public class RoboTransportador implements Runnable {
                         notificaEntregaPalete(); // use case :)
                     } else {
                         this.estado = EstadoRobo.LIVRE;
+                        this.coordenadas = new Coordenadas(2,id+3);
                     }
                 }
                 // inserir dados atualizados na BD
