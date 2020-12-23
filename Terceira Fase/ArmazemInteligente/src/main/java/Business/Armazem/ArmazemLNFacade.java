@@ -98,7 +98,7 @@ public class ArmazemLNFacade implements IArmazemLN {
                 int idPrateleira = stockFacade.encontraPrateleiraLivre();
                 stockFacade.marcaPaleteEmLevantamento(idPalete);
                 Tuple<Integer, Coordenadas> tuploIdCoordenadas =
-                        roboFacade.encontraRoboLivre(idPalete); // falta implementar, deve marcar o robo como tendo uma palte
+                        roboFacade.encontraRoboLivre(idPalete);
                 List<Coordenadas> percursoInicial = new ArrayList<>();
                 percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
 
