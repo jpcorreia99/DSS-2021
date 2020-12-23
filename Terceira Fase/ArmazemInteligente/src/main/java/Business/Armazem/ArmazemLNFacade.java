@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ArmazemLNFacade implements IArmazemLN {
-    RoboFacade roboFacade;
-    StockFacade stockFacade;
-    GestorFacade gestorFacade;
+    IRobo roboFacade;
+    IStock stockFacade;
+    IGestor gestorFacade;
     Boolean funcional;
     Mapa mapa;
 
