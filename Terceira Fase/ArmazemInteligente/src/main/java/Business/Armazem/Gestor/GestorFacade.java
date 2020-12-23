@@ -1,8 +1,9 @@
 package Business.Armazem.Gestor;
 
+import Business.Armazem.IGestor;
 import Database.GestorDAO;
 
-public class GestorFacade {
+public class GestorFacade implements IGestor {
     GestorDAO gestorDAO;
     Gestor userAtual;
     

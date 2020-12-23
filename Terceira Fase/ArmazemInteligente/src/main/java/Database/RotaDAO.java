@@ -67,7 +67,9 @@ public class RotaDAO {
             if(rs.next()) {
                 String rotaCodificada = rs.getString("valor");
                 List<Coordenadas> rotaDescodificada = descodificaRota(rotaCodificada);
-                proximoPasso = rotaDescodificada.remove(0);
+                if(!rotaDescodificada.isEmpty()) {
+                    proximoPasso = rotaDescodificada.remove(0);
+                }
 
                 // se a lista estiver vazia depois de remover o próximo passo, remove-se a entrada na tabela
                 if (rotaDescodificada.isEmpty()) {
@@ -111,10 +113,12 @@ public class RotaDAO {
 
         String[] coordenadasTexto = coordenadasCodificadas.split("/");
         for(String coordenadaTexto : coordenadasTexto){
-            String[] coordenada_x_y = coordenadaTexto.split(",");
-            int x = Integer.parseInt(coordenada_x_y[0]);
-            int y = Integer.parseInt(coordenada_x_y[1]);
-            res.add(new Coordenadas(x,y));
+            try {
+                String[] coordenada_x_y = coordenadaTexto.split(",");
+                int x = Integer.parseInt(coordenada_x_y[0]);
+                int y = Integer.parseInt(coordenada_x_y[1]);
+                res.add(new Coordenadas(x, y));
+            } catch (NumberFormatException ignored){}
         }
 
         return res;

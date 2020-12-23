@@ -29,7 +29,7 @@ public class APP {
             Thread[] threadsRobosExternos = new Thread[4];
             RoboTransportador[] robosExternos = new RoboTransportador[4];
             RoboTransportadorDAO roboTransportadorDAO = RoboTransportadorDAO.getInstance();
-            for (int i = 0; i <= 3; i++) {
+            for (int i = 0; i <= 2; i++) {
                 RoboTransportador robo = roboTransportadorDAO.getRoboTransportador(i+1);
                 robosExternos[i] = robo;
             }
@@ -48,10 +48,10 @@ public class APP {
             // fim do programa
             // termina leitor de códigos QR
             threadLeitorCodigosQR.interrupt(); // não é possível criar uma flag de interrupção pois o watch service bloqueia à espera
-            ui.show("Leitor de códigos códigos QR desligado!");
+            ui.show("Leitor de códigos QR desligado!");
 
             // termina cada um dos robos
-            for (int i = 0; i<=3; i++){
+            for (int i = 0; i<=2; i++){
                 robosExternos[i].desliga();
                 try {
                     threadsRobosExternos[i].join();

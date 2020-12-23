@@ -4,6 +4,7 @@ import java.util.*;
 
 import Business.Armazem.ArmazemLNFacade;
 
+import Business.IArmazemLN;
 import Util.Coordenadas;
 import Util.EstadoPalete;
 import Util.Tuple;
@@ -14,10 +15,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 class MapaThread implements Runnable {
-    ArmazemLNFacade model;
+    IArmazemLN model;
     private AtomicBoolean running;
     
-    public MapaThread (ArmazemLNFacade model) {
+    public MapaThread (IArmazemLN model) {
         this.model = model;
         this.running = new AtomicBoolean(true);
     }
@@ -88,7 +89,7 @@ class MapaThread implements Runnable {
 
 
 public class UI {
-    private ArmazemLNFacade model;
+    private IArmazemLN model;
     private Scanner scan;
     private List<String> opcoes;
     private List<MenuHandler> handlers;

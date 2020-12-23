@@ -14,9 +14,20 @@ public class Mapa {
         zonas = new HashMap <>();
 
         zonas.put(0, new Coordenadas(1,1));
-        for (int i = 1; i < 5; i++)
+        
+        for (int i = 0; i < 8; i++) {
+            zonas.put(10+6*i, new Coordenadas(5+i,7));
+            zonas.put(11+6*i, new Coordenadas(5+i,4));
+            zonas.put(12+6*i, new Coordenadas(5+i,3));
+            zonas.put(13+6*i, new Coordenadas(5+i,8));
+            zonas.put(14+6*i, new Coordenadas(5+i,0));
+            zonas.put(15+6*i, new Coordenadas(5+i,11));
+        }
+        
+        for (int i = 1; i < 4; i++)
             zonas.put(i, new Coordenadas(2, i+3));
         
+        /*
         for (int i = 0; i < 8; i++)
             zonas.put(i+10, new Coordenadas(i+5, 0));
         
@@ -34,7 +45,7 @@ public class Mapa {
         
         for (int i = 0; i < 8; i++)
             zonas.put(i+50, new Coordenadas(i+5, 11));
-        
+        */
         mapa = new int[][] {
             {0,0,1,1,1,2,2,2,2,2,2,2,2,1,1,1},
             {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
