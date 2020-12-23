@@ -42,7 +42,7 @@ public class APP {
             }
 
             // inicia a visualização do programa e interação com o user
-            ui.inicia();
+            ui.start();
 
 
             // fim do programa
