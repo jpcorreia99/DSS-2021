@@ -1,6 +1,8 @@
 package Database;
 
+import Business.Armazem.Stock.Prateleira;
 import Util.EstadoPrateleira;
+import Util.EstadoRobo;
 import Util.Tuple;
 
 import java.sql.Connection;
@@ -8,10 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static javax.swing.UIManager.getInt;
 
 public class PrateleiraDAO {
+
     private static PrateleiraDAO singleton = null;
 
     /**inse
@@ -24,6 +29,23 @@ public class PrateleiraDAO {
         return PrateleiraDAO.singleton;
     }
 
+    public boolean armazemTemEspacoDisponivel() {
+        Connection conn = ConnectionPool.getConnection();
+
+        try (Statement sta = conn.createStatement()) {
+            String sql = "SELECT * from Prateleira where estado="+ EstadoPrateleira.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
+            ResultSet rs = sta.executeQuery(sql);
+            if(rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.releaseConnection(conn);
+        }
+
+        return false;
+    }
 
     public void inserePaletes(List<Tuple<Integer,Integer>> tuplosPaletesArmazenadasZonas){
         Connection conn = ConnectionPool.getConnection();
