@@ -15,11 +15,4 @@ public enum DirecionalidadeNotificacao {
     public int getValor(){
         return this.valor;
     }
-
-    public static DirecionalidadeNotificacao getEnumByValor(int valor){
-        for(DirecionalidadeNotificacao e : DirecionalidadeNotificacao.values()){
-            if(e.valor==valor) return e;
-        }
-        return null;
-    }
 }
