@@ -29,6 +29,7 @@ O código do projeto ficará responsável pela criação das várias tabelas
 ### correr o projeto
 1. cd target
 2. java -jar ArmazemInteligente-jar-with-dependencies.jar
-
+3. Correr a função main da classe senderCodigosQR
+4. login como user: anacleto password: 1234
 
 **Nota**: O projeto não irá funcionar se apenas corrido no intellij/outro IDE devido à localização da pasta utilizada para a partilha de códigos QR
