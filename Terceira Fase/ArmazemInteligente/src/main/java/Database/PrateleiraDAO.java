@@ -14,7 +14,7 @@ import static javax.swing.UIManager.getInt;
 public class PrateleiraDAO {
     private static PrateleiraDAO singleton = null;
 
-    /**inse
+    /**
      * Devolve uma instância do objeto
      * @return Instância
      */
@@ -28,7 +28,7 @@ public class PrateleiraDAO {
         Connection conn = ConnectionPool.getConnection();
 
         try (Statement sta = conn.createStatement()) {
-            String sql = "SELECT * from Prateleira where estado="+ EstadoPrateleira.LIVRE.getValor()+";"; // ver se não tenho de marcar com mais nada para indicar que robô está a voltar
+            String sql = "SELECT * from Prateleira where estado="+ EstadoPrateleira.LIVRE.getValor()+";";
             ResultSet rs = sta.executeQuery(sql);
             if(rs.next()) {
                 return true;
@@ -105,7 +105,7 @@ public class PrateleiraDAO {
 
     /**
      * Devolve lista de ids de prateleira ocupadas
-     * @return
+     * @return Lista de ids
      */
     public List<Integer> getPrateleirasOcupadas(){
         Connection conn = ConnectionPool.getConnection();
