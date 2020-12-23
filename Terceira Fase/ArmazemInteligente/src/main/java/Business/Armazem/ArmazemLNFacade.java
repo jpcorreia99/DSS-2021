@@ -92,18 +92,18 @@ public class ArmazemLNFacade implements IArmazemLN {
     }
 
     private void escalonaRobos(){
-        if(stockFacade.armazemTemEspacoDisponivel()) {// Armazem não está cheio
-            if (stockFacade.existemPaletesRecemChegadas() && roboFacade.existemRobosDisponiveis()) {
-                int idPalete = stockFacade.getPaleteRecemChegada();
-                int idPrateleira = stockFacade.encontraPrateleiraLivre();
-                stockFacade.marcaPaleteEmLevantamento(idPalete);
-                Tuple<Integer, Coordenadas> tuploIdCoordenadas =
-                        roboFacade.encontraRoboLivre(idPalete);
-                List<Coordenadas> percursoInicial = new ArrayList<>();
-                percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
+        if (stockFacade.existemPaletesRecemChegadas() &&
+                stockFacade.armazemTemEspacoDisponivel() &&
+                roboFacade.existemRobosDisponiveis()) {
+            int idPalete = stockFacade.getPaleteRecemChegada();
+            int idPrateleira = stockFacade.encontraPrateleiraLivre();
+            stockFacade.marcaPaleteEmLevantamento(idPalete);
+            Tuple<Integer, Coordenadas> tuploIdCoordenadas =
+                    roboFacade.encontraRoboLivre(idPalete);
+            List<Coordenadas> percursoInicial = new ArrayList<>();
+            percursoInicial.add(new Coordenadas(tuploIdCoordenadas.getT().getX() - 1, tuploIdCoordenadas.getT().getY()));
 
-                roboFacade.transmiteInfoRota(idPalete, idPrateleira, tuploIdCoordenadas.getO(), percursoInicial, EstadoRobo.RECOLHA);
-            }
+            roboFacade.transmiteInfoRota(idPalete, idPrateleira, tuploIdCoordenadas.getO(), percursoInicial, EstadoRobo.RECOLHA);
         }
     }
 
