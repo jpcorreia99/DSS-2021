@@ -125,17 +125,4 @@ public class RoboTransportador implements Runnable {
         Notificacao notificacao = new Notificacao(this.id, TipoNotificacao.ENTREGA);
         notificacaoDAO.enviarNotificacao(notificacao, DirecionalidadeNotificacao.PARA_SERVIDOR);
     }
-
-
-    @Override
-    public String toString() {
-        return "Robo{" +
-                "id=" + id +
-                ", coordenadas=" + coordenadas +
-                ", zonaEstacionamento=" + zonaEstacionamento +
-                ", idPrateleira=" + idPrateleira +
-                ", idPalete=" + idPalete +
-                ", estado=" + estado +
-                '}';
-    }
 }
