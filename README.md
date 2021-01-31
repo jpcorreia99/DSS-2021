@@ -2,6 +2,7 @@
 
 Modelação e implementação de um Sistema de gestão de stock inteligente.
 
+Nota final: 18/20
  
 a84414 João Correia [jpcorreia99](https://github.com/jpcorreia99)
 
